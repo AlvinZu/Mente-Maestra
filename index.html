@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mente Maestra</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- ===== INICIO DE CÓDIGO AÑADIDO PARA PWA EN IOS ===== -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mente Maestra">
+    <link rel="apple-touch-icon" href="Icon-Mente-Maestra.png">
+    <!-- ===== FIN DE CÓDIGO AÑADIDO PARA PWA EN IOS ===== -->
+
+    <style>
+        /* Estilos base y tema oscuro */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* Gris oscuro */
+            color: #F9FAFB; /* Gris muy claro */
+        }
+        /* Estilo para el botón de navegación activo */
+        .nav-button.active {
+            color: #3B82F6; /* Azul brillante */
+        }
+        /* Transiciones suaves para cambiar de vista */
+        .view {
+            transition: opacity 0.2s ease-in-out;
+        }
+        .view.hidden {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        /* Estilos para las opciones del reto */
+        .challenge-option {
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .challenge-option.selected {
+            background-color: #1E40AF; /* Azul oscuro */
+            border-color: #3B82F6; /* Azul brillante */
+        }
+        .feedback-correct { color: #22C55E; } /* Verde */
+        .feedback-incorrect { color: #EF4444; } /* Rojo */
+    </style>
+</head>
+<body class="h-full flex flex-col">
+
+    <!-- Contenedor Principal de Vistas -->
+    <div id="main-container" class="flex-grow relative">
+
+        <!-- Vista de Pestañas (Inicio, Módulos, etc.) -->
+        <div id="tabs-view" class="view w-full h-full p-4 pb-24 overflow-y-auto">
+            <!-- Pestaña 1: INICIO (Visible por defecto) -->
+            <section id="inicio" class="tab-content">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold">Hola, Maestro</h1>
+                    <p class="text-md text-gray-400">Comencemos tu entrenamiento de hoy.</p>
+                </header>
+                <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
+                    <div class="flex items-center mb-3"><i data-lucide="sparkles" class="text-yellow-400 mr-3"></i><h2 class="text-lg font-semibold">Lección del Día</h2></div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-400">La Técnica del Espejo (Rapport)</h3>
+                    <p class="text-gray-300 mb-4">Aprende a crear una conexión instantánea emulando sutilmente el lenguaje corporal.</p>
+                    <button onclick="showLesson('tecnica-espejo')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Empezar Lección (5 min)</button>
+                </div>
+                <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
+                    <div class="flex items-center mb-3"><i data-lucide="target" class="text-green-400 mr-3"></i><h2 class="text-lg font-semibold">Reto Práctico Aleatorio</h2></div>
+                    <h3 class="text-xl font-bold mb-2 text-green-400">Pon a Prueba tus Habilidades</h3>
+                    <p class="text-gray-300 mb-4">Enfréntate a un escenario de la vida real y demuestra tu capacidad de observación y análisis.</p>
+                    <button onclick="startRandomChallenge()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Aceptar Reto</button>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold mb-3">Tu Progreso General</h2>
+                    <div class="w-full bg-gray-700 rounded-full h-4"><div class="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full" style="width: 25%"></div></div>
+                    <div class="flex justify-between text-sm text-gray-400 mt-2"><span>Observador Nivel 3</span><span>250/1000 XP</span></div>
+                </div>
+            </section>
+
+            <!-- Pestaña 2: MÓDULOS -->
+            <section id="modulos" class="tab-content hidden">
+                <header class="mb-8"><h1 class="text-3xl font-bold">Módulos de Aprendizaje</h1><p class="text-md text-gray-400">Selecciona una disciplina para comenzar.</p></header>
+                <div id="modules-grid" class="space-y-4"></div>
+            </section>
+
+            <!-- Pestaña 3: LABORATORIO -->
+            <section id="laboratorio" class="tab-content hidden">
+                 <header class="mb-8"><h1 class="text-3xl font-bold">Laboratorio de Práctica</h1><p class="text-md text-gray-400">Pon a prueba tus habilidades con herramientas interactivas.</p></header>
+                 <div class="space-y-4">
+                    <div onclick="showLabTool('micro-expressions-gym')" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+                        <div class="p-3 bg-green-600 rounded-lg mr-4"><i data-lucide="smile-plus"></i></div>
+                        <div>
+                            <h3 class="text-xl font-bold text-green-400">Gimnasio de Microexpresiones</h3>
+                            <p class="text-gray-400">Entrena tu velocidad para detectar emociones ocultas.</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+                    </div>
+                    <div onclick="showLabTool('challenge-library')" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+                        <div class="p-3 bg-blue-600 rounded-lg mr-4"><i data-lucide="library"></i></div>
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-400">Biblioteca de Retos</h3>
+                            <p class="text-gray-400">Practica con todos los escenarios disponibles.</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+                    </div>
+                    <div class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 opacity-50 flex items-center">
+                        <div class="p-3 bg-gray-600 rounded-lg mr-4"><i data-lucide="message-square"></i></div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-400">Simulador de Conversación</h3>
+                            <p class="text-gray-500">Próximamente...</p>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+            <!-- Pestaña 4: DIARIO -->
+            <section id="diario" class="tab-content hidden">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold">Mi Diario</h1>
+                    <p class="text-md text-gray-400">Tu progreso y reflexiones en un solo lugar.</p>
+                </header>
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-3">Mis Estadísticas</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <p class="text-3xl font-bold text-blue-400">12</p>
+                            <p class="text-sm text-gray-400">Lecciones Completadas</p>
+                        </div>
+                        <div class="bg-gray-800 p-4 rounded-lg text-center">
+                            <p class="text-3xl font-bold text-green-400">5</p>
+                            <p class="text-sm text-gray-400">Retos Superados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-3">Mis Logros</h2>
+                    <div class="flex space-x-4 overflow-x-auto pb-2">
+                        <div class="text-center flex-shrink-0">
+                            <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto"><i data-lucide="award" class="w-8 h-8"></i></div>
+                            <p class="text-xs mt-2">Primeros Pasos</p>
+                        </div>
+                        <div class="text-center flex-shrink-0">
+                            <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto"><i data-lucide="eye" class="w-8 h-8"></i></div>
+                            <p class="text-xs mt-2">Observador</p>
+                        </div>
+                        <div class="text-center flex-shrink-0 opacity-40">
+                            <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto"><i data-lucide="brain-circuit" class="w-8 h-8"></i></div>
+                            <p class="text-xs mt-2">Arquitecto Mental</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold mb-3">Mis Notas</h2>
+                    <textarea id="journal-notes" class="w-full h-40 bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Escribe aquí tus observaciones, ideas o reflexiones del día..."></textarea>
+                    <button onclick="saveNotes()" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Notas</button>
+                    <p id="save-feedback" class="text-center text-green-500 mt-2 text-sm opacity-0 transition-opacity">¡Notas guardadas!</p>
+                </div>
+            </section>
+
+            <!-- Pestaña 5: AJUSTES -->
+            <section id="ajustes" class="tab-content hidden">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold">Ajustes</h1>
+                    <p class="text-md text-gray-400">Personaliza tu experiencia en la aplicación.</p>
+                </header>
+                <div class="space-y-6">
+                    <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i data-lucide="moon" class="mr-3"></i>
+                            <span>Modo Oscuro</span>
+                        </div>
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center">
+                        <div class="flex items-center">
+                            <i data-lucide="bell" class="mr-3"></i>
+                            <span>Notificaciones</span>
+                        </div>
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="notifications-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="notifications-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                        </div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-2">Zona de Peligro</h3>
+                        <p class="text-sm text-gray-400 mb-3">Esta acción no se puede deshacer. Perderás todo tu progreso, incluyendo lecciones completadas, retos y notas.</p>
+                        <button onclick="confirmResetProgress()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                            Reiniciar Progreso
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Vista de Detalle de Módulo -->
+        <div id="module-detail-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+
+        <!-- Vista de Lección -->
+        <div id="lesson-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+
+        <!-- Vista de Reto -->
+        <div id="challenge-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+        
+        <!-- Vista del Gimnasio de Microexpresiones -->
+        <div id="micro-expressions-gym-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
+
+        <!-- Vista de la Biblioteca de Retos -->
+        <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+
+    </div>
+
+    <!-- Menú de Navegación Inferior Fijo -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700">
+        <div class="flex justify-around max-w-lg mx-auto">
+            <button onclick="showTab('inicio')" class="nav-button active flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="home"></i><span class="text-xs mt-1">Inicio</span></button>
+            <button onclick="showTab('modulos')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="book-open"></i><span class="text-xs mt-1">Módulos</span></button>
+            <button onclick="showTab('laboratorio')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="flask-conical"></i><span class="text-xs mt-1">Lab</span></button>
+            <button onclick="showTab('diario')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="notebook-tabs"></i><span class="text-xs mt-1">Diario</span></button>
+            <button onclick="showTab('ajustes')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="settings"></i><span class="text-xs mt-1">Ajustes</span></button>
+        </div>
+    </nav>
+
+    <script>
+        // --- Bases de Datos Simuladas ---
+        const modules = {
+            'lenguaje-corporal': { title: 'Lenguaje Corporal', subtitle: 'El Lector de Cuerpos', icon: 'eye', color: 'blue', levels: { 'Nivel Básico: Los Fundamentos': ['lc-b1', 'lc-b2', 'lc-b3', 'lc-b4'], 'Nivel Intermedio: Señales Clave': ['lc-i1', 'lc-i2', 'lc-i3', 'lc-i4'], 'Nivel Avanzado: Maestría en la Observación': ['lc-a1', 'lc-a2', 'lc-a3']}},
+            'pnl': { title: 'PNL', subtitle: 'El Arquitecto de la Mente', icon: 'brain-circuit', color: 'purple', levels: { 'Nivel Básico: Herramientas Esenciales': ['pnl-b1', 'pnl-b2', 'pnl-b3'], 'Nivel Intermedio: Cambio y Percepción': ['pnl-i1', 'pnl-i2', 'pnl-i3'] }},
+            'mentalismo': { title: 'Mentalismo', subtitle: 'El Ilusionista de la Conversación', icon: 'wand-2', color: 'indigo', levels: { 'Nivel Básico: Principios de la Influencia': ['men-b1', 'men-b2', 'men-b3'], 'Nivel Intermedio: Deducción y Calibración': ['men-i1', 'men-i2', 'men-i3'] }},
+            'hipnosis': { title: 'Hipnosis', subtitle: 'El Guía del Subconsciente', icon: 'wind', color: 'teal', levels: { 'Nivel Básico: Introducción Segura': ['hip-b1', 'hip-b2', 'hip-b3'], 'Nivel Intermedio: Aplicaciones Prácticas': ['hip-i1', 'hip-i2', 'hip-i3'] }}
+        };
+
+        const lessons = {
+            'tecnica-espejo': { title: 'La Técnica del Espejo', content: `<div class="space-y-6"><div><h2 class="text-xl font-semibold text-blue-400 mb-2">1. ¿Qué es? (La Teoría)</h2><p class="text-gray-300">También conocida como 'Rapport' o 'Mirroring', es la práctica de emular sutilmente el lenguaje corporal de otra persona para crear una conexión subconsciente. El cerebro primitivo asocia 'similar' con 'seguro', disolviendo barreras y generando confianza de forma casi instantánea.</p></div><img src="https://placehold.co/600x400/374151/E5E7EB?text=Rapport" class="rounded-lg shadow-lg" alt="Dos personas en una reunión de negocios, mostrando rapport."><div><h2 class="text-xl font-semibold text-blue-400 mb-2">2. ¿Cómo se hace? (La Práctica)</h2><ul class="list-disc list-inside text-gray-300 space-y-2"><li><strong>La Sutileza es la Clave:</strong> No imites, refleja. Espera de 3 a 5 segundos antes de adoptar un gesto.</li><li><strong>De lo General a lo Específico:</strong> Empieza con la postura general (inclinación, cruce de piernas), luego pasa a gestos clave (tocarse la barbilla) y finalmente al tono de voz.</li><li><strong>Acompasa el Ritmo:</strong> Si la persona habla rápido, acelera un poco tu ritmo. Si habla lento, hazlo más pausado.</li></ul></div><div><h2 class="text-xl font-semibold text-blue-400 mb-2">3. Ejemplo en Acción</h2><div class="bg-gray-800 p-4 rounded-lg border border-gray-700"><p class="text-gray-300"><strong class="text-white">Escenario:</strong> Un cliente está con los brazos cruzados, escéptico.</p><p class="text-gray-300 mt-2"><strong class="text-white">Tu Jugada:</strong> En lugar de una postura abierta y agresiva, adopta una postura neutra. Cuando él hable, inclina la cabeza para mostrar escucha. Si él descruza los brazos y pone una mano en la mesa, espera unos segundos y haz un gesto similar. Has creado un puente sin decir una palabra.</p></div></div></div>` },
+            'lc-b1': { title: 'La Línea Base', content: `<h2>¿Qué es la Línea Base?</h2><p>Es el comportamiento normal y relajado de una persona. Antes de interpretar un gesto, debes saber cómo actúa esa persona sin estrés. Es tu punto de referencia para detectar cambios significativos.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Colega Nervioso:</b> Tu colega siempre juega con un bolígrafo. Si deja de hacerlo cuando le preguntas por un proyecto, ese cambio es más significativo que el movimiento en sí.</li><li><b>Amigo Tímido:</b> Un amigo que normalmente evita el contacto visual de repente te mira fijamente. Este cambio brusco en su línea base es un dato importante.</li><li><b>Familiar Expresivo:</b> Tu hermano siempre habla con las manos. Si de repente las mete en los bolsillos mientras te cuenta algo, es una señal de que podría estar ocultando información o sintiéndose inseguro.</li></ul>` },
+            'lc-b2': { title: 'Proxémica', content: `<h2>La Danza del Espacio</h2><p>La distancia que mantenemos con otros revela nuestra relación y nivel de comodidad. Acercarse puede significar interés; alejarse, incomodidad.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Interés en una Cita:</b> Si dos personas en una cita se inclinan sobre la mesa para estar más cerca, es una fuerte señal de interés mutuo.</li><li><b>Incomodidad en el Trabajo:</b> Si le das feedback a un empleado y este da un paso sutil hacia atrás, está creando distancia, lo que puede indicar que se siente incómodo o en desacuerdo.</li><li><b>Espacio Público:</b> En un autobús casi vacío, una persona que se sienta justo a tu lado está rompiendo una norma social, lo que puede ser percibido como extraño o amenazante.</li></ul>` },
+            'lc-b3': { title: 'Posturas de Poder', content: `<h2>Posturas de Poder vs. Sumisión</h2><p>Las posturas expansivas (ocupar espacio) comunican confianza. Las posturas contraídas (encogerse) comunican inseguridad.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>La Pose de "Superman":</b> Antes de una presentación, poner las manos en las caderas y expandir el pecho durante dos minutos puede aumentar químicamente tu confianza.</li><li><b>Sumisión en una Discusión:</b> Una persona que se encorva, cruza los tobillos y mete las manos entre las piernas durante una discusión, está adoptando una postura sumisa y de autoprotección.</li><li><b>Dominancia en una Reunión:</b> El jefe que se reclina en su silla con las manos detrás de la cabeza está mostrando una postura de dominio y control sobre el entorno.</li></ul>` },
+            'lc-b4': { title: 'Gestos Abiertos vs. Cerrados', content: `<h2>Gestos Abiertos y Cerrados</h2><p>Mostrar las palmas de las manos es un gesto de apertura y honestidad. Cruzar los brazos crea una barrera física y psicológica.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Negociación Exitosa:</b> Durante una negociación, si tu contraparte empieza con los brazos cruzados pero los descruza a medida que hablas, es una señal de que se está abriendo a tus ideas.</li><li><b>Rechazo de una Idea:</b> En una lluvia de ideas, si un colega cruza los brazos inmediatamente después de que presentas tu propuesta, es una señal no verbal de que la ha rechazado, incluso antes de hablar.</li><li><b>Creando Confianza:</b> Un orador que gesticula con las palmas hacia arriba es percibido como más honesto y creíble por la audiencia.</li></ul>` },
+            'lc-i1': { title: 'Gestos Pacificadores', content: `<h2>Detectando Incomodidad</h2><p>Son movimientos inconscientes para calmar el estrés, como tocarse el cuello o frotarse el brazo. Son señales muy fiables de tensión interna.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>El Político en Apuros:</b> Cuando un periodista le hace una pregunta difícil, el político se ajusta el nudo de la corbata. Este gesto ayuda a calmar la ansiedad que siente en el cuello.</li><li><b>El Estudiante que Miente:</b> Un estudiante le dice al profesor que ha hecho los deberes, pero mientras lo dice, se tapa la boca con la mano. Es un intento inconsciente de "bloquear" la mentira.</li><li><b>Nervios en una Cita:</b> Una persona en una cita que se frota constantemente el brazo está tratando de auto-calmarse debido a los nervios o la inseguridad.</li></ul>` },
+            'lc-i2': { title: 'Claves de Acceso Ocular', content: `<h2>El Mapa de los Ojos</h2><p>Los movimientos de los ojos pueden indicar si una persona está recordando una imagen, un sonido, o si lo está construyendo (imaginando).</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Recordando una Imagen (Vr):</b> Preguntas "¿Cómo era tu habitación de niño?" y la persona mira arriba a la izquierda para "ver" el recuerdo.</li><li><b>Creando una Imagen (Vc):</b> Preguntas "¿Cómo te verías con el pelo rosa?" y la persona mira arriba a la derecha para "imaginar" la escena.</li><li><b>Diálogo Interno (Ad):</b> Le pides a alguien que piense en qué decir a continuación y mira abajo a la izquierda, "hablando" consigo mismo.</li></ul>` },
+            'lc-i3': { title: 'Incongruencia', content: `<h2>Cuando el Cuerpo Grita</h2><p>Ocurre cuando las palabras dicen una cosa y el cuerpo otra (ej. decir "sí" mientras se niega sutilmente con la cabeza). El cuerpo suele decir la verdad.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>El "Sí" Dudoso:</b> Tu amigo acepta ir a un plan diciendo "Sí, me apetece", pero lo acompaña con un ligero encogimiento de hombros. El gesto delata su falta de convicción.</li><li><b>La Disculpa Falsa:</b> Alguien dice "Lo siento mucho" con una sonrisa de desprecio (una comisura del labio se eleva). La microexpresión revela su verdadero sentimiento.</li><li><b>Miedo Oculto:</b> Una persona dice "No tengo miedo" pero sus pupilas están dilatadas y su respiración es superficial. Su fisiología contradice sus palabras.</li></ul>` },
+            'lc-i4': { title: 'Gestos con las Manos', content: `<h2>El Significado de las Manos</h2><p>Las manos enfatizan nuestro discurso. Gestos amplios muestran confianza, mientras que esconder las manos puede indicar inseguridad.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>El Gesto de la Confianza (Steeple):</b> Un jefe une las yemas de sus dedos formando una especie de campanario. Este es un gesto de alta confianza y autoridad.</li><li><b>Ocultando las Manos:</b> En una entrevista de trabajo, un candidato que mantiene las manos debajo de la mesa o en los bolsillos puede ser percibido como alguien que oculta algo o que no es de fiar.</li><li><b>Medir con las Manos:</b> Cuando alguien describe el tamaño de algo, la distancia entre sus manos suele ser más honesta que sus palabras.</li></ul>` },
+            'lc-a1': { title: 'Microexpresiones Faciales', content: `<h2>Las 7 Emociones Universales</h2><p>Son expresiones faciales extremadamente rápidas (menos de un segundo) que revelan una emoción oculta. Son universales en todas las culturas.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Desprecio Oculto:</b> Le das un cumplido a un rival y, por un instante, una de las comisuras de sus labios se eleva. Es una microexpresión de desprecio.</li><li><b>Miedo Reprimido:</b> Anuncias un cambio en la empresa. Un empleado muestra un flash de miedo (ojos muy abiertos, cejas levantadas) antes de componer una expresión neutra.</li><li><b>Tristeza Verdadera:</b> Un amigo te cuenta que "está bien" después de una ruptura, pero ves un rápido descenso de las comisuras de sus labios. Esa es la verdadera emoción.</li></ul>` },
+            'lc-a2': { title: 'Territorios y Barreras', content: `<h2>Barreras en Reuniones</h2><p>Las personas a menudo usan objetos (una taza de café, un portátil) para crear barreras territoriales cuando se sienten inseguras o en desacuerdo.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>El Muro del Portátil:</b> En una reunión, si un colega abre su portátil y lo pone de pie entre tú y él, está creando una barrera, indicando que está menos receptivo.</li><li><b>Reclamando Espacio:</b> Una persona que esparce sus papeles por toda la mesa está reclamando territorio y mostrando una actitud dominante.</li><li><b>La Bolsa en el Asiento:</b> Alguien que pone su bolso o mochila en el asiento de al lado en un lugar público está marcando su territorio para evitar que otros se sienten cerca.</li></ul>` },
+            'lc-a3': { title: 'Sincronización Avanzada', content: `<h2>Liderazgo No Verbal</h2><p>Después de establecer rapport (espejo), puedes empezar a "liderar". Si cambias de postura y la otra persona te sigue, has logrado una conexión profunda.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>La Prueba del Vaso de Agua:</b> Después de reflejar sutilmente a tu interlocutor durante unos minutos, coge tu vaso de agua y bebe. Si él hace lo mismo poco después, has establecido un liderazgo no verbal.</li><li><b>Cambiando la Energía del Grupo:</b> En un grupo tenso, si tú (como líder) adoptas conscientemente una postura más relajada y abierta, es probable que los demás empiecen a imitarte y la tensión disminuya.</li><li><b>Cerrando un Trato:</b> En una venta, si después de un buen rapport te inclinas hacia adelante y coges el bolígrafo para firmar, tu cliente será mucho más propenso a imitar el gesto y cerrar el trato.</li></ul>` },
+            'pnl-b1': { title: 'Sistemas Representacionales', content: `<h2>VAK: Visual, Auditivo, Kinestésico</h2><p>Las personas procesan el mundo principalmente a través de uno de estos tres canales. Hablar en su "idioma" (ej. "veo lo que dices" a un visual) crea una conexión instantánea.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Venta Visual:</b> A un cliente que dice "Necesito ver el panorama general", le muestras un gráfico claro. Usas su lenguaje: "Como puede ver, la perspectiva es brillante".</li><li><b>Conexión Auditiva:</b> Tu amigo te dice "No me suena bien esa idea". Le respondes: "Te escucho. Dime qué es lo que te hace ruido para que encontremos el tono correcto".</li><li><b>Confianza Kinestésica:</b> Un socio dice "No siento que estemos en la misma página". Le respondes: "Entiendo. ¿Cómo podemos conectar mejor para que sientas una base sólida para avanzar?".</li></ul>` },
+            'pnl-b2': { title: 'El Poder del "Sí"', content: `<h2>Creando Momentum de Acuerdo</h2><p>Al hacer una serie de preguntas cuya respuesta obvia es "sí", predispones a la persona a estar de acuerdo contigo en temas más importantes.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>En una Venta:</b> "¿Busca una solución que sea eficiente, verdad? (Sí). Y que le ahorre tiempo, ¿correcto? (Sí). Y que sea fácil de implementar, ¿cierto? (Sí). Excelente, entonces nuestro producto es lo que necesita".</li><li><b>Con un Niño:</b> "¿Quieres terminar rápido para ir a jugar? (Sí). Y para eso hay que hacer los deberes, ¿verdad? (Sí). Entonces, si empezamos ahora, terminaremos antes, ¿no crees? (Sí)".</li><li><b>Planificando en Pareja:</b> "Ambos estamos cansados, ¿verdad? (Sí). Y queremos unas vacaciones para relajarnos, ¿no? (Sí). Entonces, un destino de playa tranquilo sería ideal, ¿cierto? (Sí)".</li></ul>` },
+            'pnl-b3': { title: 'Anclajes', content: `<h2>Creando "Botones" Emocionales</h2><p>Un ancla es un estímulo (un gesto, una palabra) que se asocia a un estado emocional. Puedes crear anclas para acceder a estados de confianza o calma a voluntad.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Ancla de Confianza:</b> Antes de una presentación, recuerda un momento de éxito total. En el pico de la emoción, aprieta el pulgar y el índice. Repítelo varias veces. Antes de salir, dispara el ancla (aprieta los dedos) para evocar esa confianza.</li><li><b>Ancla Auditiva:</b> Escuchar una canción específica de tu adolescencia te transporta instantáneamente a esa época. La canción es un ancla auditiva de la nostalgia.</li><li><b>Ancla en Terapia:</b> Un terapeuta puede pedirle a un paciente que recuerde un momento de calma y, en el pico de la sensación, se toque la muñeca. Luego, en momentos de ansiedad, el paciente puede tocarse la muñeca para evocar esa calma.</li></ul>` },
+            'pnl-i1': { title: 'Reencuadre', content: `<h2>Cambiando el Significado</h2><p>Ninguna situación tiene un significado inherente. El reencuadre te permite cambiar el "marco" de una experiencia negativa para verla como una oportunidad o un aprendizaje.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>"Fracaso" a "Aprendizaje":</b> En lugar de "El lanzamiento del producto fue un fracaso", reencuadra a "El lanzamiento nos dio datos muy valiosos sobre lo que el mercado no quiere. Ahora sabemos cómo acertar".</li><li><b>"Problema" a "Oportunidad":</b> "Tenemos un problema de logística" se convierte en "Tenemos la oportunidad de rediseñar nuestro sistema logístico para ser mucho más eficientes".</li><li><b>"Estoy Atrapado" a "Tiempo para Mí":</b> "Estoy atrapado en el tráfico" se reencuadra a "Qué bien, tengo 30 minutos sin interrupciones para escuchar mi audiolibro favorito".</li></ul>` },
+            'pnl-i2': { title: 'Submodalidades', content: `<h2>Ajustando tu Percepción</h2><p>Son las "cualidades" de tus pensamientos (brillo, tamaño, distancia de una imagen mental). Modificarlas puede cambiar la intensidad de una emoción o recuerdo.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Reducir un Miedo:</b> Visualiza la imagen de lo que te da miedo. Ahora, hazla más pequeña, ponla en blanco y negro y aléjala hasta que sea un punto diminuto. Nota cómo la emoción disminuye.</li><li><b>Aumentar la Motivación:</b> Piensa en tu objetivo cumplido. Haz la imagen mental más grande, más brillante, con colores más vivos y acércala. Siente cómo aumenta tu deseo de alcanzarlo.</li><li><b>Cambiar un Antojo:</b> Visualiza esa comida que se te antoja. Ahora, quítale el color, ponle un olor desagradable y escucha un sonido molesto al morderla. El antojo probablemente disminuirá.</li></ul>` },
+            'pnl-i3': { title: 'Meta-Modelo del Lenguaje', content: `<h2>Haciendo las Preguntas Correctas</h2><p>Es un conjunto de preguntas precisas para clarificar información, desafiar generalizaciones y recuperar información omitida en una conversación.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Generalización:</b> "Nadie me valora en el trabajo". Pregunta: "¿Nadie, nunca? ¿Quién específicamente no te valora y cómo lo sabes?".</li><li><b>Omisión:</b> "Estoy frustrado". Pregunta: "¿Frustrado por qué, específicamente?".</li><li><b>Lectura Mental:</b> "Sé que no le caigo bien". Pregunta: "¿Cómo sabes exactamente lo que él está pensando?".</li></ul>` },
+            'men-b1': { title: 'Lectura en Frío y Efecto Barnum', content: `<h2>El Arte de la Generalidad</h2><p>La lectura en frío consiste en usar afirmaciones de alta probabilidad que suenan específicas (declaraciones Barnum) para crear la ilusión de que conoces a alguien profundamente.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>En una fiesta:</b> "Pareces una persona sociable y amigable, pero a veces necesitas tu propio espacio para recargar energías". (Aplica a casi todos).</li><li><b>A un colega:</b> "Has pasado por algunas dificultades, pero te han hecho una persona mucho más fuerte y resiliente". (Es una experiencia universal).</li><li><b>A un nuevo conocido:</b> "Valoras mucho la lealtad y te sientes decepcionado cuando la gente no cumple con tus expectativas". (Describe un rasgo humano común).</li></ul>` },
+            'men-b2': { title: 'Acompasar y Liderar', content: `<h2>La Danza de la Conversación</h2><p>Primero, acompasas (validas) la realidad y el estado emocional de la persona. Una vez creada la conexión, puedes empezar a liderar la conversación hacia donde deseas.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Cliente Enojado:</b> Acompasas diciendo "Entiendo su frustración, tiene toda la razón en estar molesto". Luego lideras con "Y ahora, esto es lo que vamos a hacer para solucionarlo".</li><li><b>Amigo Triste:</b> Acompasas con un tono de voz suave y una postura similar. "Realmente parece que esto te ha afectado". Luego lideras sutilmente: "Recordemos alguna vez que superaste algo similar...".</li><li><b>Negociación:</b> Acompasas su postura corporal y ritmo de habla. Una vez en sintonía, te inclinas ligeramente hacia adelante para mostrar más interés (lideras) y es probable que te sigan.</li></ul>` },
+            'men-b3': { title: 'Forzaje Psicológico', content: `<h2>La Ilusión de la Libre Elección</h2><p>Es el arte de guiar a alguien a una elección predeterminada (un número, una carta, una idea) mientras cree que está eligiendo libremente, usando énfasis sutiles.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>El Menú del Restaurante:</b> Un camarero dice: "¿Les gustaría nuestro famoso filete o el salmón?". Al describir el filete, su tono es más entusiasta y hace un gesto con la mano. Es más probable que elijas el filete.</li><li><b>Elección de un Número:</b> "Piensa en un número del 1 al 4. El 1 y el 4 son muy obvios... ¿ya tienes uno?". Esto empuja sutilmente hacia el 2 o el 3.</li><li><b>Plan de Fin de Semana:</b> "¿Quieres ir al cine o hacemos esa caminata por la montaña que tanto nos gusta y respiramos aire fresco?". La segunda opción está cargada de lenguaje positivo, forzando la elección.</li></ul>` },
+            'men-i1': { title: 'Calibración Aguda', content: `<h2>Leyendo Cambios de Estado</h2><p>La calibración es la habilidad de notar los cambios fisiológicos mínimos (respiración, color de la piel, tensión muscular) que indican un cambio en el estado emocional de una persona.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Señal de Interés:</b> Durante una venta, al mencionar el precio, notas que las pupilas del cliente se dilatan ligeramente. Es una señal de alto interés o excitación.</li><li><b>Detectando Tensión:</b> Hablas de un tema delicado y observas que la mandíbula de tu interlocutor se tensa y su respiración se vuelve más superficial. Has detectado un punto de estrés.</li><li><b>Cambio de Opinión:</b> En una discusión, la persona pasa de tener los labios apretados a relajarlos. Es un indicador de que su resistencia está disminuyendo.</li></ul>` },
+            'men-i2': { title: 'El Principio de la Rata de Laboratorio', content: `<h2>La Gente Quiere Ayudar</h2><p>La gente inconscientemente quiere que aciertes. Si lanzas una idea general, buscarán en su mente ejemplos que la confirmen, dándote más información para continuar.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>La Declaración del Viaje:</b> Dices "Siento que has estado pensando mucho en un viaje". La persona responde "¡Sí! ¿Cómo lo supiste? Quiero ir a la playa". Te ha dado el detalle específico.</li><li><b>La Conexión Artística:</b> "Percibo una conexión con la música o el arte en tu pasado". La persona dice "Bueno, de pequeño tocaba el piano". Ahora puedes explorar ese tema.</li><li><b>La Decisión Pendiente:</b> "Últimamente ha habido una decisión importante rondando tu mente". Es muy probable que la persona confirme y te diga si es sobre trabajo, familia, etc.</li></ul>` },
+            'men-i3': { title: 'Sugestión e Implantación de Ideas', content: `<h2>Sembrando Pensamientos</h2><p>A través del lenguaje y la presuposición, puedes "plantar" una idea en la mente de alguien de forma tan sutil que crea que la idea fue suya.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>La Presuposición:</b> En lugar de "¿Quieres salir este fin de semana?", preguntas "¿Prefieres que salgamos el viernes o el sábado?". Das por hecho que saldréis.</li><li><b>La Orden Encubierta:</b> Dices "Es fácil para una persona inteligente como tú **darse cuenta de la oportunidad** que esto representa". La orden está en negrita.</li><li><b>El Poder de la Negación:</b> "No tienes por qué sentirte completamente relajado ahora mismo...". El subconsciente ignora el "no" y procesa la instrucción de relajarse.</li></ul>` },
+            'hip-b1': { title: 'Mitos y Verdades del Trance', content: `<h2>¿Qué es el Trance?</h2><p>No es control mental ni estar dormido. El trance es un estado natural de enfoque intenso, similar a estar absorto en una película. La hipnosis simplemente induce este estado a propósito para comunicarnos con el subconsciente.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Conducir en "Piloto Automático":</b> Cuando llegas a tu destino sin recordar conscientemente partes del trayecto. Tu subconsciente estaba al mando.</li><li><b>Absorto en una Película:</b> Estás tan inmerso en la trama que no escuchas a alguien que te llama por tu nombre. Estás en un trance ligero.</li><li><b>Soñar Despierto:</b> Cuando tu mente divaga y te pierdes en tus pensamientos, estás experimentando un estado de trance natural.</li></ul>` },
+            'hip-b2': { title: 'El Lenguaje Hipnótico', content: `<h2>El Modelo Milton</h2><p>Es un estilo de comunicación "artísticamente vago" que utiliza sugestiones indirectas y presuposiciones. Permite que la persona llene los espacios con su propia experiencia, reduciendo la resistencia.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Presuposición:</b> "No sé qué tan rápido te darás cuenta de lo relajado que te sientes". (Presupone que te sentirás relajado, la única duda es cuándo).</li><li><b>Causa-Efecto Implícita:</b> "Escuchar el sonido de mi voz puede hacer que tu respiración se vuelva más profunda y tranquila". (Conecta dos ideas que no están necesariamente relacionadas).</li><li><b>Lectura Mental:</b> "Sé que te estás preguntando si esto funcionará para ti". (Valida el posible escepticismo del oyente y lo normaliza).</li></ul>` },
+            'hip-b3': { title: 'Inducción de Manos Magnéticas', content: `<h2>Tu Primer Ejercicio Práctico</h2><p>Es una inducción clásica y segura donde se guía a una persona a sentir una fuerza magnética entre sus manos. Demuestra de forma poderosa la conexión mente-cuerpo.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Enfoque en la Imaginación:</b> "Imagina que en cada palma tienes un imán increíblemente potente... siente esa energía...".</li><li><b>Uso de Fenómenos Fisiológicos:</b> "Puedes empezar a notar un ligero hormigueo o calor en las manos, y eso es una señal de que la conexión se está creando...".</li><li><b>Sugestión de Inevitabilidad:</b> "...y tus manos se acercan más y más, por sí solas, sin que tengas que hacer nada conscientemente...".</li></ul>` },
+            'hip-i1': { title: 'Auto-Hipnosis para el Enfoque', content: `<h2>Programando tu Mente</h2><p>Aprender a guiarte a ti mismo a un estado de trance te permite darte sugestiones positivas para mejorar la concentración, la relajación o la motivación.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Para Estudiar:</b> Entras en un trance ligero y te dices a ti mismo: "Cada palabra que leo se queda grabada en mi mente. Mi concentración es total y absoluta".</li><li><b>Para Dormir:</b> Te guías a un estado de relajación profunda y te das la sugestión: "Con cada respiración, mi cuerpo y mi mente se preparan para un sueño profundo y reparador".</li><li><b>Para el Deporte:</b> Antes de un partido, visualizas la jugada perfecta y te anclas la sensación de éxito, diciéndote: "Mi cuerpo sabe exactamente qué hacer. Confío en mis instintos".</li></ul>` },
+            'hip-i2': { title: 'Inducciones Conversacionales', content: `<h2>Hipnosis sin que Parezca Hipnosis</h2><p>Es el arte de usar patrones de lenguaje hipnótico en una conversación normal para guiar el estado emocional y el enfoque de una persona de manera sutil y ética.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>En una Venta:</b> "No te pido que tomes una decisión ahora... solo imagina por un momento la tranquilidad que sentirás cuando este problema esté resuelto". (Guía a la persona a un estado emocional futuro).</li><li><b>Ayudando a un Amigo:</b> "Recuerdo una vez que te sentías así y encontraste una fuerza interior increíble. Quizás puedas empezar a recordar cómo se sentía eso...". (Dirige su atención hacia recursos internos).</li><li><b>En una Negociación:</b> "Mientras hablamos de los detalles, puedes empezar a sentirte más y más cómodo con la idea de que podemos llegar a un acuerdo beneficioso para ambos".</li></ul>` },
+            'hip-i3': { title: 'Creación de Metáforas', content: `<h2>Contando Historias que Sanan</h2><p>El subconsciente ama las historias. Aprender a construir metáforas que reflejen el problema de una persona y ofrezcan una solución puede generar cambios profundos.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Para la Procrastinación:</b> "Es como un gran barco en el puerto. Tiene todo lo necesario para zarpar, pero sigue esperando el 'momento perfecto'. A veces, solo necesita que el capitán (tú) levante el ancla para empezar el viaje".</li><li><b>Para la Ansiedad Social:</b> "Imagina que cada persona es un libro en una biblioteca. Al principio, solo ves las portadas, algunas intimidantes. Pero cuando te atreves a abrir uno, descubres una historia fascinante que te enriquece".</li><li><b>Para Superar un Obstáculo:</b> "Un río no lucha contra una roca en su camino. Simplemente, fluye a su alrededor, la rodea, y sigue su curso hacia el mar, volviéndose más fuerte. Tú puedes ser como ese río".</li></ul>` },
+        };
+        const challenges = { 
+            'c-1': { title: 'Reto: Gestos Pacificadores', scenario: 'Estás en una reunión y le preguntas a un colega sobre el retraso de un proyecto. Él responde: "No te preocupes, todo está bajo control".', question: 'Mientras lo dice, ¿cuáles de los siguientes gestos podrían indicar que se siente internamente estresado, a pesar de sus palabras? <strong>Selecciona todos los que apliquen.</strong>', options: [ {text: 'Se toca la parte posterior del cuello.', correct: true}, {text: 'Mantiene contacto visual directo y firme.', correct: false}, {text: 'Se frota el brazo o la pierna.', correct: true}, {text: 'Se ajusta el nudo de la corbata o el collar.', correct: true} ]},
+            'c-2': { title: 'Reto: Incongruencia en una Cita', scenario: 'Al final de una primera cita, le preguntas a la otra persona: "¿Te gustaría que nos volviéramos a ver?". Te responde "¡Sí, claro!", pero mientras lo dice, se encoge ligeramente de hombros y sus pies apuntan hacia la salida.', question: '¿Cuál es el mensaje más probable?', options: [ {text: 'Está muy entusiasmada y quiere volver a verte.', correct: false}, {text: 'Sus palabras son amables, pero su cuerpo indica duda o deseo de irse.', correct: true}, {text: 'Está pensando en su agenda para la próxima cita.', correct: false} ]},
+            'c-3': { title: 'Reto: Posturas de Poder', scenario: 'Estás en una negociación. La otra persona se reclina en su silla, entrelaza las manos detrás de la cabeza y pone los pies sobre la mesa.', question: '¿Qué está comunicando esta postura?', options: [ {text: 'Se siente en una posición dominante, de control y muy cómodo.', correct: true}, {text: 'Está aburrido y desinteresado en la conversación.', correct: false}, {text: 'Está nervioso y tratando de parecer más grande.', correct: false} ]},
+            'c-4': { title: 'Reto: Proxémica en el Ascensor', scenario: 'Entras en un ascensor casi vacío. Otra persona entra después y se para justo a tu lado, a pesar de haber mucho espacio disponible.', question: '¿Qué indica este comportamiento?', options: [ {text: 'Es una persona muy amigable que busca conversación.', correct: false}, {text: 'Puede ser una invasión del espacio personal, indicando poca conciencia social o una posible actitud de confrontación.', correct: true}, {text: 'Simplemente no se fijó dónde se paraba.', correct: false} ]},
+            'c-5': { title: 'Reto: Claves Oculares (Construcción)', scenario: 'Le preguntas a un amigo: "¿Qué hiciste el fin de semana?". Mientras te cuenta una historia, sus ojos se mueven constantemente hacia arriba y a su derecha (tu izquierda).', question: '¿Qué podría indicar este movimiento ocular?', options: [ {text: 'Está recordando vívidamente los eventos tal como ocurrieron.', correct: false}, {text: 'Está accediendo a sus sentimientos sobre el fin de semana.', correct: false}, {text: 'Podría estar construyendo o adornando la historia, más que simplemente recordándola.', correct: true} ]},
+            'c-6': { title: 'Reto: Microexpresión de Sorpresa', scenario: 'Le das una buena noticia inesperada a un compañero de trabajo. Por una fracción de segundo, antes de sonreír, sus cejas se arquean y su boca se abre ligeramente.', question: '¿Qué emoción inicial delató?', options: [ {text: 'Alegría', correct: false}, {text: 'Sorpresa', correct: true}, {text: 'Miedo', correct: false} ]},
+            'c-7': { title: 'Reto: Gestos con las Manos', scenario: 'Un vendedor te presenta un producto. Durante toda la explicación, mantiene las palmas de sus manos abiertas y visibles hacia ti.', question: '¿Qué mensaje subconsciente está enviando?', options: [ {text: 'Está tratando de hipnotizarte.', correct: false}, {text: 'Comunica honestidad, apertura y que no tiene nada que ocultar.', correct: true}, {text: 'Indica que no está seguro de lo que está diciendo.', correct: false} ]},
+            'c-8': { title: 'Reto: Creando Barreras', scenario: 'Estás debatiendo una idea con un colega en una mesa. Cuando empiezas a exponer un punto contrario al suyo, él desliza su taza de café y su teléfono al centro de la mesa, entre ustedes dos.', question: '¿Qué podría significar esta acción?', options: [ {text: 'Simplemente está reorganizando sus cosas.', correct: false}, {text: 'Está aburrido y busca una distracción.', correct: false}, {text: 'Inconscientemente, está creando una barrera, mostrando desacuerdo o poniéndose a la defensiva.', correct: true} ]},
+            'c-9': { title: 'Reto: Bloqueo de la Boca', scenario: 'Le preguntas a alguien si está de acuerdo con una decisión. Responde "Sí, totalmente", pero se tapa la boca con la mano justo después de decirlo.', question: '¿Qué indica esta incongruencia?', options: [ {text: 'Le duele una muela.', correct: false}, {text: 'Su cerebro está tratando de bloquear o retener palabras que no son del todo ciertas.', correct: true}, {text: 'Está a punto de estornudar.', correct: false} ]},
+            'c-10': { title: 'Reto: Interés Genuino', scenario: 'Mientras le cuentas una historia a un amigo, él inclina la cabeza hacia un lado, se inclina ligeramente hacia ti y mantiene un buen contacto visual.', question: '¿Qué conjunto de señales está mostrando?', options: [ {text: 'Señales de aburrimiento y está buscando una vía de escape.', correct: false}, {text: 'Señales clásicas de escucha activa, curiosidad y compromiso con lo que estás diciendo.', correct: true}, {text: 'Está tratando de intimidarte con su mirada.', correct: false} ]},
+            'c-11': { title: 'Reto: Entrevista de Trabajo', scenario: 'Un candidato a un puesto dice: "Tengo mucha experiencia liderando equipos". Sin embargo, mientras lo dice, su voz es baja y se frota las manos nerviosamente.', question: '¿Qué deberías considerar?', options: [ {text: 'Sus palabras son lo más importante, la experiencia es clara.', correct: false}, {text: 'Su lenguaje corporal sugiere nerviosismo o falta de confianza en su propia afirmación.', correct: true}, {text: 'Probablemente solo está nervioso por la entrevista en general.', correct: true} ]},
+            'c-12': { title: 'Reto: Venta de Coche', scenario: 'Un cliente mira un coche y dice: "Es un poco más de lo que pensaba gastar...". Al decirlo, se rasca la barbilla y mira el coche de arriba abajo de nuevo.', question: '¿Qué indica este cluster de gestos?', options: [ {text: 'Ha perdido todo el interés y se va a ir.', correct: false}, {text: 'Está en un proceso de toma de decisiones, evaluando si el valor del coche justifica el precio.', correct: true}, {text: 'No le gusta el color del coche.', correct: false} ]},
+            'c-13': { title: 'Reto: Conversación Casual', scenario: 'Estás hablando con alguien en una fiesta. Te hace preguntas, pero su torso y pies están constantemente orientados hacia la puerta o hacia otro grupo de personas.', question: '¿Cuál es la señal no verbal más fuerte aquí?', options: [ {text: 'Está muy interesado en tu conversación.', correct: false}, {text: 'Su cuerpo está "diciendo" que quiere irse o unirse a otra conversación, a pesar de sus palabras educadas.', correct: true}, {text: 'Tiene frío y busca un lugar más cálido.', correct: false} ]},
+            'c-14': { title: 'Reto: Acuerdo Falso', scenario: 'En una reunión de equipo, tu jefe propone una nueva idea. Un colega dice "Suena genial", pero lo dice con un ligero tono sarcástico y una sonrisa tensa que no llega a sus ojos.', question: '¿Qué es lo más probable?', options: [ {text: 'Está 100% de acuerdo con el jefe.', correct: false}, {text: 'No está de acuerdo, pero no quiere decirlo directamente. Su tono y su sonrisa falsa lo delatan.', correct: true}, {text: 'Simplemente está teniendo un mal día.', correct: false} ]},
+            'c-15': { title: 'Reto: Ocultando Información', scenario: 'Le preguntas a tu compañero de piso si ha visto tus llaves. Responde "No, ni idea" pero evita completamente tu mirada y se encoge de hombros de forma exagerada.', question: '¿Qué podría indicar su comportamiento?', options: [ {text: 'Está diciendo la verdad y no sabe nada.', correct: false}, {text: 'El encogimiento de hombros exagerado y la falta de contacto visual son señales de alerta. Podría saber más de lo que dice.', correct: true}, {text: 'Está demasiado ocupado para ayudarte a buscar.', correct: false} ]},
+            'c-16': { title: 'Reto: Coqueteo Sutil', scenario: 'Una persona en un bar te escucha atentamente. Mientras hablas, se arregla el pelo y su pie apunta directamente hacia ti.', question: '¿Qué está comunicando probablemente?', options: [ {text: 'Se está aburriendo y quiere irse.', correct: false}, {text: 'Son gestos de acicalamiento y de interés, a menudo asociados con la atracción.', correct: true}, {text: 'Tiene el cuello rígido.', correct: false} ]},
+            'c-17': { title: 'Reto: Feedback Laboral', scenario: 'Le das una crítica constructiva a un empleado. Inmediatamente después, cruza los brazos y aprieta la mandíbula.', question: '¿Cuál es su reacción no verbal?', options: [ {text: 'Está completamente abierto y receptivo a tus comentarios.', correct: false}, {text: 'Se ha puesto a la defensiva. Ha creado una barrera y muestra tensión.', correct: true}, {text: 'Está reflexionando profundamente sobre tus palabras.', correct: false} ]},
+            'c-18': { title: 'Reto: Mentira Infantil', scenario: 'Le preguntas a un niño de 5 años si se comió la última galleta. Abre mucho los ojos, dice "no" muy rápido y mantiene una mirada fija y sin parpadear en ti.', question: '¿Qué es una señal común de mentira en los niños?', options: [ {text: 'Mirar hacia abajo y sentirse culpable.', correct: true}, {text: 'El contacto visual excesivo y forzado, porque creen que así es como se ve a alguien que dice la verdad.', correct: true}, {text: 'Empezar a hablar de otra cosa para cambiar de tema.', correct: true} ]},
+            'c-19': { title: 'Reto: Empatía Genuina', scenario: 'Le cuentas un problema a un agente de servicio al cliente. Él te escucha, inclina la cabeza, asiente a un ritmo similar al de tu habla y refleja tu expresión facial de preocupación.', question: '¿Qué habilidad está demostrando?', options: [ {text: 'Está mostrando una empatía fingida para terminar rápido la llamada.', correct: false}, {text: 'Está construyendo rapport activamente y mostrando empatía genuina a través de la sincronización y el reflejo.', correct: true}, {text: 'Está distraído y solo imita por inercia.', correct: false} ]},
+            'c-20': { title: 'Reto: Dominancia en un Saludo', scenario: 'Alguien te da la mano para saludarte, pero gira su mano para que su palma quede hacia abajo y la tuya hacia arriba.', question: '¿Qué puede significar este tipo de apretón de manos?', options: [ {text: 'Es un saludo estándar sin ningún significado oculto.', correct: false}, {text: 'Es un intento sutil y a menudo inconsciente de establecer dominio en la interacción.', correct: true}, {text: 'Simplemente tiene una forma extraña de dar la mano.', correct: false} ]},
+            'c-21': { title: 'Reto: Ojos que Recuerdan', scenario: 'Le preguntas a tu amigo: "¿De qué color era tu primer coche?". Él mira hacia arriba y a su izquierda antes de responder.', question: '¿Qué proceso mental está realizando?', options: [ {text: 'Está inventando un color.', correct: false}, {text: 'Está accediendo a un recuerdo visual.', correct: true}, {text: 'Está sintiendo la emoción de su primer coche.', correct: false} ]},
+            'c-22': { title: 'Reto: Ojos que Crean', scenario: 'Le pides a un colega que imagine cómo se vería un dragón morado en la oficina. Él mira hacia arriba y a su derecha mientras sonríe.', question: '¿Por qué sus ojos se mueven en esa dirección?', options: [ {text: 'Está recordando haber visto un dragón.', correct: false}, {text: 'Está construyendo una imagen mental que nunca ha visto.', correct: true}, {text: 'Está escuchando el rugido del dragón en su mente.', correct: false} ]},
+            'c-23': { title: 'Reto: Ojos que Escuchan (Recuerdo)', scenario: 'Le preguntas a alguien: "¿Cómo sonaba la voz de tu abuela?". La persona mira hacia su lado izquierdo.', question: '¿Qué está haciendo su cerebro?', options: [ {text: 'Recordando un sonido específico del pasado.', correct: true}, {text: 'Imaginando un sonido nuevo.', correct: false}, {text: 'Hablando consigo mismo sobre la pregunta.', correct: false} ]},
+            'c-24': { title: 'Reto: Ojos que Escuchan (Creación)', scenario: 'Le dices a un músico: "Intenta imaginar cómo sonaría una trompeta mezclada con el canto de una ballena". Él mira hacia su lado derecho, pensativo.', question: '¿Qué indica este movimiento?', options: [ {text: 'Está recordando una canción que ya conoce.', correct: false}, {text: 'Está creando un sonido nuevo y complejo en su mente.', correct: true}, {text: 'Está visualizando la partitura.', correct: false} ]},
+            'c-25': { title: 'Reto: Ojos que Sienten', scenario: 'Le preguntas a un amigo: "¿Recuerdas la sensación de la arena caliente en tus pies durante las vacaciones?". Él baja la mirada hacia su derecha.', question: '¿A qué tipo de información está accediendo?', options: [ {text: 'A un recuerdo visual de la playa.', correct: false}, {text: 'A una sensación física o una emoción (kinestésico).', correct: true}, {text: 'A un sonido, como el de las olas.', correct: false} ]},
+            'c-26': { title: 'Reto: Ojos que Piensan', scenario: 'Le pides a alguien que calcule mentalmente cuánto es 17 por 3. Mientras lo hace, baja la mirada hacia su izquierda.', question: '¿Qué está ocurriendo en su mente?', options: [ {text: 'Está visualizando los números.', correct: false}, {text: 'Está hablando consigo mismo, procesando la lógica del cálculo (diálogo interno).', correct: true}, {text: 'Está sintiendo la dificultad del problema.', correct: false} ]},
+            'c-27': { title: 'Reto: Ojos que Mienten', scenario: 'Le preguntas a un empleado que llegó tarde: "¿El tráfico estaba mal en la autopista principal?". Él responde "Sí, terrible" mientras mira hacia arriba y a la derecha. Sabes que él normalmente toma una ruta secundaria.', question: '¿Qué sugiere su respuesta no verbal?', options: [ {text: 'Está recordando el tráfico que vio.', correct: false}, {text: 'Está construyendo una imagen visual para justificar su retraso, lo que podría indicar una mentira.', correct: true}, {text: 'Está recordando el sonido del claxon de los coches.', correct: false} ]},
+            'c-28': { title: 'Reto: Proceso Doble', scenario: 'Le dices a una amiga: "Tu presentación fue increíble". Ella responde "Gracias" y mira hacia su lado izquierdo, y luego baja la mirada a su derecha.', question: '¿Qué proceso doble podría estar ocurriendo?', options: [ {text: 'Está construyendo una mentira y luego sintiéndose mal por ello.', correct: false}, {text: 'Está recordando tus palabras exactas (Auditivo Recordado) y luego conectando con el sentimiento de orgullo (Kinestésico).', correct: true}, {text: 'Está hablando consigo misma y luego visualizando el futuro.', correct: false} ]},
+            'c-29': { title: 'Reto: El Plan del Arquitecto', scenario: 'Un arquitecto te explica los planos de una casa. Cuando le preguntas sobre el color de las paredes, mira hacia arriba a la izquierda. Cuando le preguntas por qué eligió una viga de soporte específica, mira hacia abajo a la izquierda.', question: '¿Qué indican estos dos movimientos?', options: [ {text: 'Recordó el color (Visual Recordado) y luego procesó la lógica de la viga (Diálogo Interno).', correct: true}, {text: 'Inventó el color y luego recordó la lógica.', correct: false}, {text: 'Sintió el color y luego escuchó el sonido de la viga.', correct: false} ]},
+            'c-30': { title: 'Reto: Calibración Inversa', scenario: 'Antes de una pregunta importante, calibras a una persona zurda. Le preguntas por el color de su coche (mira arriba-derecha) y luego le pides que imagine un perro verde (mira arriba-izquierda).', question: '¿Qué has descubierto?', options: [ {text: 'La persona está mintiendo sobre el color de su coche.', correct: false}, {text: 'Esta persona tiene el mapa de claves oculares invertido, lo cual es común en personas zurdas.', correct: true}, {text: 'Las claves oculares no funcionan con esta persona.', correct: false} ]},
+        };
+        const microExpressionsData = [
+            { emotion: 'Alegría', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Alegr%C3%ADa' },
+            { emotion: 'Tristeza', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Tristeza' },
+            { emotion: 'Ira', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Ira' },
+            { emotion: 'Sorpresa', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Sorpresa' },
+            { emotion: 'Miedo', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Miedo' },
+            { emotion: 'Asco', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Asco' },
+            { emotion: 'Desprecio', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Desprecio' },
+        ];
+        
+        // --- Lógica de la App ---
+        const allViews = document.querySelectorAll('.view');
+        const bottomNav = document.getElementById('bottom-nav');
+        let navigationHistory = ['tabs-view'];
+        let gymState = { score: 0, currentEmotion: null, round: 0, totalRounds: 10 };
+
+        function showView(viewId) {
+            allViews.forEach(view => view.classList.add('hidden'));
+            document.getElementById(viewId)?.classList.remove('hidden');
+            bottomNav.style.display = viewId === 'tabs-view' ? 'flex' : 'none';
+            window.scrollTo(0, 0);
+            lucide.createIcons();
+        }
+
+        function navigateTo(viewId) {
+            navigationHistory.push(viewId);
+            showView(viewId);
+        }
+
+        function navigateBack(isCompleted = false) {
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                const previousViewId = navigationHistory[navigationHistory.length - 1];
+                showView(previousViewId);
+            }
+            if (isCompleted) console.log("Actividad completada!");
+        }
+
+        function showTab(tabId) {
+            navigationHistory = ['tabs-view'];
+            showView('tabs-view');
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(tabId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`)?.classList.add('active');
+        }
+
+        function renderModules() {
+            const grid = document.getElementById('modules-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (const moduleId in modules) {
+                const module = modules[moduleId];
+                grid.innerHTML += `<div onclick="showModule('${moduleId}')" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center"><div class="p-3 bg-${module.color}-600 rounded-lg mr-4"><i data-lucide="${module.icon}"></i></div><div><h3 class="text-xl font-bold text-${module.color}-400">${module.title}</h3><p class="text-gray-400">${module.subtitle}</p></div><i data-lucide="chevron-right" class="ml-auto text-gray-500"></i></div>`;
+            }
+        }
+
+        function showModule(moduleId) {
+            const module = modules[moduleId];
+            if (!module || !module.levels) return alert('Este módulo aún no tiene contenido.');
+            let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">${module.title}</h1></header><div class="space-y-8">`;
+            for (const levelTitle in module.levels) {
+                content += `<div><h2 class="text-xl font-semibold text-gray-300 mb-3">${levelTitle}</h2><div class="space-y-2">`;
+                module.levels[levelTitle].forEach(lessonId => {
+                    const lesson = lessons[lessonId];
+                    if (lesson) content += `<div onclick="showLesson('${lessonId}')" class="bg-gray-800 p-4 rounded-lg flex items-center cursor-pointer hover:bg-gray-700 transition-colors"><i data-lucide="play-circle" class="text-${module.color}-400 mr-4"></i><span class="flex-grow">${lesson.title}</span><i data-lucide="chevron-right" class="text-gray-500"></i></div>`;
+                });
+                content += `</div></div>`;
+            }
+            content += `</div>`;
+            document.getElementById('module-detail-view').innerHTML = content;
+            navigateTo('module-detail-view');
+        }
+        
+        function showLesson(lessonId) {
+            const lesson = lessons[lessonId];
+            if (!lesson) return;
+            let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">${lesson.title}</h1></header><div class="prose prose-invert max-w-none text-gray-300">${lesson.content}</div><button onclick="navigateBack(true)" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-8">Marcar como completada</button>`;
+            document.getElementById('lesson-view').innerHTML = content;
+            navigateTo('lesson-view');
+        }
+
+        function showChallenge(challengeId) {
+            const challenge = challenges[challengeId];
+            if (!challenge) return;
+            
+            let optionsHtml = '';
+            challenge.options.forEach(opt => {
+                optionsHtml += `<div onclick="toggleOption(this)" data-correct="${opt.correct}" class="challenge-option bg-gray-800 p-4 rounded-lg border-2 border-gray-700 cursor-pointer flex items-center"><i data-lucide="check-circle" class="mr-3 opacity-0"></i> ${opt.text}</div>`;
+            });
+
+            const content = `
+                <header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">${challenge.title}</h1></header>
+                <div class="space-y-6">
+                    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                        <h2 class="text-lg font-semibold mb-2">El Escenario:</h2>
+                        <p class="text-gray-300">${challenge.scenario}</p>
+                        <p class="text-gray-300 mt-2">${challenge.question}</p>
+                    </div>
+                    <div id="challenge-options" class="space-y-3">${optionsHtml}</div>
+                    <div id="feedback-area" class="hidden mt-4 p-4 bg-gray-800 rounded-lg"></div>
+                    <button id="verify-button" onclick="verifyChallenge()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4">Verificar Respuestas</button>
+                    <button id="next-button" onclick="navigateBack(true)" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4 hidden">¡Genial! Finalizar Reto</button>
+                </div>`;
+
+            document.getElementById('challenge-view').innerHTML = content;
+            navigateTo('challenge-view');
+        }
+
+        function startRandomChallenge() {
+            const challengeKeys = Object.keys(challenges);
+            const randomKey = challengeKeys[Math.floor(Math.random() * challengeKeys.length)];
+            showChallenge(randomKey);
+        }
+        
+        function showLabTool(toolId) {
+            if (toolId === 'micro-expressions-gym') {
+                startMicroExpressionsGame();
+            } else if (toolId === 'challenge-library') {
+                showChallengeLibrary();
+            }
+        }
+
+        function showChallengeLibrary() {
+            const libraryView = document.getElementById('challenge-library-view');
+            let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">Biblioteca de Retos</h1></header><div class="space-y-4">`;
+            
+            for (const challengeId in challenges) {
+                const challenge = challenges[challengeId];
+                content += `
+                    <div onclick="showChallenge('${challengeId}')" class="bg-gray-800 p-4 rounded-lg flex items-center cursor-pointer hover:bg-gray-700 transition-colors">
+                        <i data-lucide="file-text" class="text-blue-400 mr-4"></i>
+                        <span class="flex-grow">${challenge.title}</span>
+                        <i data-lucide="chevron-right" class="text-gray-500"></i>
+                    </div>
+                `;
+            }
+
+            content += `</div>`;
+            libraryView.innerHTML = content;
+            navigateTo('challenge-library-view');
+        }
+
+        function startMicroExpressionsGame() {
+            gymState = { score: 0, currentEmotion: null, round: 0, totalRounds: 10 };
+            const gymView = document.getElementById('micro-expressions-gym-view');
+            gymView.innerHTML = `
+                <header class="flex items-center mb-4">
+                    <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+                    <h1 class="text-2xl font-bold">Gimnasio de Microexpresiones</h1>
+                    <div class="ml-auto text-lg font-semibold bg-gray-700 px-3 py-1 rounded-lg">Score: <span id="gym-score">0</span></div>
+                </header>
+                <div class="flex-grow flex flex-col items-center justify-center">
+                    <div id="gym-image-container" class="w-64 h-64 bg-gray-700 rounded-lg flex items-center justify-center mb-6">
+                        <p id="gym-message" class="text-xl">¡Prepárate!</p>
+                    </div>
+                    <div id="gym-options-container" class="w-full max-w-md grid grid-cols-2 gap-3"></div>
+                    <div id="gym-feedback" class="mt-4 h-10 text-lg font-bold"></div>
+                </div>
+            `;
+            navigateTo('micro-expressions-gym-view');
+            setTimeout(nextMicroExpressionRound, 2000);
+        }
+
+        function nextMicroExpressionRound() {
+            gymState.round++;
+            if (gymState.round > gymState.totalRounds) {
+                endMicroExpressionsGame();
+                return;
+            }
+            const imageContainer = document.getElementById('gym-image-container');
+            const optionsContainer = document.getElementById('gym-options-container');
+            const feedback = document.getElementById('gym-feedback');
+            
+            feedback.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            imageContainer.innerHTML = '';
+
+            const randomIndex = Math.floor(Math.random() * microExpressionsData.length);
+            gymState.currentEmotion = microExpressionsData[randomIndex];
+            
+            imageContainer.innerHTML = `<img src="${gymState.currentEmotion.img}" class="w-full h-full object-cover rounded-lg">`;
+            
+            setTimeout(() => {
+                imageContainer.innerHTML = `<p class="text-2xl font-bold">¿Qué emoción era?</p>`;
+                
+                const emotions = microExpressionsData.map(e => e.emotion);
+                emotions.sort(() => Math.random() - 0.5);
+                const choices = [gymState.currentEmotion.emotion];
+                while(choices.length < 4) {
+                    const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+                    if (!choices.includes(randomEmotion)) {
+                        choices.push(randomEmotion);
+                    }
+                }
+                choices.sort(() => Math.random() - 0.5);
+
+                choices.forEach(choice => {
+                    optionsContainer.innerHTML += `<button onclick="checkMicroExpressionAnswer('${choice}')" class="p-4 bg-gray-800 rounded-lg text-lg hover:bg-blue-700 transition-colors">${choice}</button>`;
+                });
+                lucide.createIcons();
+
+            }, 700);
+        }
+
+        function checkMicroExpressionAnswer(selectedEmotion) {
+            const feedback = document.getElementById('gym-feedback');
+            const optionsContainer = document.getElementById('gym-options-container');
+            optionsContainer.innerHTML = '';
+
+            if (selectedEmotion === gymState.currentEmotion.emotion) {
+                gymState.score += 10;
+                feedback.innerHTML = `<p class="feedback-correct">¡Correcto! +10 Puntos</p>`;
+            } else {
+                feedback.innerHTML = `<p class="feedback-incorrect">Incorrecto. La emoción era ${gymState.currentEmotion.emotion}.</p>`;
+            }
+            document.getElementById('gym-score').innerText = gymState.score;
+            setTimeout(nextMicroExpressionRound, 2000);
+        }
+
+        function endMicroExpressionsGame() {
+            const gymView = document.getElementById('micro-expressions-gym-view');
+            gymView.innerHTML = `
+                 <header class="flex items-center mb-4">
+                    <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+                    <h1 class="text-2xl font-bold">Juego Terminado</h1>
+                </header>
+                <div class="flex-grow flex flex-col items-center justify-center text-center">
+                    <i data-lucide="award" class="w-24 h-24 text-yellow-400 mb-4"></i>
+                    <h2 class="text-3xl font-bold">¡Buen trabajo!</h2>
+                    <p class="text-xl text-gray-300 mt-2">Tu puntuación final es:</p>
+                    <p class="text-6xl font-bold my-4 text-green-400">${gymState.score}</p>
+                    <button onclick="startMicroExpressionsGame()" class="w-full max-w-xs bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-6">Jugar de Nuevo</button>
+                    <button onclick="navigateBack()" class="w-full max-w-xs bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-2">Volver al Laboratorio</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function toggleOption(element) {
+            element.classList.toggle('selected');
+            const icon = element.querySelector('svg.lucide-check-circle');
+            if (icon) icon.style.opacity = element.classList.contains('selected') ? '1' : '0';
+        }
+
+        function verifyChallenge() {
+            const options = document.querySelectorAll('#challenge-view .challenge-option');
+            let userCorrectSelections = 0;
+            let userIncorrectSelections = 0;
+            let totalCorrectOptions = 0;
+
+            options.forEach(option => {
+                const isCorrect = option.getAttribute('data-correct') === 'true';
+                if (isCorrect) totalCorrectOptions++;
+                if (option.classList.contains('selected')) {
+                    if (isCorrect) userCorrectSelections++;
+                    else userIncorrectSelections++;
+                }
+            });
+
+            options.forEach(option => {
+                const isCorrect = option.getAttribute('data-correct') === 'true';
+                const isSelected = option.classList.contains('selected');
+                
+                option.classList.remove('selected', 'border-blue-500'); // Limpiar estilos
+                
+                if (isSelected && isCorrect) {
+                    option.classList.add('border-green-500');
+                } else if (isSelected && !isCorrect) {
+                    option.classList.add('border-red-500');
+                } else if (!isSelected && isCorrect) {
+                    option.classList.add('border-yellow-500');
+                }
+                option.onclick = null;
+            });
+
+            const feedbackArea = document.getElementById('feedback-area');
+            let feedbackText = `<h3 class="font-bold text-lg mb-2">Resultados:</h3>`;
+
+            if (userIncorrectSelections > 0) {
+                feedbackText += `<p class="feedback-incorrect">Has seleccionado una o más opciones incorrectas (en rojo). La precisión es clave.</p>`;
+            } else if (userCorrectSelections === totalCorrectOptions) {
+                feedbackText += `<p class="feedback-correct">¡Perfecto! Has identificado todas las señales correctas sin errores. ¡Excelente calibración!</p>`;
+            } else if (userCorrectSelections > 0 && userCorrectSelections < totalCorrectOptions) {
+                feedbackText += `<p class="text-yellow-400">¡Buen intento! Identificaste algunas señales correctas (en verde), pero te faltaron otras (en amarillo).</p>`;
+            } else {
+                feedbackText += `<p class="feedback-incorrect">Parece que no has identificado las señales correctas. Revisa las opciones marcadas en amarillo.</p>`;
+            }
+
+            feedbackArea.innerHTML = feedbackText;
+            feedbackArea.classList.remove('hidden');
+            document.getElementById('verify-button').classList.add('hidden');
+            document.getElementById('next-button').classList.remove('hidden');
+        }
+
+        function saveNotes() {
+            const notes = document.getElementById('journal-notes').value;
+            localStorage.setItem('journalNotes', notes);
+            const feedback = document.getElementById('save-feedback');
+            feedback.style.opacity = '1';
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+            }, 2000);
+        }
+
+        function loadNotes() {
+            const savedNotes = localStorage.getItem('journalNotes');
+            if (savedNotes) {
+                document.getElementById('journal-notes').value = savedNotes;
+            }
+        }
+        
+        function confirmResetProgress() {
+            const confirmation = confirm("¿Estás seguro de que quieres reiniciar tu progreso? Esta acción no se puede deshacer.");
+            if (confirmation) {
+                localStorage.clear();
+                alert("Tu progreso ha sido reiniciado.");
+                location.reload();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderModules();
+            showTab('inicio');
+            loadNotes();
+        });
+    </script>
+</body>
+</html>
