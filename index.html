@@ -1227,6 +1227,61 @@
             }
         ]
     },
+        'me-2': {
+    title: 'Ejercicio: Forzaje de un Color (Primado)',
+    description: 'Tu objetivo es hacer que el sujeto piense en el color ROJO. No puedes mencionarlo directamente. Debes usar el "primado", tejiendo sutilmente palabras y conceptos asociados al rojo en tu guion inicial.',
+    target_choice: 'El color ROJO',
+    npc: { name: 'Sujeto de Prueba Beta' },
+    script_options: [
+        {
+            text: '"Voy a ser muy directo. Piensa en coches de bomberos, en señales de stop, en la cruz roja... ahora, sin que te influya, elige un color. El que sea".',
+            technique_summary: 'Lista Directa (Demasiado Obvio)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto no es primado, es una lista de la compra. Has revelado tu intención de forma tan evidente que el sujeto es consciente del truco. El efecto se rompe y es probable que elija otro color solo por rebeldía o para demostrar que no es tan fácil de manipular.'
+        },
+        {
+            text: '"Quiero que te relajes. Conecta con una emoción poderosa... la PASIÓN... la FUERZA... siente la ENERGÍA que fluye, como el latido de tu CORAZÓN. Deja que un color que represente esa intensidad aparezca en tu mente... ¿lo tienes?".',
+            technique_summary: 'Primado Emocional (Correcta)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Esta es la ejecución perfecta del primado. No has mencionado el color, pero has activado todos los conceptos neurológicamente asociados a él: pasión, fuerza, energía, corazón. Has preparado su mente para que "ROJO" sea la respuesta más disponible y natural, pareciendo una elección totalmente interna.'
+        },
+        {
+            text: '"Visualiza los colores del mundo. El azul profundo del OCÉANO, la furia roja de un VOLCÁN, el verde tranquilo de un BOSQUE, la alegría amarilla del SOL... elige el que más te llame".',
+            technique_summary: 'Primado Múltiple (Confuso)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Has creado "ruido" mental. Al dar el mismo peso y descripciones vívidas a múltiples colores, has diluido el efecto y has convertido el ejercicio en una elección verdaderamente libre. El primado efectivo requiere enfocar toda la energía sutil en un solo objetivo.'
+        }
+    ]
+},
+    'me-3': {
+    type: 'reading', // <-- ¡Nueva propiedad importante!
+    title: 'Ejercicio: La Elección Oculta (Lectura No Verbal)',
+    description: 'Un sujeto ha escondido una moneda en una de sus manos. Tu objetivo es adivinar en cuál. No puedes ver la moneda, solo puedes hacer preguntas de prueba y analizar las descripciones de sus reacciones no verbales para detectar la verdad.',
+    npc: { name: 'Sujeto de Prueba Gamma' },
+    secret_location: 'derecha', // La respuesta correcta.
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Preguntar por la mano DERECHA',
+            reaction: 'El sujeto traga saliva. Hay una microtensión en sus labios, casi imperceptible. Sus pupilas se dilatan ligeramente por una fracción de segundo mientras se concentra en esa mano.'
+        },
+        {
+            id: 'q2',
+            text: 'Preguntar por la mano IZQUIERDA',
+            reaction: 'El sujeto asiente con la cabeza de forma un poco más obvia y su rostro parece relajado, casi demasiado. Parpadea sin tensión aparente.'
+        }
+    ],
+    final_choices: {
+        'derecha': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Las pistas estaban en la mano DERECHA. La tensión en los labios, el tragar saliva y la dilatación de las pupilas son signos de una mayor carga cognitiva. Su cerebro estaba trabajando más para proteger el secreto que guardaba en esa mano.'
+        },
+        'izquierda': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La aparente calma y relajación al pensar en la mano IZQUIERDA era la verdadera pista. A menudo, es más fácil para el cerebro construir una mentira (una mano vacía) que ocultar una verdad (la mano con la moneda), por lo que la reacción es menos tensa.'
+        }
+    }
+}
         
 };
       
@@ -1675,6 +1730,18 @@ function startMentalismExercise(exerciseId) {
     const exercise = mentalism_exercises[exerciseId];
     if (!exercise) return;
 
+    // Decidimos qué tipo de ejercicio renderizar
+    // Si la propiedad 'type' es 'reading', llama a la función de lectura.
+    if (exercise.type === 'reading') {
+        renderReadingExercise(exerciseId);
+    } else {
+        // De lo contrario, asume que es un ejercicio de 'forzaje' y llama a esa función.
+        renderForcingExercise(exerciseId);
+    }
+}
+      
+      function renderForcingExercise(exerciseId) {
+    const exercise = mentalism_exercises[exerciseId];
     const exerciseView = document.getElementById('mentalism-exercise-view');
     let optionsHtml = '';
     exercise.script_options.forEach((opt, index) => {
@@ -1700,16 +1767,52 @@ function startMentalismExercise(exerciseId) {
     navigateTo('mentalism-exercise-view');
 }
 
+
+// 3. FUNCIÓN DE APOYO PARA EJERCICIOS DE LECTURA (me-3)
+// Esta es la función que creamos en el paso anterior. Muestra los ejercicios de
+// "analizar pistas no verbales".
+
+function renderReadingExercise(exerciseId) {
+    const exercise = mentalism_exercises[exerciseId];
+    const exerciseView = document.getElementById('mentalism-exercise-view');
+
+    let questionsHtml = '';
+    exercise.probing_questions.forEach(q => {
+        questionsHtml += `<button id="me-q-${q.id}" onclick="showReadingReaction('${exerciseId}', '${q.id}')" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-700 rounded-lg transition-colors border-2 border-gray-700">${q.text}</button>`;
+    });
+
+    exerciseView.innerHTML = `
+        <header class="flex items-center mb-4">
+            <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+            <h1 class="text-2xl font-bold">${exercise.title}</h1>
+        </header>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6">
+            <h2 class="text-lg font-semibold mb-2">Tu Objetivo:</h2>
+            <p class="text-gray-300">${exercise.description}</p>
+        </div>
+        <h3 class="text-md font-semibold mb-3 text-yellow-400">1. Haz tus preguntas de prueba:</h3>
+        <div class="space-y-3 mb-6">${questionsHtml}</div>
+        
+        <h3 class="text-md font-semibold mb-3 text-yellow-400">2. Analiza las reacciones y decide:</h3>
+        <div id="mentalism-reaction-area" class="space-y-2 mb-6"></div>
+        <div id="mentalism-final-choice-area" class="hidden grid grid-cols-2 gap-3">
+             <button onclick="makeFinalGuess('${exerciseId}', 'izquierda')" class="p-4 bg-blue-800 hover:bg-blue-700 rounded-lg">Mano Izquierda</button>
+             <button onclick="makeFinalGuess('${exerciseId}', 'derecha')" class="p-4 bg-blue-800 hover:bg-blue-700 rounded-lg">Mano Derecha</button>
+        </div>
+        <div id="mentalism-feedback-area" class="mt-6"></div>
+    `;
+    navigateTo('mentalism-exercise-view');
+}
+      
+
 function checkMentalismAnswer(exerciseId, chosenOptionIndex) {
     const exercise = mentalism_exercises[exerciseId];
     const chosenOption = exercise.script_options[chosenOptionIndex];
 
-    // Deshabilitar todos los botones
     exercise.script_options.forEach((opt, index) => {
         const button = document.getElementById(`me-opt-${index}`);
         button.disabled = true;
         button.classList.remove('hover:bg-gray-700');
-        // Marcar la opción elegida
         if(index === chosenOptionIndex) {
             button.classList.add(chosenOption.is_correct ? 'border-green-500' : 'border-red-500');
         }
@@ -1725,6 +1828,37 @@ function checkMentalismAnswer(exerciseId, chosenOptionIndex) {
         <button onclick="startMentalismExercise('${exerciseId}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4">Volver a Intentar</button>
     `;
 }
+      function showReadingReaction(exerciseId, questionId) {
+    const exercise = mentalism_exercises[exerciseId];
+    const question = exercise.probing_questions.find(q => q.id === questionId);
+
+    const reactionArea = document.getElementById('mentalism-reaction-area');
+    const reactionDiv = document.createElement('div');
+    reactionDiv.className = 'p-3 bg-gray-800 rounded-lg animate-fade-in';
+    reactionDiv.innerHTML = `<p><strong class="text-purple-300">Al preguntar por "${question.text}":</strong> ${question.reaction}</p>`;
+    reactionArea.appendChild(reactionDiv);
+
+    document.getElementById(`me-q-${questionId}`).disabled = true;
+    document.getElementById('mentalism-final-choice-area').classList.remove('hidden');
+}
+      
+      function makeFinalGuess(exerciseId, chosenHand) {
+    const exercise = mentalism_exercises[exerciseId];
+    const result = exercise.final_choices[chosenHand];
+
+    const feedbackArea = document.getElementById('mentalism-feedback-area');
+    const feedbackColor = result.is_correct ? 'border-green-500' : 'border-red-500';
+    feedbackArea.innerHTML = `
+        <div class="p-4 rounded-lg border-2 ${feedbackColor} animate-fade-in">
+            <h3 class="font-bold text-lg mb-2">${result.is_correct ? `¡CORRECTO! LA MONEDA ESTABA EN LA MANO ${chosenHand.toUpperCase()}` : 'INCORRECTO'}</h3>
+            <p>${result.feedback}</p>
+        </div>
+        <button onclick="startMentalismExercise('${exerciseId}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4">Volver a Intentar</button>
+    `;
+
+    document.getElementById('mentalism-final-choice-area').innerHTML = `<p class="text-center text-gray-400">Decisión final: Mano ${chosenHand}.</p>`;
+}
+      
 
 // Pequeño estilo para la animación de fade-in
 const styleSheet = document.createElement("style");
