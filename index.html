@@ -123,6 +123,16 @@
     </div>
     <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
 </div>
+                   
+                   <div onclick="showMentalismLab()" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+    <div class="p-3 bg-purple-600 rounded-lg mr-4"><i data-lucide="brain-circuit"></i></div>
+    <div>
+        <h3 class="text-xl font-bold text-purple-400">Laboratorio de Mentalismo</h3>
+        <p class="text-gray-400">Practica técnicas de forzaje e influencia sutil.</p>
+    </div>
+    <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+</div>
+                   
                  </div>
             </section>
 
@@ -223,6 +233,11 @@
       <!-- Vista del simulador de Teatro -->
       <div id="simulation-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
       <div id="simulation-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+      
+      <!-- Vista de Ejercicios de Mentalismo -->
+      <div id="mentalism-lab-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+
+<div id="mentalism-exercise-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
 
         <!-- Vista de la Biblioteca de Retos -->
         <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
@@ -1185,6 +1200,36 @@
         
 };
       
+      const mentalism_exercises = {
+    'me-1': {
+        title: 'Ejercicio: Forzaje de un Número (1-4)',
+        description: 'Tu objetivo es guiar a un sujeto a elegir el NÚMERO 3, pero haciendo que sienta que la elección fue suya. Debes usar la lógica para eliminar sutilmente las otras opciones.',
+        target_choice: 'El número 3',
+        npc: { name: 'Sujeto de Prueba Alfa' },
+        script_options: [
+            {
+                text: '"Piensa en un número del 1 al 4. Concéntrate. ¿Ya lo tienes? Era el 3, ¿verdad?".',
+                technique_summary: 'Adivinación Directa (Baja Probabilidad)',
+                is_correct: false,
+                feedback: 'INCORRECTO. Esto no es mentalismo, es una simple adivinanza. No has hecho nada para guiar al sujeto, simplemente has apostado. La probabilidad de éxito es solo del 25% y no demuestra ninguna habilidad.'
+            },
+            {
+                text: '"Quiero que pienses en un número del 1 al 4. La gente suele elegir el 3, así que concéntrate en ese número. Piensa en el 3. ¿Lo tienes?".',
+                technique_summary: 'Instrucción Directa (Obvio)',
+                is_correct: false,
+                feedback: 'INCORRECTO. Esto es una orden, no una siembra sutil. El sujeto es consciente de que le estás diciendo qué pensar. El efecto de "leer su mente" se pierde por completo, ya que no hubo libre elección.'
+            },
+            {
+                text: '"Piensa en un número del 1 al 4. Generalmente, evitamos los extremos como el 1 y el 4 por ser demasiado obvios. Entre el 2 y el 3, el 2 es el único par, lo que lo hace destacar. Simplemente deja que el número más neutral y libre aparezca en tu mente... ¿lo tienes ya?".',
+                technique_summary: 'Eliminación Lógica (Correcta)',
+                is_correct: true,
+                feedback: '¡CORRECTO! Esta es la técnica clásica. Has creado un laberinto psicológico que guía al sujeto. Descartaste el 1 y el 4 como "obvios" y el 2 como "demasiado único", dejando el 3 como la opción más cómoda y aparentemente "libre". Has maximizado tus probabilidades de forma elegante.'
+            }
+        ]
+    },
+        
+};
+      
       
         const microExpressionsData = [
             { emotion: 'Alegría', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Alegr%C3%ADa' },
@@ -1603,6 +1648,82 @@ function renderConversationNode(nodeId) {
 
 function selectSimOption(targetNodeId) {
     renderConversationNode(targetNodeId);
+}
+      function showMentalismLab() {
+    const labView = document.getElementById('mentalism-lab-view');
+    let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">Ejercicios de Mentalismo</h1></header><div class="space-y-4">`;
+    
+    for (const exerciseId in mentalism_exercises) {
+        const exercise = mentalism_exercises[exerciseId];
+        content += `
+            <div onclick="startMentalismExercise('${exerciseId}')" class="bg-gray-800 p-4 rounded-lg flex items-center cursor-pointer hover:bg-gray-700 transition-colors">
+                <i data-lucide="brain-circuit" class="text-purple-400 mr-4"></i>
+                <div class="flex-grow">
+                    <h3 class="font-bold">${exercise.title}</h3>
+                </div>
+                <i data-lucide="chevron-right" class="text-gray-500"></i>
+            </div>
+        `;
+    }
+
+    content += `</div>`;
+    labView.innerHTML = content;
+    navigateTo('mentalism-lab-view');
+}
+
+function startMentalismExercise(exerciseId) {
+    const exercise = mentalism_exercises[exerciseId];
+    if (!exercise) return;
+
+    const exerciseView = document.getElementById('mentalism-exercise-view');
+    let optionsHtml = '';
+    exercise.script_options.forEach((opt, index) => {
+        optionsHtml += `<button id="me-opt-${index}" onclick="checkMentalismAnswer('${exerciseId}', ${index})" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-700 rounded-lg transition-colors border-2 border-gray-700">
+            <p class="text-gray-300">"${opt.text}"</p>
+            <p class="text-xs text-purple-300 mt-2">Enfoque: ${opt.technique_summary}</p>
+        </button>`;
+    });
+
+    exerciseView.innerHTML = `
+        <header class="flex items-center mb-4">
+            <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+            <h1 class="text-2xl font-bold">${exercise.title}</h1>
+        </header>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6">
+            <h2 class="text-lg font-semibold mb-2">Tu Objetivo:</h2>
+            <p class="text-gray-300">${exercise.description}</p>
+            <p class="text-center font-bold text-2xl text-yellow-400 my-3">HAZ QUE ELIJAN: ${exercise.target_choice}</p>
+        </div>
+        <div id="mentalism-options-container" class="space-y-3">${optionsHtml}</div>
+        <div id="mentalism-feedback-area" class="mt-6"></div>
+    `;
+    navigateTo('mentalism-exercise-view');
+}
+
+function checkMentalismAnswer(exerciseId, chosenOptionIndex) {
+    const exercise = mentalism_exercises[exerciseId];
+    const chosenOption = exercise.script_options[chosenOptionIndex];
+
+    // Deshabilitar todos los botones
+    exercise.script_options.forEach((opt, index) => {
+        const button = document.getElementById(`me-opt-${index}`);
+        button.disabled = true;
+        button.classList.remove('hover:bg-gray-700');
+        // Marcar la opción elegida
+        if(index === chosenOptionIndex) {
+            button.classList.add(chosenOption.is_correct ? 'border-green-500' : 'border-red-500');
+        }
+    });
+
+    const feedbackArea = document.getElementById('mentalism-feedback-area');
+    const feedbackColor = chosenOption.is_correct ? 'border-green-500 bg-green-900_bg-opacity-25' : 'border-red-500 bg-red-900_bg-opacity-25';
+    feedbackArea.innerHTML = `
+        <div class="p-4 rounded-lg border-2 ${feedbackColor} animate-fade-in">
+            <h3 class="font-bold text-lg mb-2">${chosenOption.is_correct ? '¡TÉCNICA CORRECTA!' : 'TÉCNICA INCORRECTA'}</h3>
+            <p>${chosenOption.feedback}</p>
+        </div>
+        <button onclick="startMentalismExercise('${exerciseId}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4">Volver a Intentar</button>
+    `;
 }
 
 // Pequeño estilo para la animación de fade-in
