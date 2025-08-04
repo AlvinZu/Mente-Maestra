@@ -1281,6 +1281,743 @@
             feedback: 'INCORRECTO. La aparente calma y relajación al pensar en la mano IZQUIERDA era la verdadera pista. A menudo, es más fácil para el cerebro construir una mentira (una mano vacía) que ocultar una verdad (la mano con la moneda), por lo que la reacción es menos tensa.'
         }
     }
+},
+    'me-4': {
+    type: 'reading',
+    title: 'Ejercicio: Detectar la Mentira',
+    description: 'Un sujeto va a hacer una afirmación. Primero, establecerás una línea base de su comportamiento al decir la verdad. Luego, analizarás su reacción a la afirmación clave para determinar si miente.',
+    npc: { name: 'Sujeto de Prueba Delta' },
+    secret_location: 'mentira', // La respuesta correcta.
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Establecer Línea Base: "¿Qué desayunaste hoy?"',
+            reaction: 'Responde "Un café y tostadas". Su contacto visual es estable, sin tensión en la cara, y su cuerpo está relajado. Esta es su apariencia normal al decir la verdad.'
+        },
+        {
+            id: 'q2',
+            text: 'Analizar Afirmación Clave: "La semana pasada escalé una montaña".',
+            reaction: 'Mientras lo dice, toca brevemente su nariz (un gesto pacificador), y sus ojos se desvían hacia la derecha (construcción visual para un diestro). Su parpadeo aumenta ligeramente.'
+        }
+    ],
+    final_choices: {
+        'verdad': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Los gestos pacificadores (tocarse la cara) y las claves de acceso ocular que apuntan a la "construcción" en lugar de al "recuerdo" son fuertes indicadores de que el cerebro está trabajando más de lo normal para inventar una historia. La reacción se desvía de su línea base.'
+        },
+        'mentira': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has detectado las señales. El tocarse la nariz es un intento inconsciente de calmar el estrés de mentir. El desvío de la mirada hacia la zona de "construcción visual" (en lugar de la de recuerdo) sugiere que está inventando la imagen en lugar de recordarla. ¡Excelente calibración!'
+        }
+    }
+},
+'me-5': {
+    title: 'Ejercicio: Forzar una Forma Simple (Estrella)',
+    description: 'Tu objetivo es implantar la idea de una ESTRELLA en la mente del sujeto, usando únicamente el primado verbal y conceptual.',
+    target_choice: 'La forma de una ESTRELLA',
+    npc: { name: 'Sujeto de Prueba Epsilon' },
+    script_options: [
+        {
+            text: '"Imagina el cielo nocturno. Piensa en algo que BRILLA a lo lejos, un símbolo de la FAMA y el ÉXITO. Algo a lo que le pides un DESEO. Una forma con cinco PUNTAS... Deja que esa forma se dibuje en tu mente".',
+            technique_summary: 'Primado Conceptual y Poético (Correcta)',
+            is_correct: true,
+            feedback: '¡PERFECTO! Has utilizado un enfoque múltiple: cielo nocturno, brillar, fama, deseo, puntas. Cada concepto es un camino que lleva directamente a la idea de una estrella, haciendo que esta elección sea casi inevitable pero sintiéndose poética y personal.'
+        },
+        {
+            text: '"Piensa en una forma geométrica. No un círculo, no un cuadrado. Piensa en la bandera de Estados Unidos o en la que ponen en el árbol de Navidad. Concéntrate en esa forma".',
+            technique_summary: 'Ejemplos Directos (Poco Sutil)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque podrías acertar, esto es demasiado directo. Estás dando ejemplos explícitos en lugar de permitir que la idea surja de conceptos más abstractos. El sujeto es consciente de que le estás guiando, lo que reduce el impacto del efecto mentalista.'
+        },
+        {
+            text: '"Voy a ser claro. Olvídate de los círculos, cuadrados y triángulos. Piensa en una estrella. La forma que tienes en mente es una estrella, ¿a que sí?".',
+            technique_summary: 'Adivinanza con Pista Obvia',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto elimina toda sutileza y arte. Simplemente estás declarando la respuesta que quieres, lo que no tiene nada que ver con la implantación psicológica. No hay efecto de "lectura mental".'
+        }
+    ]
+},
+'me-6': {
+    title: 'Ejercicio: Forzar un Animal (Elefante)',
+    description: 'Tu objetivo es hacer que el sujeto piense en un ELEFANTE. Para ello, combinarás la eliminación de categorías con la famosa técnica de la negación.',
+    target_choice: 'Un ELEFANTE',
+    npc: { name: 'Sujeto de Prueba Zeta' },
+    script_options: [
+        {
+            text: '"Piensa en un animal grande. Podría ser un león, una jirafa, un rinoceronte o un elefante. Elige uno de ellos".',
+            technique_summary: 'Opción Múltiple (Reduce Probabilidades)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Al dar una lista de opciones válidas, conviertes el ejercicio en una elección consciente. Has reducido el universo de "todos los animales" a solo cuatro, pero no has forzado una elección específica.'
+        },
+        {
+            text: '"Quiero que pienses en un animal. No un animal doméstico como un perro o un gato. Tampoco un rey de la selva como un león. Piensa en algo GRANDE, pesado, de color gris, con una MEMORIA prodigiosa... y por favor, NO pienses en un ELEFANTE".',
+            technique_summary: 'Primado por Negación (Correcta)',
+            is_correct: true,
+            feedback: '¡MAGISTRAL! Esta es la técnica del "oso blanco". Para procesar la orden de "no pensar en un elefante", el cerebro primero debe visualizar un elefante, anclando la imagen con fuerza. Combinado con las pistas previas (grande, gris, memoria), has hecho casi imposible que piense en otra cosa.'
+        },
+        {
+            text: '"Piensa en un animal que viva en África o en la India. Uno muy, muy grande. ¿Lo tienes?".',
+            technique_summary: 'Demasiado Amplio',
+            is_correct: false,
+            feedback: 'INCORRECTO. Tu descripción es demasiado vaga. Un rinoceronte, un hipopótamo y otros animales encajan en esa descripción. El primado no ha sido lo suficientemente específico para asegurar el resultado.'
+        }
+    ]
+},
+'me-7': {
+    type: 'reading',
+    title: 'Ejercicio: Identificar la Emoción Genuina',
+    description: 'Un colega te comunica una decisión. Sus palabras dicen una cosa, pero su lenguaje no verbal podría decir otra. Tu objetivo es identificar la emoción real que está sintiendo.',
+    npc: { name: 'Colega' },
+    secret_location: 'decepción', // La emoción real
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Analizar la afirmación: "El jefe ha decidido darle el proyecto a Laura. Honestamente, me alegro por ella. Es la mejor decisión para el equipo."',
+            reaction: 'Al decir "me alegro por ella", sus hombros caen muy ligeramente por una fracción de segundo y las comisuras de sus labios se tensan hacia abajo antes de forzar una sonrisa.'
+        }
+    ],
+    final_choices: {
+        'alegría': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La sonrisa fue forzada y posterior a la verdadera emoción. La clave estaba en las señales que aparecieron ANTES de la expresión socialmente aceptable.'
+        },
+        'decepción': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has detectado la incongruencia. La caída de hombros y la microexpresión de tristeza (comisuras hacia abajo) son una fuga de su verdadera emoción: la decepción por no haber recibido él el proyecto. Su sonrisa posterior fue una máscara social.'
+        },
+        'indiferencia': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La indiferencia se caracteriza por una falta de reacción. Sin embargo, aquí hubo una reacción clara y emocional, aunque fuera rápida y reprimida. Su cuerpo demostró que sí le importaba.'
+        }
+    }
+},
+'me-8': {
+    title: 'Ejercicio: Forzar una Ciudad (París)',
+    description: 'Tu objetivo es hacer que el sujeto piense en la ciudad de PARÍS, evocando imágenes y sensaciones sin dar pistas geográficas obvias.',
+    target_choice: 'PARÍS',
+    npc: { name: 'Sujeto de Prueba Theta' },
+    script_options: [
+        {
+            text: '"Piensa en una ciudad europea famosa por su gastronomía y su historia. Podría ser Roma, Madrid, Lisboa, París... deja que una te llegue".',
+            technique_summary: 'Lista de Opciones',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es una elección, no un forzaje. Al dar una lista de opciones igualmente válidas, no estás guiando la mente del sujeto hacia una respuesta específica.'
+        },
+        {
+            text: '"Imagina que estás en un viaje. Es la ciudad del AMOR. Oyes un acordeón sonando mientras paseas por un río. Por la noche, una TORRE icónica se llena de LUCES parpadeantes. Hueles a pan recién hecho... Concéntrate en esa ciudad".',
+            technique_summary: 'Primado Multisensorial (Correcta)',
+            is_correct: true,
+            feedback: '¡EXCELENTE! Has atacado múltiples sentidos y emociones. Amor, acordeón, torre de luces, pan... cada pista es un ancla que apunta inequívocamente a París. Has pintado un cuadro mental tan vívido que es difícil escapar de él.'
+        },
+        {
+            text: '"Piensa en la capital de Francia. La ciudad donde está el museo del Louvre y la catedral de Notre Dame. ¿Ya sabes cuál es?".',
+            technique_summary: 'Pregunta de Trivial',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto no es mentalismo, es una pregunta de geografía. Estás pidiendo un dato, no implantando una idea. El efecto de "leer la mente" es nulo.'
+        }
+    ]
+},
+'me-9': {
+    type: 'reading',
+    title: 'Ejercicio: ¿Qué Objeto Visualiza?',
+    description: 'El sujeto ha elegido mentalmente uno de tres objetos que le has mostrado: una LLAVE, un ANILLO, una PELOTA. Debes adivinar cuál es analizando sus reacciones al nombrarlos.',
+    npc: { name: 'Sujeto de Prueba Iota' },
+    secret_location: 'anillo', // La respuesta correcta
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Nombrar el primer objeto: "Concéntrate en la LLAVE. Visualízala."',
+            reaction: 'El sujeto mantiene una expresión neutra. No hay cambios visibles.'
+        },
+        {
+            id: 'q2',
+            text: 'Nombrar el segundo objeto: "Ahora olvida la llave. Concéntrate en el ANILLO."',
+            reaction: 'Justo al oír la palabra, muestra una levísima sonrisa, una microexpresión de placer que desaparece al instante. Su respiración se detiene por un momento.'
+        },
+        {
+            id: 'q3',
+            text: 'Nombrar el tercer objeto: "Finalmente, borra todo lo demás y visualiza la PELOTA."',
+            reaction: 'El sujeto frunce el ceño ligeramente, como si le costara trabajo visualizar el objeto.'
+        }
+    ],
+    final_choices: {
+        'llave': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La reacción a "llave" fue completamente neutra, lo que indica que no había ninguna conexión emocional o mental con ese objeto.'
+        },
+        'anillo': {
+            is_correct: true,
+            feedback: '¡CORRECTO! La microexpresión de placer (la sonrisa fugaz) fue la clave. Los objetos con valor personal o emocional (como un anillo) a menudo provocan una reacción genuina que es muy difícil de reprimir. La contención de la respiración también indica un pico de atención.'
+        },
+        'pelota': {
+            is_correct: false,
+            feedback: 'INCORRECTO. El ceño fruncido indica dificultad o confusión, no el reconocimiento de un pensamiento ya presente. Probablemente le costó crear la imagen mental porque su cerebro ya estaba "ocupado" con el anillo.'
+        }
+    }
+},
+'me-10': {
+    title: 'Ejercicio: Forzar un Sentimiento (Calma)',
+    description: 'Tu objetivo es inducir un estado de CALMA en el sujeto utilizando lenguaje hipnótico y anclajes verbales.',
+    target_choice: 'Un estado de CALMA',
+    npc: { name: 'Sujeto de Prueba Kappa' },
+    script_options: [
+        {
+            text: '"Escucha el sonido de mi voz... y mientras lo haces, puedes EMPEZAR A SENTIR cómo cada músculo de tu cuerpo se RELAJA... tu respiración se vuelve más LENTA y PROFUNDA... y una sensación de PAZ te invade... sin prisa... simplemente permitiendo que la CALMA llegue...".',
+            technique_summary: 'Lenguaje Hipnótico (Correcta)',
+            is_correct: true,
+            feedback: '¡MUY BIEN! Has utilizado los principios del Modelo Milton de la hipnosis: frases permisivas ("puedes empezar a sentir"), palabras de proceso ("relaja", "lenta"), y sugestiones enlazadas ("mientras escuchas... sientes..."). Has guiado su estado interno de forma elegante.'
+        },
+        {
+            text: '"¡Relájate ahora mismo! Tienes que calmarte. Deja de estar tenso y simplemente cálmate. ¡Es una orden!".',
+            technique_summary: 'Comandos Directos y Agresivos',
+            is_correct: false,
+            feedback: 'INCORRECTO. La relajación no puede ser forzada con órdenes directas. Este enfoque genera resistencia y el efecto contrario. La mente se rebela contra los comandos autoritarios, especialmente en lo que respecta a estados internos.'
+        },
+        {
+            text: '"¿Por qué no te relajas un poco? Parece que estás muy tenso. ¿Te ayudaría si te calmaras? Deberías intentar sentirte más en paz".',
+            technique_summary: 'Preguntas y Lógica',
+            is_correct: false,
+            feedback: 'INCORRECTO. Estás intentando razonar con un estado emocional. Al preguntar y analizar, mantienes al sujeto en su mente consciente y analítica, lo que impide que acceda a un estado de calma subconsciente. La sugestión debe ser evocadora, no lógica.'
+        }
+    ]
+},
+    'me-11': {
+    title: 'Ejercicio: Forzar un Destino de Viaje',
+    description: 'Tu objetivo es hacer que el sujeto piense en la PLAYA. Debes evocar las sensaciones y emociones asociadas sin nombrar el lugar directamente.',
+    target_choice: 'La PLAYA',
+    npc: { name: 'Sujeto de Prueba Lambda' },
+    script_options: [
+        {
+            text: '"Piensa en un lugar de vacaciones. Puede ser la montaña, una ciudad o la playa. Elige uno".',
+            technique_summary: 'Elección Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es una elección libre. No estás influyendo en la decisión, solo presentando las opciones más comunes, lo que deja el resultado al azar.'
+        },
+        {
+            text: '"Imagina que estás de vacaciones. Siente el CALOR del sol en tu piel, escucha el SONIDO rítmico de las OLAS, siente la ARENA entre los dedos de los pies y el olor a SAL en el aire... ¿En qué lugar estás pensando?".',
+            technique_summary: 'Primado Sensorial Completo (Correcta)',
+            is_correct: true,
+            feedback: '¡PERFECTO! Has bombardeado al sujeto con anclajes sensoriales que apuntan inequívocamente a un solo lugar. Has activado el tacto (calor, arena), el oído (olas) y el olfato (sal). La playa se convierte en la única respuesta lógica a esa acumulación de sensaciones.'
+        },
+        {
+            text: '"Piensa en un lugar con agua. Podría ser un río, un lago o el mar. Concéntrate en uno".',
+            technique_summary: 'Demasiado Ambiguo',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque has acotado las opciones, "un lugar con agua" sigue siendo demasiado amplio. Un lago y el mar evocan sensaciones muy diferentes. Tu siembra carece de la especificidad necesaria para asegurar el resultado.'
+        }
+    ]
+},
+'me-12': {
+    type: 'reading',
+    title: 'Ejercicio: El Dibujo Secreto (Círculo vs. Cuadrado)',
+    description: 'Un sujeto ha dibujado una de dos formas en un papel que no puedes ver: un CÍRCULO o un CUADRADO. Tu objetivo es adivinar cuál es, analizando cómo describe su dibujo.',
+    npc: { name: 'Sujeto de Prueba My' },
+    secret_location: 'círculo', // La respuesta correcta
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Pedir una descripción: "Sin decirme la forma, describe cómo te sientes al pensar en tu dibujo".',
+            reaction: 'Responde: "Es... fluido... continuo... suave. No tiene principio ni fin. Es una forma muy natural y fluida".'
+        }
+    ],
+    final_choices: {
+        'cuadrado': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Las palabras que eligió (fluido, continuo, suave, sin fin) son representaciones verbales de las cualidades de un círculo. Un cuadrado evocaría palabras como "sólido", "estructurado", "ángulos", "recto".'
+        },
+        'círculo': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has aplicado la lectura de lenguaje. Las palabras que una persona usa para describir algo revelan la cualidad de ese algo. "Fluido", "continuo" y "suave" son descripciones perfectas para un círculo. Has escuchado más allá de lo evidente.'
+        }
+    }
+},
+'me-13': {
+    title: 'Ejercicio: Forzar un Nombre (David)',
+    description: 'Tu objetivo es hacer que el sujeto piense en el nombre DAVID, utilizando una combinación de primado histórico y conceptual.',
+    target_choice: 'DAVID',
+    npc: { name: 'Sujeto de Prueba Ny' },
+    script_options: [
+        {
+            text: '"Piensa en un nombre de hombre, uno muy común en nuestra cultura. Puede ser Juan, Pedro, Carlos, David... elige uno".',
+            technique_summary: 'Lista de Sugerencias',
+            is_correct: false,
+            feedback: 'INCORRECTO. De nuevo, esto es una elección, no un forzaje. Al dar una lista, no estás guiando la mente, solo limitando las opciones de forma obvia.'
+        },
+        {
+            text: '"Piensa en un nombre bíblico, uno famoso. Un REY de Israel. Un hombre conocido por su coraje, que venció a un GIGANTE con una sola piedra. El autor de los Salmos. Un nombre que representa la victoria contra todo pronóstico... Deja que ese nombre resuene en tu mente".',
+            technique_summary: 'Primado por Referencia Cultural (Correcta)',
+            is_correct: true,
+            feedback: '¡EXCELENTE! Has utilizado la narrativa y la cultura compartida. Cada pista (rey, gigante, salmos) es un embudo que descarta otros nombres y dirige al sujeto directamente hacia David. La historia es tan conocida que el nombre se vuelve la única respuesta posible.'
+        },
+        {
+            text: '"Piensa en un nombre masculino que empiece por la letra D. Daniel, Darío, Diego, David... elige el que más te guste".',
+            technique_summary: 'Forzaje Alfabético Limitado',
+            is_correct: false,
+            feedback: 'INCORRECTO. Limitar por la inicial es una técnica, pero sigue ofreciendo demasiadas alternativas comunes. No hay una razón psicológica para que el sujeto prefiera David sobre Diego o Daniel, por lo que el resultado sigue siendo incierto.'
+        }
+    ]
+},
+'me-14': {
+    title: 'Ejercicio: La Salida Múltiple (Número 1-100)',
+    description: 'Esta es una técnica avanzada. Tu objetivo es "adivinar" un número en el que piensa un sujeto, pero teniendo preparadas varias "salidas" o revelaciones que parezcan específicas.',
+    target_choice: 'Cualquier número', // El objetivo no es forzar, sino adivinar.
+    npc: { name: 'Sujeto de Prueba Xi' },
+    script_options: [
+        {
+            text: 'Revelación directa: "El número en el que piensas es el 37".',
+            technique_summary: 'Adivinanza Pura (Muy Arriesgada)',
+            is_correct: false,
+            feedback: 'INCORRECTO. A menos que tengas una suerte increíble, fallarás. Esta técnica carece de red de seguridad. Un mentalista profesional nunca se deja a sí mismo con una única y arriesgada posibilidad de éxito.'
+        },
+        {
+            text: 'Revelación por aproximación: "Veo dos dígitos... son similares... es un número repetido, como el 22, 33 o 44... ¿es uno de esos?".',
+            technique_summary: 'Reducción de Opciones',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque es mejor que adivinar un solo número, sigues dependiendo demasiado de la suerte. Si el número no es repetido, has fallado de forma muy obvia.'
+        },
+        {
+            text: 'Revelación con "Múltiples Salidas": Escribes "37" en un papel y lo guardas. Preguntas: "¿Es un número par o impar?". Si dice IMPAR: "Como el que escribí". Si dice PAR, sigues: "¿Alto o bajo de 50?". Si dice ALTO: "Bien, y tu número, ¿tiene los dos dígitos diferentes?". Si dice SÍ, revelas "37" (o cualquier otro) como un acierto improbable. Si en cualquier punto la respuesta no encaja, dices: "Perfecto, eso es lo que necesitaba para borrar las otras opciones de mi mente. El número era el [número que sea]".',
+            technique_summary: 'Múltiples Salidas (Correcta)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Esta es la esencia de muchas rutinas de mentalismo. No adivinas, filtras la información. Cada pregunta que haces te permite eliminar posibilidades, pero lo enmarcas como si estuvieras "acercándote" a la respuesta. La revelación final parece un milagro, pero en realidad es el final de un proceso de eliminación lógico y astuto. El secreto es tener un plan para cada respuesta posible.'
+        }
+    ]
+},
+'me-15': {
+    type: 'reading',
+    title: 'Ejercicio: ¿Qué Mano Miente?',
+    description: 'Un sujeto tiene ambas manos cerradas. En una, imagina la VERDAD (un recuerdo real). En la otra, la MENTIRA (un evento inventado). Debes detectar la mano de la mentira.',
+    npc: { name: 'Sujeto de Prueba Ómicron' },
+    secret_location: 'derecha', // La mentira está en la derecha.
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Analizar la mano IZQUIERDA (La Verdad): "Concéntrate en la historia de esta mano".',
+            reaction: 'Al hablar de ella, su tono es congruente. Hay un brillo de emoción genuina en sus ojos. Su lenguaje corporal es abierto y relajado.'
+        },
+        {
+            id: 'q2',
+            text: 'Analizar la mano DERECHA (La Mentira): "Ahora, háblame de la historia de esta otra mano".',
+            reaction: 'Al hablar, su mano se acerca a su boca (gesto de bloqueo). El ritmo de su habla es ligeramente más lento, como si pensara cada palabra. Evita el contacto visual directo.'
+        }
+    ],
+    final_choices: {
+        'izquierda': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La congruencia entre tono, emoción y lenguaje corporal en la mano izquierda son fuertes indicadores de que estaba accediendo a un recuerdo real y cómodo.'
+        },
+        'derecha': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has detectado las señales de la mentira. El gesto de bloqueo (mano a la boca), la ralentización del habla (mayor carga cognitiva para inventar) y la evitación del contacto visual son un cúmulo de pistas que apuntan a la fabricación de una historia.'
+        }
+    }
+},
+'me-16': {
+    title: 'Ejercicio: El Doble Sentido',
+    description: 'Esta es una técnica verbal avanzada. El objetivo es hacer una afirmación que pueda interpretarse de dos maneras. Si aciertas, parece que lo supiste todo el tiempo. Si fallas, tu afirmación sigue teniendo sentido.',
+    target_choice: 'Un viaje reciente del sujeto',
+    npc: { name: 'Sujeto de Prueba Pi' },
+    script_options: [
+        {
+            text: '"Veo que has estado de viaje en la playa recientemente".',
+            technique_summary: 'Afirmación Específica (Arriesgada)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Es demasiado específico. Si no ha ido a la playa, has fallado. No tienes red de seguridad.'
+        },
+        {
+            text: '"Noto una energía de movimiento a tu alrededor... como si hubieras estado viajando... o quizás anhelando hacerlo pronto. Hay una imagen de agua y sol en tu mente."',
+            technique_summary: 'Doble Sentido y Lenguaje Barnum (Correcta)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Esta es una obra maestra de la ambigüedad. "Viajando o anhelando viajar" cubre ambas posibilidades. "Agua y sol" puede ser una playa, un lago, una piscina... Si ha viajado, confirmará tu acierto. Si no, dirá "¡Sí, muero por irme de vacaciones a un lugar así!", y tu afirmación seguirá pareciendo perceptiva. Has ganado sin importar la respuesta.'
+        },
+        {
+            text: '"¿Te has ido de vacaciones últimamente?".',
+            technique_summary: 'Pregunta Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es una simple pregunta, no mentalismo. Estás pidiendo información, no demostrando una percepción especial.'
+        }
+    ]
+},
+'me-17': {
+    title: 'Ejercicio: Forzar un Recuerdo de la Infancia',
+    description: 'Tu objetivo es hacer que el sujeto piense en un recuerdo relacionado con un COLUMPIO, utilizando una narrativa evocadora.',
+    target_choice: 'Recuerdo de un COLUMPIO',
+    npc: { name: 'Sujeto de Prueba Rho' },
+    script_options: [
+        {
+            text: '"Quiero que vuelvas a tu infancia. A un parque. Siente ese movimiento de vaivén... hacia adelante y hacia atrás... cada vez más alto... sintiendo el viento en la cara y esa sensación de volar por un instante. ¿Qué recuerdo te viene a la mente?".',
+            technique_summary: 'Primado Kinestésico (Correcta)',
+            is_correct: true,
+            feedback: '¡PERFECTO! Has utilizado el primado kinestésico, enfocado en la sensación del movimiento. "Vaivén", "adelante y atrás", "cada vez más alto", "volar"... todas estas descripciones físicas apuntan a una única experiencia infantil común: el columpio. Es muy probable que hayas activado ese recuerdo específico.'
+        },
+        {
+            text: '"Piensa en tu juguete favorito del parque cuando eras niño. ¿Era el tobogán, el columpio, el pasamanos?".',
+            technique_summary: 'Lista de Opciones',
+            is_correct: false,
+            feedback: 'INCORRECTO. De nuevo, le estás dando a elegir de forma consciente. El poder del mentalismo reside en guiar la mente de forma subconsciente.'
+        },
+        {
+            text: '"Recuerda cuando jugabas en el parque de niño. ¿Te gustaba columpiarte?".',
+            technique_summary: 'Pregunta Cerrada',
+            is_correct: false,
+            feedback: 'INCORRECTO. Estás preguntando directamente, lo que arruina el efecto. El objetivo es que la idea del columpio surja en su mente como si fuera un recuerdo espontáneo que tú has sido capaz de "captar".'
+        }
+    ]
+},
+'me-18': {
+    type: 'reading',
+    title: 'Ejercicio: La Mentira por Omisión',
+    description: 'Tu amigo te cuenta una historia, pero sospechas que está omitiendo un detalle clave. Tu objetivo es identificar la incongruencia que delata la omisión.',
+    npc: { name: 'Amigo' },
+    secret_location: 'incongruencia',
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Escuchar la historia: "La reunión fue bien. Presenté los datos, respondí a las preguntas y el cliente pareció satisfecho. Cerramos todos los puntos de la agenda".',
+            reaction: 'La historia es lógicamente coherente y su tono es seguro. Sin embargo, justo después de decir "el cliente pareció satisfecho", se encoge de hombros de forma casi imperceptible durante una fracción de segundo.'
+        }
+    ],
+    final_choices: {
+        'historia_completa': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La historia verbal era perfecta, pero el cuerpo no miente. Un encogimiento de hombros es un gesto universal de duda o falta de convicción sobre lo que se acaba de decir.'
+        },
+        'incongruencia': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has detectado la fuga no verbal. El encogimiento de hombros contradice directamente la afirmación verbal "el cliente pareció satisfecho". Probablemente, el cliente mostró alguna señal de duda o desacuerdo que tu amigo está omitiendo. Ahí es donde debes indagar.'
+        }
+    }
+},
+'me-19': {
+    title: 'Ejercicio: Forzar una Herramienta',
+    description: 'El objetivo es que el sujeto piense en la herramienta más arquetípica: un MARTILLO.',
+    target_choice: 'Un MARTILLO',
+    npc: { name: 'Sujeto de Prueba Sigma' },
+    script_options: [
+        {
+            text: '"Piensa en una caja de herramientas. Visualiza un destornillador, una llave inglesa, un martillo. Concéntrate en uno".',
+            technique_summary: 'Elección Limitada',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque es una de las opciones, no has hecho nada para que sea la elección más probable.'
+        },
+        {
+            text: '"Nombra la primera herramienta que te venga a la mente".',
+            technique_summary: 'Respuesta Espontánea',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque "martillo" es una respuesta común, dependes de la estadística pura. No hay técnica ni influencia de tu parte.'
+        },
+        {
+            text: '"Imagina que tienes que construir algo simple, de madera. Tienes que UNIR dos piezas. Necesitas GOLPEAR un clavo con FUERZA y PRECISIÓN. Piensa en la herramienta que usarías para CLAVAR esa idea en su sitio. ¿Qué herramienta tienes en la mente?".',
+            technique_summary: 'Primado por Función y Metáfora (Correcta)',
+            is_correct: true,
+            feedback: '¡EXCELENTE! Has utilizado un enfoque muy inteligente. Has descrito la función ("golpear", "unir", "clavar") en lugar del objeto. La mente del sujeto busca automáticamente la herramienta que cumple esa función. Al final, usaste una metáfora ("clavar esa idea") que refuerza aún más el concepto. Muy sutil y efectivo.'
+        }
+    ]
+},
+'me-20': {
+    title: 'Ejercicio: La Predicción Escrita (Billet Peek)',
+    description: 'Esta es una simulación de una de las técnicas más potentes: el "Billet Peek". El sujeto escribe un dato secreto (el nombre de su mascota) y tú debes "adivinarlo".',
+    target_choice: 'El nombre de la mascota',
+    npc: { name: 'Sujeto de Prueba Tau' },
+    script_options: [
+        {
+            text: 'Le das un papel, le pides que escriba el nombre, lo doble y te lo entregue para "sentir las vibraciones". Lo sostienes en tu frente y te concentras.',
+            technique_summary: 'Actuación Mística',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es solo teatro. Sin un método para conocer la información, no tienes ninguna posibilidad de acertar. La habilidad no está en "sentir", sino en obtener la información de forma encubierta.'
+        },
+        {
+            text: 'Le das un papel y un portapapeles. Le pides que escriba el nombre. Mientras lo hace, le haces una pregunta para distraerle y miras disimuladamente lo que escribe.',
+            technique_summary: 'Mirada Directa (Muy Arriesgada)',
+            is_correct: false,
+            feedback: 'INCORRECTO. Es un método muy arriesgado y poco sofisticado. Si te pillan mirando (lo que es muy probable), el truco queda expuesto y tu credibilidad destruida.'
+        },
+        {
+            text: 'Le das un pequeño bloc de notas y un bolígrafo. Le pides que escriba el nombre en la hoja superior, la arranque y la doble. Mientras él dobla, tú sostienes el bloc y, con un movimiento natural, tu pulgar presiona la segunda hoja, dejando una leve marca del bolígrafo. Te quedas con el bloc (y la información) y él con el papel doblado.',
+            technique_summary: 'Impresión Oculta (Técnica Clásica)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Esta es una simulación de un método clásico. Has obtenido la información de forma secreta. La información no se adivina, se obtiene. El resto del acto (concentrarse, fingir leer la mente) es puro teatro para presentar la información que ya conoces de una manera impactante. La verdadera habilidad fue el movimiento sutil e invisible.'
+        }
+    ]
+},
+   'me-21': {
+    type: 'reading',
+    title: 'Ejercicio: Dos Verdades, Una Mentira',
+    description: 'El sujeto dirá tres frases sobre sí mismo. Dos son ciertas, una es falsa. Tu objetivo es detectar la mentira analizando las diferencias en su comportamiento no verbal.',
+    npc: { name: 'Sujeto de Prueba Alfa 2.0' },
+    secret_location: 'frase_2', // La mentira
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Frase 1: "Tengo dos hermanos".',
+            reaction: 'Lo dice con un tono de voz neutro y relajado. Mantiene un contacto visual normal. No hay tensión.'
+        },
+        {
+            id: 'q2',
+            text: 'Frase 2: "Una vez gané un concurso de talentos cantando".',
+            reaction: 'Al decirlo, una sonrisa muy leve y fugaz (casi una mueca) cruza su cara. Toca su cuello brevemente y su ritmo de habla es un poco más rápido de lo normal.'
+        },
+        {
+            id: 'q3',
+            text: 'Frase 3: "Mi comida favorita es la pasta".',
+            reaction: 'Su expresión es congruente y relajada, similar a la primera afirmación. Asiente ligeramente al terminar, como reafirmando un hecho simple.'
+        }
+    ],
+    final_choices: {
+        'frase_1': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La reacción a esta frase fue tu línea base. Su comportamiento era relajado y congruente, típico de alguien que declara un hecho simple y verdadero.'
+        },
+        'frase_2': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Detectaste las anomalías. La sonrisa fugaz es conocida como "placer del engaño" (duper\'s delight). El tocarse el cuello es un gesto pacificador para calmar los nervios de mentir, y el habla acelerada es un intento de "salir" de la mentira lo antes posible. La mentira era la frase 2.'
+        },
+        'frase_3': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Al igual que en la primera frase, el comportamiento aquí fue consistente con su línea base de verdad. No había señales de estrés o incongruencia.'
+        }
+    }
+},
+'me-22': {
+    title: 'Ejercicio: Forzar una Emoción (Nostalgia)',
+    description: 'Tu objetivo es evocar un sentimiento de NOSTALGIA en el sujeto, utilizando lenguaje evocador y sensorial.',
+    target_choice: 'Sentimiento de NOSTALGIA',
+    npc: { name: 'Sujeto de Prueba Beta 2.0' },
+    script_options: [
+        {
+            text: '"Quiero que recuerdes tu infancia. Piensa en un momento feliz. ¿Ya lo tienes? Concéntrate en ese sentimiento".',
+            technique_summary: 'Instrucción Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque la instrucción es clara, es demasiado lógica. Estás pidiendo que recuerde, no estás induciendo el estado emocional. La nostalgia es más compleja que la simple felicidad.'
+        },
+        {
+            text: '"Permítete volver atrás por un momento... a una tarde de verano de hace mucho tiempo... el olor de la hierba o del asfalto mojado... una canción lejana que sonaba en la radio... esa sensación agridulce de un momento que ya pasó pero que te hace sonreír... deja que esa emoción te envuelva".',
+            technique_summary: 'Inducción Sensorial y Evocadora (Correcta)',
+            is_correct: true,
+            feedback: '¡PERFECTO! Has creado un tapiz de sensaciones. Usaste disparadores universales (verano, música, olores) y definiste la emoción con precisión ("agridulce", "momento que ya pasó"). No le dijiste qué sentir, le diste los ingredientes para que su propia mente cocinara el sentimiento de nostalgia.'
+        },
+        {
+            text: '"Piensa en algo que te ponga triste del pasado. Ahora piensa en algo que te ponga feliz. Mezcla los dos sentimientos".',
+            technique_summary: 'Enfoque Analítico',
+            is_correct: false,
+            feedback: 'INCORRECTO. Este enfoque es demasiado mecánico y analítico. La mente consciente se interpone al tratar de "mezclar" emociones como si fueran colores, impidiendo que el sentimiento surja de forma natural y subconsciente.'
+        }
+    ]
+},
+'me-23': {
+    title: 'Ejercicio: Forzar una Carta (Reina de Corazones)',
+    description: 'Un clásico del mentalismo. Tu objetivo es guiar al sujeto a pensar en la REINA DE CORAZONES usando primado conceptual.',
+    target_choice: 'La Reina de Corazones',
+    npc: { name: 'Sujeto de Prueba Gamma 2.0' },
+    script_options: [
+        {
+            text: '"Imagina una baraja. Concéntrate en las cartas de figuras. Ahora piensa en una carta roja. ¿Es la Reina de Corazones?".',
+            technique_summary: 'Filtrado Progresivo',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es un juego de 20 preguntas, no un forzaje. Estás reduciendo las opciones de forma lógica y obvia, no influyendo sutilmente en la elección inicial.'
+        },
+        {
+            text: '"Visualiza una baraja. Olvida los números, son fríos. Céntrate en las figuras, que tienen personalidad. Piensa en la realeza... en el símbolo universal del AMOR, de la PASIÓN. La figura femenina más importante, el CORAZÓN de la baraja... Deja que esa carta se forme en tu mente".',
+            technique_summary: 'Primado por Concepto y Metáfora (Correcta)',
+            is_correct: true,
+            feedback: '¡EXCELENTE! Has utilizado un lenguaje puramente conceptual. "Realeza femenina" apunta a las reinas. "Amor", "pasión" y "corazón" apuntan al palo de corazones de forma abrumadora. Has hecho que la Reina de Corazones sea la respuesta emocional y simbólica a tu acertijo poético.'
+        },
+        {
+            text: '"Quiero que pienses en una carta. No es una pica. No es un trébol. No es un diamante. No es un Rey. No es una Jota. ¿En qué carta piensas?".',
+            technique_summary: 'Eliminación Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque la eliminación puede funcionar, esta es una forma torpe y aburrida de hacerlo. No hay sutileza ni arte, y el sujeto es plenamente consciente de que lo estás acorralando.'
+        }
+    ]
+},
+'me-24': {
+    type: 'reading',
+    title: 'Ejercicio: El PIN Secreto',
+    description: 'Un sujeto ha pensado en un PIN de 2 dígitos (ej. 25). Vas a "leer" su reacción mientras dices los números en voz alta para adivinar cada dígito.',
+    npc: { name: 'Sujeto de Prueba Delta 2.0' },
+    secret_location: '48', // El PIN secreto es 48.
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Descubrir el PRIMER dígito: "Voy a contar del 1 al 5. Concéntrate... UNO... DOS... TRES... CUATRO... CINCO..."',
+            reaction: 'En los números 1, 2, 3 y 5, el sujeto permanece impasible. Al decir "CUATRO", hay una súbita inhalación de aire, casi inaudible, y un parpadeo.'
+        },
+        {
+            id: 'q2',
+            text: 'Descubrir el SEGUNDO dígito: "Ahora el segundo dígito, del 6 al 9. Concéntrate... SEIS... SIETE... OCHO... NUEVE..."',
+            reaction: 'En los números 6, 7 y 9, su rostro está relajado. Al decir "OCHO", los músculos alrededor de sus ojos se tensan por un instante, como si estuviera "reconociendo" el número.'
+        }
+    ],
+    final_choices: {
+        '48': {
+            is_correct: true,
+            feedback: '¡CORRECTO! El PIN era 48. Has identificado correctamente las microreacciones. La inhalación súbita al oír "cuatro" y la tensión ocular al oír "ocho" fueron las fugas de información que revelaron los dígitos correctos. La clave es buscar la reacción que es diferente a las demás.'
+        },
+        '28': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Acertaste el segundo dígito, pero fallaste el primero. La reacción al "dos" fue neutra, mientras que la del "cuatro" (la inhalación) fue una clara señal de reconocimiento.'
+        },
+        '46': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Acertaste el primer dígito, pero fallaste el segundo. La tensión ocular al oír "ocho" fue la pista clave. No hubo reacción anómala al "seis".'
+        }
+    }
+},
+'me-25': {
+    title: 'Ejercicio: Forzar un Dibujo Simple',
+    description: 'Tu objetivo es hacer que el sujeto dibuje una CASA, sin darle ninguna instrucción directa.',
+    target_choice: 'Un dibujo de una CASA',
+    npc: { name: 'Sujeto de Prueba Epsilon 2.0' },
+    script_options: [
+        {
+            text: '"Dibuja algo simple. Un cuadrado con un triángulo encima. Añade una puerta y un par de ventanas. ¿Qué has dibujado?".',
+            technique_summary: 'Instrucciones Geométricas',
+            is_correct: false,
+            feedback: 'INCORRECTO. Le has guiado como a un robot. No hay espacio para la interpretación ni para el efecto mentalista. Es un ejercicio de dictado, no de influencia.'
+        },
+        {
+            text: '"Quiero que hagas un dibujo muy simple, como los que hacíamos de niños. Dibuja un lugar que represente SEGURIDAD, FAMILIA, un REFUGIO. El primer lugar que te venga a la mente cuando piensas en la palabra HOGAR. Un dibujo simple, con líneas rectas y un techo".',
+            technique_summary: 'Primado por Concepto Emocional (Correcta)',
+            is_correct: true,
+            feedback: '¡PERFECTO! Has utilizado las palabras clave más poderosas asociadas con una casa: seguridad, familia, refugio, hogar. Al evocar la niñez, has activado el arquetipo de dibujo infantil de una casa. Las pistas finales ("líneas rectas", "techo") cierran el círculo sin ser demasiado obvias.'
+        },
+        {
+            text: '"Dibuja tu casa. La casa donde vives ahora mismo".',
+            technique_summary: 'Petición Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. Le estás pidiendo que copie algo real, lo que requiere un esfuerzo consciente y analítico. El objetivo del forzaje es que la idea surja de forma espontánea y subconsciente.'
+        }
+    ]
+},
+'me-26': {
+    type: 'reading',
+    title: 'Ejercicio: ¿Qué Emoción Oculta?',
+    description: 'Tu amigo acaba de recibir una noticia. Te dice que está contento, pero sospechas que oculta otra cosa. Debes identificar la emoción real.',
+    npc: { name: 'Amigo' },
+    secret_location: 'miedo', // La emoción real
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Analizar la afirmación: "¡Me han ascendido! ¡Por fin voy a liderar el proyecto! Estoy muy contento."',
+            reaction: 'Dice "contento", pero su sonrisa es tensa y no involucra a los ojos. Sus ojos están más abiertos de lo normal y sus cejas ligeramente levantadas y juntas. Respira de forma superficial.'
+        }
+    ],
+    final_choices: {
+        'alegría': {
+            is_correct: false,
+            feedback: 'INCORRECTO. La sonrisa no era una sonrisa de Duchenne (una sonrisa genuina, que involucra los ojos). Los indicadores clave estaban en la parte superior del rostro.'
+        },
+        'miedo': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has leído las señales de forma brillante. Los ojos muy abiertos, las cejas levantadas y juntas, y la respiración superficial son los tres componentes clásicos de la microexpresión del miedo o la ansiedad. Probablemente está abrumado por la nueva responsabilidad. Sus palabras decían alegría, pero su cuerpo gritaba "miedo".'
+        },
+        'sorpresa': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Aunque el miedo y la sorpresa comparten los ojos abiertos, la sorpresa implica cejas arqueadas pero no juntas, y la boca suele abrirse. La tensión en las cejas apuntaba al miedo.'
+        }
+    }
+},
+'me-27': {
+    title: 'Ejercicio: La Palabra de la Revista (Forzaje)',
+    description: 'Simulas un "test de libro". Tu objetivo es que el sujeto elija mentalmente una palabra CORTA y COMÚN de una página imaginaria, y que esa palabra sea LUZ.',
+    target_choice: 'LUZ',
+    npc: { name: 'Sujeto de Prueba Zeta 2.0' },
+    script_options: [
+        {
+            text: '"Imagina una página de revista. Ahora quiero que pienses en la palabra más brillante de la página. La que más ilumine. ¿La tienes?".',
+            technique_summary: 'Metáfora Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. La metáfora es demasiado obvia y poética. No se siente como una elección libre, sino como un acertijo. El sujeto es consciente de que intentas guiarle hacia una palabra relacionada con la luz.'
+        },
+        {
+            text: '"Imagina una página llena de palabras. No te fijes en las de abajo, sino en la parte superior. No en las largas y complejas. Concéntrate en una palabra corta y simple. Una que represente la CLARIDAD, el CONOCIMIENTO, lo opuesto a la OSCURIDAD... Deja que esa palabra te llegue".',
+            technique_summary: 'Forzaje por Concepto y Posición (Correcta)',
+            is_correct: true,
+            feedback: '¡EXCELENTE! Has usado múltiples capas. Has dirigido su atención espacialmente ("parte superior"), has definido las características ("corta", "simple") y, lo más importante, has primado el concepto ("claridad", "conocimiento", "opuesto a oscuridad"). La palabra "LUZ" se convierte en la solución lógica y natural a todas esas restricciones.'
+        },
+        {
+            text: '"Elige cualquier palabra de una página imaginaria. Ahora, ¿la palabra tiene que ver con la iluminación?".',
+            technique_summary: 'Pesca de Información',
+            is_correct: false,
+            feedback: 'INCORRECTO. Esto es simplemente adivinar y luego preguntar. No hay ninguna técnica de influencia o forzaje en la elección inicial.'
+        }
+    ]
+},
+'me-28': {
+    title: 'Ejercicio: El Anclaje Espacial',
+    description: 'Asociarás dos conceptos (TRABAJO y VACACIONES) a dos espacios físicos (tu mano derecha e izquierda). Luego, adivinarás en cuál piensa el sujeto observando su mirada.',
+    target_choice: 'La elección del sujeto (VACACIONES)',
+    npc: { name: 'Sujeto de Prueba Theta 2.0' },
+    script_options: [
+        {
+            text: 'Paso 1: "Quiero que imagines en tu mano derecha todo lo relacionado con el TRABAJO: el estrés, los plazos, la oficina". Paso 2: "Ahora, en tu mano izquierda, imagina las VACACIONES: la playa, la relajación, la libertad". Paso 3: "Elige uno de los dos conceptos. Mírame a mí y no a tus manos. ¿Ya lo tienes?".',
+            technique_summary: 'Creación de Anclajes Espaciales (Correcta)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Has establecido los anclajes. Aunque el sujeto te mire a ti, cuando le pidas que piense en su elección, sus ojos harán un movimiento casi imperceptible hacia el espacio que has anclado con ese concepto (en este caso, hacia su izquierda para "vacaciones"). Este es el paso preparatorio crucial.'
+        },
+        {
+            text: '"Piensa en el trabajo o en las vacaciones. ¿En qué estás pensando?".',
+            technique_summary: 'Sin Anclaje',
+            is_correct: false,
+            feedback: 'INCORRECTO. Sin anclar primero los conceptos a un espacio físico, no tienes nada que leer. Sus pensamientos no tienen una "dirección" que puedas calibrar con la mirada.'
+        },
+        {
+            text: '"Imagina el trabajo en tu mano derecha y las vacaciones en tu mano izquierda. Ahora dime cuál has elegido".',
+            technique_summary: 'Anclaje con Petición Directa',
+            is_correct: false,
+            feedback: 'INCORRECTO. El anclaje funciona, pero el efecto se arruina si pides la respuesta directamente. El propósito del anclaje espacial es crear una pista no verbal para que puedas "leer" la mente, no para que te den la respuesta.'
+        }
+    ]
+},
+'me-29': {
+    type: 'reading',
+    title: 'Ejercicio: La Decisión de Compra',
+    description: 'Un cliente potencial ha visto dos productos, uno caro (Opción A) y uno barato (Opción B). Te dice su decisión, pero debes leer su verdadera convicción.',
+    npc: { name: 'Cliente Potencial' },
+    secret_location: 'duda', // La emoción real
+    probing_questions: [
+        {
+            id: 'q1',
+            text: 'Analizar la afirmación: "Sí, después de pensarlo, me quedaré con la Opción B, la más barata. Es la decisión más lógica".',
+            reaction: 'Mientras lo dice, asiente con la cabeza, pero hay una ligera arruga en su nariz, una microexpresión de asco/disgusto. Además, su mirada se desvía brevemente hacia la Opción A (la cara).'
+        }
+    ],
+    final_choices: {
+        'convicción': {
+            is_correct: false,
+            feedback: 'INCORRECTO. Sus palabras decían una cosa ("decisión lógica"), pero su cuerpo contaba otra historia. La congruencia es clave.'
+        },
+        'duda': {
+            is_correct: true,
+            feedback: '¡CORRECTO! Has detectado la incongruencia. La microexpresión de disgusto revela que no está contento con la opción barata. Su mirada hacia la opción cara delata su verdadero deseo. Verbalmente ha elegido la opción B, pero emocionalmente sigue anclado en la A. Esto es una oportunidad para indagar sobre qué le frena de elegir la que realmente quiere.'
+        }
+    }
+},
+'me-30': {
+    title: 'Ejercicio: El Contacto Psíquico (Ideomotor)',
+    description: 'Simulas una rutina de "contacto mental". El sujeto responderá "sí" o "no" a preguntas en su mente, y tú lo detectarás por el movimiento ideomotor de su dedo.',
+    target_choice: 'Detectar un "SÍ" oculto',
+    npc: { name: 'Sujeto de Prueba Iota 2.0' },
+    script_options: [
+        {
+            text: 'Pides al sujeto que apoye su dedo índice sobre tu mano. Le dices: "Voy a hacerte preguntas. Si la respuesta es SÍ, tu dedo presionará hacia abajo. Si es NO, se levantará".',
+            technique_summary: 'Instrucción Consciente',
+            is_correct: false,
+            feedback: 'INCORRECTO. Estás pidiendo una respuesta consciente. El sujeto controlará el movimiento, y el efecto de "leer" un impulso inconsciente se pierde por completo.'
+        },
+        {
+            text: 'Pides al sujeto que apoye su dedo índice sobre tu mano y se relaje. Le dices: "Concéntrate. No muevas el dedo conscientemente. Simplemente piensa SÍ... SÍ... SÍ... Deja que el pensamiento llene tu mente". Mientras, tú sientes una presión casi imperceptible hacia abajo.',
+            technique_summary: 'Sensibilidad Ideomotora (Correcta)',
+            is_correct: true,
+            feedback: '¡CORRECTO! Esta es la esencia de la respuesta ideomotora. El pensamiento focalizado en una idea (SÍ) crea una microtensión muscular en la dirección asociada (hacia abajo, como un asentimiento). Al ser extremadamente sensible al tacto, puedes detectar este impulso inconsciente que el sujeto ni siquiera sabe que está produciendo.'
+        },
+        {
+            text: 'Pides al sujeto que piense SÍ o NO, y tú intentas adivinarlo sin ningún tipo de instrucción o anclaje físico.',
+            technique_summary: 'Adivinanza Pura',
+            is_correct: false,
+            feedback: 'INCORRECTO. Sin un canal para que la respuesta inconsciente se manifieste (como el dedo), no tienes nada que leer. El contacto físico es el puente que permite que el impulso ideomotor sea perceptible.'
+        }
+    ]
 }
         
 };
