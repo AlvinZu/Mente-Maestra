@@ -115,13 +115,14 @@
                         </div>
                         <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
                     </div>
-                    <div class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 opacity-50 flex items-center">
-                        <div class="p-3 bg-gray-600 rounded-lg mr-4"><i data-lucide="message-square"></i></div>
-                        <div>
-                            <h3 class="text-xl font-bold text-gray-400">Simulador de Conversación</h3>
-                            <p class="text-gray-500">Próximamente...</p>
-                        </div>
-                    </div>
+                    <div onclick="showSimulationLibrary()" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+    <div class="p-3 bg-yellow-600 rounded-lg mr-4"><i data-lucide="message-square"></i></div>
+    <div>
+        <h3 class="text-xl font-bold text-yellow-400">Simulador de Conversación</h3>
+        <p class="text-gray-400">Entra en escenarios realistas y elige tus respuestas.</p>
+    </div>
+    <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+</div>
                  </div>
             </section>
 
@@ -218,6 +219,10 @@
         
         <!-- Vista del Gimnasio de Microexpresiones -->
         <div id="micro-expressions-gym-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
+      
+      <!-- Vista del simulador de Teatro -->
+      <div id="simulation-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
+      <div id="simulation-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
 
         <!-- Vista de la Biblioteca de Retos -->
         <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
@@ -241,7 +246,8 @@
             'lenguaje-corporal': { title: 'Lenguaje Corporal', subtitle: 'El Lector de Cuerpos', icon: 'eye', color: 'blue', levels: { 'Nivel Básico: Los Fundamentos': ['lc-b1', 'lc-b2', 'lc-b3', 'lc-b4'], 'Nivel Intermedio: Señales Clave': ['lc-i1', 'lc-i2', 'lc-i3', 'lc-i4'], 'Nivel Avanzado: Maestría en la Observación': ['lc-a1', 'lc-a2', 'lc-a3']}},
             'pnl': { title: 'PNL', subtitle: 'El Arquitecto de la Mente', icon: 'brain-circuit', color: 'purple', levels: { 'Nivel Básico: Herramientas Esenciales': ['pnl-b1', 'pnl-b2', 'pnl-b3'], 'Nivel Intermedio: Cambio y Percepción': ['pnl-i1', 'pnl-i2', 'pnl-i3'] }},
             'mentalismo': { title: 'Mentalismo', subtitle: 'El Ilusionista de la Conversación', icon: 'wand-2', color: 'indigo', levels: { 'Nivel Básico: Principios de la Influencia': ['men-b1', 'men-b2', 'men-b3'], 'Nivel Intermedio: Deducción y Calibración': ['men-i1', 'men-i2', 'men-i3'] }},
-            'hipnosis': { title: 'Hipnosis', subtitle: 'El Guía del Subconsciente', icon: 'wind', color: 'teal', levels: { 'Nivel Básico: Introducción Segura': ['hip-b1', 'hip-b2', 'hip-b3'], 'Nivel Intermedio: Aplicaciones Prácticas': ['hip-i1', 'hip-i2', 'hip-i3'] }}
+            'hipnosis': { title: 'Hipnosis', subtitle: 'El Guía del Subconsciente', icon: 'wind', color: 'teal', levels: { 'Nivel Básico: Introducción Segura': ['hip-b1', 'hip-b2', 'hip-b3'], 'Nivel Intermedio: Aplicaciones Prácticas': ['hip-i1', 'hip-i2', 'hip-i3'] }},
+          'ingenieria-social': { title: 'Ingeniería Social', subtitle: 'El Arquitecto de Relaciones', icon: 'users', color: 'yellow', levels: { 'Nivel Básico: Los Pilares de la Confianza': ['is-b1', 'is-b2', 'is-b3', 'is-b4'], 'Nivel Intermedio: Tácticas de Influencia Ética': ['is-i1', 'is-i2', 'is-i3', 'is-i4'], 'Nivel Avanzado: Estrategias y Aplicaciones Complejas': ['is-a1', 'is-a2', 'is-a3', 'is-a4'] }}
         };
 
         const lessons = {
@@ -275,7 +281,412 @@
             'hip-i1': { title: 'Auto-Hipnosis para el Enfoque', content: `<h2>Programando tu Mente</h2><p>Aprender a guiarte a ti mismo a un estado de trance te permite darte sugestiones positivas para mejorar la concentración, la relajación o la motivación.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Para Estudiar:</b> Entras en un trance ligero y te dices a ti mismo: "Cada palabra que leo se queda grabada en mi mente. Mi concentración es total y absoluta".</li><li><b>Para Dormir:</b> Te guías a un estado de relajación profunda y te das la sugestión: "Con cada respiración, mi cuerpo y mi mente se preparan para un sueño profundo y reparador".</li><li><b>Para el Deporte:</b> Antes de un partido, visualizas la jugada perfecta y te anclas la sensación de éxito, diciéndote: "Mi cuerpo sabe exactamente qué hacer. Confío en mis instintos".</li></ul>` },
             'hip-i2': { title: 'Inducciones Conversacionales', content: `<h2>Hipnosis sin que Parezca Hipnosis</h2><p>Es el arte de usar patrones de lenguaje hipnótico en una conversación normal para guiar el estado emocional y el enfoque de una persona de manera sutil y ética.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>En una Venta:</b> "No te pido que tomes una decisión ahora... solo imagina por un momento la tranquilidad que sentirás cuando este problema esté resuelto". (Guía a la persona a un estado emocional futuro).</li><li><b>Ayudando a un Amigo:</b> "Recuerdo una vez que te sentías así y encontraste una fuerza interior increíble. Quizás puedas empezar a recordar cómo se sentía eso...". (Dirige su atención hacia recursos internos).</li><li><b>En una Negociación:</b> "Mientras hablamos de los detalles, puedes empezar a sentirte más y más cómodo con la idea de que podemos llegar a un acuerdo beneficioso para ambos".</li></ul>` },
             'hip-i3': { title: 'Creación de Metáforas', content: `<h2>Contando Historias que Sanan</h2><p>El subconsciente ama las historias. Aprender a construir metáforas que reflejen el problema de una persona y ofrezcan una solución puede generar cambios profundos.</p><h3 class="font-semibold mt-4 mb-2">Ejemplos Prácticos:</h3><ul class="list-disc list-inside"><li><b>Para la Procrastinación:</b> "Es como un gran barco en el puerto. Tiene todo lo necesario para zarpar, pero sigue esperando el 'momento perfecto'. A veces, solo necesita que el capitán (tú) levante el ancla para empezar el viaje".</li><li><b>Para la Ansiedad Social:</b> "Imagina que cada persona es un libro en una biblioteca. Al principio, solo ves las portadas, algunas intimidantes. Pero cuando te atreves a abrir uno, descubres una historia fascinante que te enriquece".</li><li><b>Para Superar un Obstáculo:</b> "Un río no lucha contra una roca en su camino. Simplemente, fluye a su alrededor, la rodea, y sigue su curso hacia el mar, volviéndose más fuerte. Tú puedes ser como ese río".</li></ul>` },
+          'is-b1': { 
+    title: 'El Principio de Reciprocidad', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (La Regla Social Implícita)</h2>
+            <p class="text-gray-300">El principio de reciprocidad es una de las reglas más poderosas y arraigadas del comportamiento humano. Dicta que nos sentimos obligados a devolver, de alguna forma, lo que otra persona nos ha proporcionado primero. Ya sea un favor, un regalo, una concesión o una ayuda, se genera una sensación de "deuda" psicológica que anhelamos saldar. La clave es que el favor inicial debe sentirse genuino y desinteresado para activar este resorte social.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Reciprocidad" class="rounded-lg shadow-lg" alt="Dos personas intercambiando un gesto de ayuda, simbolizando la reciprocidad.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. ¿Cómo se aplica éticamente? (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Sé el primero en dar:</strong> No esperes a que te pidan ayuda. Ofrece información útil, un cumplido sincero, una pequeña ayuda con una tarea. Da valor sin esperar nada a cambio de inmediato.</li>
+                <li><strong>Asegúrate de que sea significativo:</strong> El valor no es monetario. Un favor personalizado y meditado (recordar algo que le gusta a alguien) tiene un impacto mucho mayor que un gesto genérico.</li>
+                <li><strong>Crea un sentimiento de sorpresa:</strong> Un favor o regalo inesperado es mucho más poderoso. Rompe los patrones y genera un impacto emocional positivo.</li>
+                <li><strong>No lo conviertas en una transacción:</strong> Nunca digas "te di esto, ahora me debes aquello". El principio funciona a nivel subconsciente. Verbalizarlo lo destruye y lo convierte en un burdo intercambio.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario Profesional:</strong> Un compañero de otro departamento está agobiado con un informe. Tú, que tienes experiencia en ese tema, le dedicas 20 minutos a darle un par de ideas clave que le desbloquean. Semanas más tarde, cuando necesitas urgentemente datos de su departamento, esa persona no solo te los dará, sino que probablemente priorizará tu petición sobre otras.</p>
+                <p class="text-gray-300"><strong class="text-white">Escenario Social:</strong> Recuerdas que a un amigo le apasiona un tema muy específico. Un día, ves un artículo online muy interesante sobre ello, lo guardas y se lo envías con un mensaje como "Vi esto y me acordé de ti, ¡pensé que te gustaría!". Has fortalecido la relación y has creado un fuerte deseo en tu amigo de corresponderte de alguna manera.</p>
+                 <p class="text-gray-300"><strong class="text-white">Escenario de Negociación:</strong> Un cliente potencial recibe una propuesta tuya. Antes de que responda, le envías un informe de mercado que puede serle útil para su negocio (sin relación directa con tu venta). Le estás proporcionando valor de forma proactiva, lo que te diferencia de la competencia y le predispone a ver tu propuesta con mejores ojos.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-b2': { 
+    title: 'Pretexto y Justificación Legítima', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (El Poder del "Porque")</h2>
+            <p class="text-gray-300">En 1978, un famoso estudio de la psicóloga Ellen Langer demostró algo asombroso: las personas están mucho más dispuestas a cumplir una petición si se les da una razón, sin importar cuán obvia sea. La palabra "porque" activa un resorte mental de cumplimiento automático. Nuestro cerebro está programado para buscar causas y efectos, y al proporcionar una justificación, satisfacemos esa necesidad y reducimos la resistencia, haciendo que nuestra petición parezca más legítima y menos arbitraria.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Porque..." class="rounded-lg shadow-lg" alt="Una persona explicando sus razones a otra, que asiente comprensivamente.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. ¿Cómo se aplica? (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Usa siempre una razón:</strong> Acostúmbrate a añadir un "porque" a tus peticiones, especialmente a las pequeñas. "Disculpa, ¿puedo pasar antes?, <strong class="text-yellow-300">porque</strong> tengo una reunión en cinco minutos".</li>
+                <li><strong>La calidad de la razón importa en peticiones grandes:</strong> Para peticiones pequeñas, casi cualquier razón funciona. Para peticiones más grandes o importantes, la justificación debe ser lógica y sólida.</li>
+                <li><strong>Enfoca la razón en el beneficio para el otro:</strong> La justificación más poderosa es la que implica un beneficio para la otra persona. "Me gustaría que revisaras este borrador ahora, <strong class="text-yellow-300">porque</strong> así podremos adelantar el trabajo y salir todos a nuestra hora el viernes".</li>
+                <li><strong>Crea un pretexto creíble:</strong> Un pretexto es una razón preparada para una interacción. Sirve para iniciar una conversación o hacer una petición de forma natural. "¿Puedo hacerte una pregunta rápida? <strong class="text-yellow-300">Porque</strong> veo que sabes mucho de este tema y valoro tu opinión".</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario de Oficina (Petición pequeña):</strong> Quieres usar la impresora, pero hay alguien delante. En lugar de esperar en silencio, dices: "Disculpa, ¿te importaría si imprimo solo esta hoja? <strong class="text-yellow-300">Porque</strong> es para el jefe y me la está pidiendo ahora mismo". La probabilidad de que te dejen pasar aumenta drásticamente.</p>
+                <p class="text-gray-300"><strong class="text-white">Escenario de Venta (Beneficio para el cliente):</strong> Quieres que un cliente se decida pronto. En lugar de presionar, justificas: "Te recomiendo que tomemos la decisión esta semana, <strong class="text-yellow-300">porque</strong> así puedo asegurarte la entrega antes de fin de mes y podrás empezar a ver resultados cuanto antes".</p>
+                 <p class="text-gray-300"><strong class="text-white">Escenario Social (Iniciar conversación):</strong> Ves a alguien interesante en un evento. En lugar de un simple "hola", creas un pretexto: "Disculpa que te moleste, he visto que estabas hablando de [tema X] y me he acercado, <strong class="text-yellow-300">porque</strong> es un tema que me apasiona y rara vez encuentro a alguien con quien hablar de ello".</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-b3': { 
+    title: 'Elicitación: El Arte de Escuchar lo que no se Dice', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (Pescar Información con Sutileza)</h2>
+            <p class="text-gray-300">La elicitación es el conjunto de técnicas para obtener información de una persona o grupo de manera indirecta, sin hacer preguntas directas que puedan activar sus defensas. En lugar de preguntar "¿A qué te dedicas?", utilizas afirmaciones o preguntas abiertas que invitan a la otra persona a compartir detalles de forma natural. Es el arte de guiar una conversación para que la información que buscas simplemente "aparezca", haciendo que la otra persona sienta que está compartiendo voluntariamente.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Elicitaci%C3%B3n" class="rounded-lg shadow-lg" alt="Dos personas en una conversación profunda y natural en una cafetería.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Técnicas Clave de Elicitación (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Afirmaciones Provocadoras:</strong> Haz una afirmación que sea ligeramente incorrecta o controvertida. La gente tiene un impulso natural por corregir a los demás. Ejemplo: "He oído que es casi imposible conseguir un ascenso en tu empresa". Probablemente te responderán con detalles sobre cómo funciona el proceso.</li>
+                <li><strong>Asumir Conocimiento:</strong> Habla como si ya supieras algo sobre un tema. "Con lo complicado que está el mercado de [su sector], seguro que ha sido un año de retos". Esto invita a la persona a darte detalles específicos sobre esos "retos".</li>
+                <li><strong>Compartir para Recibir:</strong> Ofrece un poco de información tuya, a menudo personal pero inofensiva, para que la otra persona se sienta cómoda correspondiendo con información similar. "Estoy agotado, mi nuevo proyecto me tiene trabajando hasta tarde. ¿Tú también andas muy liado?".</li>
+                <li><strong>Elogio y Reconocimiento:</strong> Un elogio sincero puede abrir puertas. "Tu presentación fue brillante, la forma en que manejaste los datos fue impresionante. Debe llevar años dominar eso". Esto puede llevarlos a hablar de su experiencia, formación y tiempo en la empresa.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Objetivo: Saber si un colega busca otro trabajo.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Afirmación Provocadora / Compartir para recibir.<br>
+                <strong class="text-white">Tú dices:</strong> "He visto que varios reclutadores de LinkedIn andan muy activos últimamente, deben estar ofreciendo cosas muy interesantes. Con lo bueno que eres, seguro que te han llovido las ofertas, aunque tal y como está el mercado, es para pensárselo". Dejas la puerta abierta para que confirme, niegue o comparta su propia experiencia.</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Objetivo: Entender las prioridades de un cliente potencial.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Asumir Conocimiento.<br>
+                <strong class="text-white">Tú dices:</strong> "Imagino que ahora mismo, con el final del trimestre, vuestra máxima prioridad será optimizar los costes de producción antes que explorar nuevos mercados, ¿verdad?". Esta afirmación casi les obliga a corregirte o matizar, dándote información valiosísima sobre sus verdaderas prioridades.</p>
+
+                <p class="text-gray-300"><strong class="text-white">Objetivo: Conocer los hobbies de alguien en un evento social.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Compartir para recibir.<br>
+                <strong class="text-white">Tú dices:</strong> "Este fin de semana por fin tengo tiempo para una buena ruta en bici, que falta me hace para desconectar. ¿Tú tienes algún plan para recargar pilas?". Es una forma mucho más natural y efectiva que preguntar "¿Qué hobbies tienes?".</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-b4': { 
+    title: 'Validación y Escucha Activa', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (El Superpoder de Hacer Sentir Escuchado)</h2>
+            <p class="text-gray-300">La escucha activa no es simplemente oír palabras; es el esfuerzo consciente por entender el mensaje completo que se está comunicando, tanto verbal como no verbalmente. La validación es el paso siguiente: comunicar a la otra persona que lo que siente y piensa es comprensible y legítimo desde su perspectiva (incluso si no estás de acuerdo). Cuando alguien se siente verdaderamente escuchado y validado, sus defensas bajan, la confianza se dispara y la conexión se vuelve genuina. Es la forma más rápida de desarmar la hostilidad y construir rapport.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Escucha+Activa" class="rounded-lg shadow-lg" alt="Una persona escuchando atentamente a otra, mostrando empatía y conexión.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Las 3 Herramientas de la Escucha Activa (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Parafraseo:</strong> Repite la idea principal de la otra persona con tus propias palabras. Esto demuestra que has entendido. Ejemplo: "Entonces, si no he entendido mal, lo que más te preocupa es que el plazo de entrega es demasiado ajustado, ¿correcto?".</li>
+                <li><strong>Etiquetado Emocional:</strong> Dale un nombre a la emoción que percibes. Conecta directamente con el Lenguaje Corporal y la Calibración. Ejemplo: "Parece que este tema te genera bastante frustración" o "Suenas muy entusiasmado con esta nueva oportunidad".</li>
+                <li><strong>Silencio Estratégico:</strong> No te apresures a llenar cada pausa. Unos segundos de silencio después de que alguien ha hablado le invitan a seguir, a profundizar y a compartir más de lo que pretendía inicialmente. Es una señal de que estás procesando, no solo esperando tu turno para hablar.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario: Un cliente se queja airadamente de un problema.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Etiquetado + Parafraseo.<br>
+                <strong class="text-white">Respuesta Ineficaz:</strong> "Cálmese, vamos a ver qué pasa".<br>
+                <strong class="text-white">Respuesta Maestra:</strong> "Entiendo perfectamente su <strong class="text-yellow-300">(Etiquetado)</strong> enfado. Si he entendido bien, <strong class="text-yellow-300">(Parafraseo)</strong> usted esperaba recibir el producto el martes y todavía no ha llegado, lo cual ha retrasado todo su proyecto. Tiene toda la razón en estar molesto. Déjeme ver ahora mismo qué ha pasado".</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Escenario: Un amigo te cuenta un problema personal de forma vaga.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Etiquetado + Silencio Estratégico.<br>
+                <strong class="text-white">Tú dices:</strong> "Suena a que ha sido una situación realmente <strong class="text-yellow-300">decepcionante</strong> para ti...". Y luego, te callas <strong class="text-yellow-300">(Silencio)</strong>. Miras con atención y asientes levemente. Casi con total seguridad, tu amigo llenará ese silencio con los detalles importantes que antes omitió.</p>
+
+                <p class="text-gray-300"><strong class="text-white">Escenario: En una reunión, un colega expone una idea con la que no estás de acuerdo.</strong><br>
+                <strong class="text-yellow-300">Técnica:</strong> Parafraseo para asegurar la comprensión.<br>
+                <strong class="text-white">En lugar de atacar la idea, validas:</strong> "Ok, déjame asegurarme de que lo he captado bien. <strong class="text-yellow-300">Tu propuesta es</strong> centralizar los informes en un nuevo software para que todos tengamos acceso en tiempo real y así mejorar la coordinación. ¿Es esa la idea principal?". Una vez que confirma, puedes presentar tus dudas o alternativas sobre una base de entendimiento mutuo, no de confrontación.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-i1': { 
+    title: 'Compromiso y Coherencia', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (La Obsesión por Ser Consecuente)</h2>
+            <p class="text-gray-300">Este principio describe nuestro deseo casi obsesivo de ser (y parecer) coherentes con nuestras decisiones pasadas. Una vez que tomamos una postura o hacemos una elección, especialmente si es de forma pública, nos enfrentamos a una fuerte presión interna y externa para comportarnos de manera consecuente con ese compromiso inicial. Actúa como un piloto automático: en lugar de reevaluar cada situación, simplemente actuamos de acuerdo a nuestras decisiones previas. Es una trampa mental en la que caemos constantemente.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Compromiso" class="rounded-lg shadow-lg" alt="Una persona firmando un documento, simbolizando un compromiso activo.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Claves para Aplicarlo (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>La Técnica del "Pie en la Puerta":</strong> Es la táctica por excelencia. Comienza con una petición muy pequeña y fácil de aceptar. Una vez que la persona ha dicho "sí" a eso, estará mucho más predispuesta a aceptar una petición más grande y relacionada, porque negarse sería incoherente con su acción inicial.</li>
+                <li><strong>Busca un Compromiso Activo:</strong> Los compromisos son más poderosos si son activos en lugar de pasivos. Es más efectivo que alguien escriba algo, levante la mano o realice una pequeña acción a que simplemente lo piense.</li>
+                <li><strong>Hazlo Público:</strong> Un compromiso expresado en público (frente a otros) es el más potente de todos. Nadie quiere ser visto como una persona inconsistente o poco fiable.</li>
+                <li><strong>El Esfuerzo Justifica la Decisión:</strong> Cuanto más esfuerzo requiere un compromiso (tiempo, dinero, sacrificio), más lo valoramos y más nos aferramos a él para justificar el esfuerzo invertido.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario de Venta:</strong> Un vendedor de coches no te pide que lo compres. Primero te hace una petición pequeña: "¿Le gustaría probarlo? Sin compromiso". <strong class="text-yellow-300">(Pie en la puerta)</strong>. Una vez que lo conduces <strong class="text-yellow-300">(compromiso activo y con esfuerzo)</strong>, ya has empezado a verte como el dueño. Rechazar la compra se vuelve psicológicamente más difícil.</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Escenario Laboral:</strong> Quieres que tu equipo adopte un nuevo método de trabajo. En lugar de imponerlo, preguntas en una reunión: "¿Todos estamos de acuerdo en que nuestro objetivo es ser más eficientes?". Todos levantarán la mano <strong class="text-yellow-300">(compromiso público y activo)</strong>. Luego presentas tu método como la solución lógica para alcanzar esa eficiencia que todos acaban de aceptar como objetivo.</p>
+
+                <p class="text-gray-300"><strong class="text-white">Escenario de Desarrollo Personal:</strong> Quieres empezar a hacer ejercicio. Si solo lo piensas, es fácil fallar. Si se lo cuentas a tus amigos <strong class="text-yellow-300">(público)</strong>, escribes tus metas en un papel <strong class="text-yellow-300">(activo)</strong> y pagas un mes de gimnasio por adelantado <strong class="text-yellow-300">(esfuerzo)</strong>, has creado una poderosa red de coherencia que te obligará a mantener el compromiso.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-i2': { 
+    title: 'Prueba Social: La Fuerza del Grupo', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (La Seguridad de los Números)</h2>
+            <p class="text-gray-300">El principio de prueba social describe nuestra tendencia a considerar que un comportamiento es más correcto si vemos que otras personas lo están realizando. Es un atajo mental: si mucha gente lo hace, debe ser por una buena razón. Actuamos como un rebaño porque, evolutivamente, desviarse del grupo era peligroso. Este principio es especialmente poderoso en momentos de incertidumbre; cuando no estamos seguros de qué hacer, miramos a los demás para que nos guíen.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Prueba+Social" class="rounded-lg shadow-lg" alt="Una multitud de personas eligiendo el mismo camino, simbolizando la prueba social.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Formas de Aplicarla (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Muestra Testimonios y Reseñas:</strong> Es la forma más clásica. Las valoraciones online, los casos de éxito y las citas de clientes satisfechos son prueba social pura. Su poder aumenta si el testimonio es de alguien similar al público objetivo.</li>
+                <li><strong>Usa la Fuerza de los Números:</strong> "Más de 50,000 descargas". "Únete a los 10,000 profesionales que ya confían en nosotros". Las cifras grandes implican que la decisión es segura y acertada.</li>
+                <li><strong>Destaca la Popularidad:</strong> Señalar un producto como "El más vendido" o un plan como "El más popular" utiliza la prueba social para guiar la elección del cliente, eliminando la parálisis por análisis.</li>
+                <li><strong>La Prueba Social de los Expertos:</strong> Si una figura de autoridad o un experto en la materia respalda tu idea o producto, su credibilidad se transfiere, proporcionando una poderosa prueba social.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario Online:</strong> Estás dudando entre dos productos casi idénticos en Amazon. Uno tiene 12 reseñas y el otro tiene 4,500 con una media de 4.8 estrellas. Casi con total seguridad, elegirás el segundo. La incertidumbre se disipa por la prueba social masiva.</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Escenario Social:</strong> Llegas a una ciudad nueva y buscas un sitio para cenar. Ves dos restaurantes, uno al lado del otro. Uno está casi vacío y el otro tiene una fila de gente esperando. La mayoría de la gente interpretará que el restaurante concurrido es mejor y estará dispuesta a esperar.</p>
+
+                <p class="text-gray-300"><strong class="text-white">Escenario Laboral:</strong> Quieres convencer a tu jefe para implementar una nueva estrategia de marketing. En lugar de solo dar tu opinión, presentas un informe que dice: "Nuestros tres principales competidores ya han implementado con éxito una estrategia similar este año, aumentando su cuota de mercado en un promedio del 15%". El miedo a quedarse atrás (basado en la prueba social de los competidores) es un motivador muy poderoso.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-i3': { 
+    title: 'Simpatía y Afinidad (Liking)', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (La Conexión que Persuade)</h2>
+            <p class="text-gray-300">Este principio establece que somos mucho más propensos a decir "sí" a las peticiones de alguien que conocemos y que nos agrada. La simpatía actúa como un lubricante social que reduce la fricción en las interacciones. Cuando sentimos una conexión o afinidad con alguien, bajamos la guardia, confiamos más y estamos más dispuestos a colaborar. No es solo cuestión de amistad; se puede generar un sentimiento de afinidad de manera rápida y ética para facilitar la comunicación.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Afinidad" class="rounded-lg shadow-lg" alt="Dos personas riendo y conectando en un ambiente relajado.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Los 4 Pilares de la Simpatía (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Similaridad:</strong> Nos gustan las personas que son como nosotros. Busca puntos en común genuinos: aficiones, orígenes, opiniones, forma de vestir, etc. La técnica del "Espejo" (Rapport) del módulo de Lenguaje Corporal es una forma de crear similaridad a nivel no verbal.</li>
+                <li><strong>Elogios y Cumplidos:</strong> Nos encanta recibir halagos y, por extensión, nos agradan las personas que nos los hacen. Un cumplido sincero sobre una habilidad, una decisión o incluso un accesorio de alguien puede ser increíblemente efectivo.</li>
+                <li><strong>Contacto y Cooperación:</strong> Nos gustan más las personas con las que tenemos un contacto familiar y con las que trabajamos hacia metas comunes. Estar en el mismo "equipo", incluso de forma temporal, crea un vínculo de unidad.</li>
+                <li><strong>Asociación Positiva:</strong> Nuestra mente crea conexiones. Si te asocias con cosas positivas (buen humor, éxito, soluciones), la gente te verá de forma más positiva. Es el motivo por el que las marcas usan a famosos en sus anuncios.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario de Venta:</strong> Un buen vendedor no habla solo del producto. Busca puntos en común <strong class="text-yellow-300">(similaridad)</strong>: "¿Así que también eres de [ciudad]? ¡Qué coincidencia!". O elogia una decisión pasada del cliente: "La elección que hicisteis con vuestro proveedor anterior fue muy inteligente en su momento <strong class="text-yellow-300">(elogio)</strong>".</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Escenario de Negociación:</strong> Antes de empezar a negociar los puntos difíciles, un buen negociador busca un objetivo común: "Ambos queremos que este proyecto sea un éxito y beneficie a nuestras empresas, ¿verdad? <strong class="text-yellow-300">(cooperación)</strong>". Esto cambia el marco de "tú contra mí" a "nosotros contra el problema".</p>
+
+                <p class="text-gray-300"><strong class="text-white">Escenario Social:</strong> Para conectar con alguien nuevo en un grupo, busca algo que admirar sinceramente: "Me ha encantado la forma en que has explicado ese tema tan complejo <strong class="text-yellow-300">(elogio)</strong>". Luego, busca un punto en común: "A mí también me apasiona [tema relacionado] <strong class="text-yellow-300">(similaridad)</strong>". La conexión se establece casi de inmediato.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-i4': { 
+    title: 'El Principio de Autoridad', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (La Deferencia al Experto)</h2>
+            <p class="text-gray-300">Desde pequeños, se nos enseña que obedecer a la autoridad legítima es correcto y desobedecer es incorrecto. Este principio describe nuestra tendencia a seguir las directrices de figuras que percibimos como expertas o con autoridad. El famoso y controvertido experimento de Stanley Milgram demostró que la gente estaba dispuesta a infligir un dolor extremo a otros simplemente porque una persona con una bata de científico se lo ordenaba. Confiamos en los expertos para que nos guíen, cediendo nuestra propia capacidad de decisión.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Autoridad" class="rounded-lg shadow-lg" alt="Una persona con bata de doctor explicando algo a un paciente, simbolizando autoridad.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Los Símbolos de la Autoridad (La Práctica Ética)</h2>
+            <p class="text-gray-300">La autoridad no se impone, se proyecta. La clave ética es construir una autoridad genuina basada en tu conocimiento real. Los siguientes son símbolos que la gente usa para evaluar la autoridad:</p>
+            <ul class="list-disc list-inside text-gray-300 space-y-2 mt-2">
+                <li><strong>Títulos y Credenciales:</strong> Un "Dr." antes del nombre, un diploma en la pared, o certificaciones profesionales (PMP, CFA) son atajos que comunican conocimiento y estatus.</li>
+                <li><strong>Vestimenta y Apariencia:</strong> Los uniformes (médico, policía) o la vestimenta profesional (un traje bien cortado en el mundo de los negocios) pueden evocar un aura de autoridad y credibilidad.</li>
+                <li><strong>Experiencia y Conocimiento Real:</strong> Este es el pilar más importante y ético. Cuando demuestras un dominio profundo de tu tema, hablas con confianza y ofreces valor real, construyes una autoridad sólida y respetada que no depende de trucos.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300"><strong class="text-white">Escenario de Marketing:</strong> Una marca de pasta de dientes utiliza a un actor con bata blanca en su anuncio que afirma: "Recomendado por 9 de cada 10 odontólogos". Están usando los símbolos de la autoridad <strong class="text-yellow-300">(bata, título implícito)</strong> para persuadirte.</p>
+                
+                <p class="text-gray-300"><strong class="text-white">Escenario Profesional:</strong> Vas a presentar una propuesta importante. Te preparas a fondo <strong class="text-yellow-300">(conocimiento real)</strong>, vistes de forma profesional y cuidada <strong class="text-yellow-300">(vestimenta)</strong> y en tu introducción mencionas brevemente un proyecto exitoso anterior que lideraste <strong class="text-yellow-300">(credencial de experiencia)</strong>. La audiencia estará mucho más receptiva a tu mensaje porque has establecido tu autoridad desde el principio.</p>
+
+                <p class="text-gray-300"><strong class="text-white">Escenario de Consultoría:</strong> Un consultor financiero no solo muestra sus títulos. Analiza tu situación y te dice: "He visto este patrón en docenas de clientes. Los que hicieron X obtuvieron este resultado, y los que hicieron Y, este otro. Basado en tu perfil, te recomiendo X". Su autoridad no viene solo del título, sino de la demostración de una experiencia vasta y relevante.</p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-a1': { 
+    title: 'Control del Marco (Frame Control)', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es un Marco? (La Lente de la Realidad)</h2>
+            <p class="text-gray-300">Un "marco" es la perspectiva subconsciente, el contexto y las creencias a través de las cuales se interpreta una interacción. Es la lente que define el significado de lo que sucede. Cada conversación tiene un marco: ¿es una entrevista de trabajo?, ¿una discusión?, ¿una venta?, ¿un coqueteo? El Control del Marco es la habilidad de imponer tu perspectiva, haciendo que los demás reaccionen a tu realidad y jueguen según tus reglas, sin necesidad de ser agresivo. Cuando dos marcos se encuentran, el más fuerte siempre absorbe al más débil.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Frame+Control" class="rounded-lg shadow-lg" alt="Una pieza de ajedrez dominando el tablero, simbolizando el control estratégico.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Técnicas para Imponer tu Marco (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>El Marco de Poder (Power Framing):</strong> Actúa con la convicción de que tú eres el premio. No buscas la aprobación de los demás; son ellos los que deben cualificar para ti. Se basa en la calma, el lenguaje corporal relajado y un ligero toque de humor o diversión.</li>
+                <li><strong>El Reencuadre (Reframing):</strong> Toma la energía de su marco y dale un nuevo significado. Si un cliente dice "Su producto es muy caro" (marco de coste), tú lo reencuadras: "No es una cuestión de coste, sino de la inversión en tranquilidad/eficiencia que obtendrás" (marco de valor). Conecta directamente con la lección de PNL.</li>
+                <li><strong>Ignorar y Redirigir:</strong> A veces, la mejor forma de destruir un marco no deseado (una queja, un insulto, un drama) es ignorarlo por completo y redirigir la conversación hacia lo que tú consideras importante. Esto comunica que su intento de imponer un marco es irrelevante.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Batallas de Marcos: Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Un cliente te dice con aire de superioridad: "Convénceme de por qué debería contratarte a ti y no a tu competencia". (Su marco: Él es el juez, tú el suplicante).</strong><br>
+                    <strong class="text-yellow-300">Respuesta Débil (Acepta el marco):</strong> "Bueno, somos los mejores, tenemos más experiencia, nuestros precios son buenos...".<br>
+                    <strong class="text-white">Respuesta Maestra (Impone el marco de Poder):</strong> Con calma, te reclinas y dices: "Yo no estoy aquí para convencer a nadie. Yo expongo cómo soluciono problemas. Solo trabajo con clientes que son serios y están listos para actuar. Quizás primero deberías convencerme de por qué eres el tipo de cliente con el que deberíamos asociarnos".
+                </p>
+                
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Alguien intenta hacerte una broma para ponerte a prueba: "¡Vaya! Parece que esa idea se te ocurrió en la ducha". (Su marco: Tu idea es simplona y ridícula).</strong><br>
+                    <strong class="text-yellow-300">Respuesta Débil (Se defiende):</strong> "¡Oye, es una buena idea, he trabajado mucho en ella!".<br>
+                    <strong class="text-white">Respuesta Maestra (Reencuadre):</strong> Sonríes y dices: "Las mejores ideas siempre llegan cuando uno está relajado. Me alegro de que hayas captado su genialidad y simpleza. Ahora, centrémonos en el punto A...".
+                </p>
+
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Un colega entra en pánico en una crisis: "¡Es el fin! ¡Vamos a perder al cliente por este error!". (Su marco: Catástrofe y desesperación).</strong><br>
+                     <strong class="text-yellow-300">Respuesta Débil (Se contagia):</strong> "¡Dios mío, tienes razón, qué desastre!".<br>
+                    <strong class="text-white">Respuesta Maestra (Ignora y Redirige):</strong> Ignoras el pánico y dices con calma: "Ok, entiendo. Ahora mismo el pánico no nos sirve. Céntrate. ¿Cuál es el estado exacto del problema? Necesito datos, no drama".
+                </p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-a2': { 
+    title: 'Pensamiento en Capas: El Juego a Largo Plazo', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (Ver Más Allá de la Superficie)</h2>
+            <p class="text-gray-300">El pensamiento en capas es la habilidad de analizar una interacción no solo por lo que es en la superficie, sino por sus implicaciones a múltiples niveles. La mayoría de la gente opera en una sola capa: la transacción inmediata ("¿qué gano yo ahora?"). Un maestro de la influencia piensa en cuatro: la transacción, la reputación, la relación y el posicionamiento estratégico. Se trata de entender que cada conversación y cada acción es una pieza en un juego mucho más grande y a largo plazo.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Pensamiento+en+Capas" class="rounded-lg shadow-lg" alt="Un tablero de ajedrez visto desde arriba, mostrando múltiples capas de estrategia.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Las 4 Capas de la Interacción (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>Capa 1 (La Transacción):</strong> Es la capa superficial. ¿Cuál es el objetivo inmediato de la conversación? (ej. vender un producto, pedir ayuda, dar una orden). Es importante ser competente aquí, pero es el nivel más básico.</li>
+                <li><strong>Capa 2 (La Reputación):</strong> ¿Cómo afecta esta interacción a la forma en que los demás me perciben? Cada acción te etiqueta: ¿eres el útil, el quejica, el líder, el vago? Una buena reputación es un activo que te abre puertas en el futuro.</li>
+                <li><strong>Capa 3 (La Relación):</strong> ¿Esta interacción construye o erosiona mi relación con esta persona y su red? ¿Estoy creando un aliado a largo plazo o ganando una batalla para perder la guerra? A veces, "perder" en la Capa 1 (ej. ceder en un punto) es una victoria en la Capa 3.</li>
+                <li><strong>Capa 4 (El Posicionamiento):</strong> ¿Cómo me posiciona esta acción para mis metas a largo plazo? ¿Me da acceso a nuevas oportunidades, información, o círculos de influencia? Es el "juego final", donde tus acciones de hoy te preparan para las grandes victorias de mañana.</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Un colega te pide ayuda con una tarea que no es tu responsabilidad.</strong><br>
+                    <strong class="text-yellow-300">Pensamiento de 1 Capa:</strong> "No es mi problema, estoy muy ocupado". Ganas 20 minutos ahora, pero no ganas nada más.<br>
+                    <strong class="text-white">Pensamiento de 4 Capas:</strong> "Claro, te ayudo (Capa 1). Esto me hace ver como un colaborador proactivo y un experto en el tema (Capa 2). Fortalezco mi relación con este colega, que ahora me deberá un favor (Capa 3). Esto me posiciona como un futuro líder de equipo y me da visibilidad frente a la dirección (Capa 4)".
+                </p>
+                
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Cometes un error que afecta a un cliente.</strong><br>
+                    <strong class="text-yellow-300">Pensamiento de 1 Capa:</strong> Intentar minimizar el error o culpar a factores externos para evitar el conflicto inmediato.<br>
+                    <strong class="text-white">Pensamiento de 4 Capas:</strong> "Llamo al cliente de inmediato y asumo la responsabilidad (Capa 1). Esto, paradójicamente, refuerza mi reputación como alguien honesto y fiable (Capa 2). Al gestionar la crisis de forma eficaz, puedo incluso fortalecer la lealtad del cliente (Capa 3). Esta situación se convierte en una oportunidad para demostrar la excelencia de nuestro servicio postventa, lo que nos posiciona como un socio estratégico y no como un simple proveedor (Capa 4)".
+                </p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-a3': { 
+    title: 'Creación de Pretextos y Escenarios', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. ¿Qué es? (Ser el Arquitecto de la Situación)</h2>
+            <p class="text-gray-300">Un "pretexto" es una razón cuidadosamente elaborada para iniciar una interacción o hacer una petición. Un "escenario" es el entorno completo y la narrativa que diseñas para que un resultado deseado se sienta como la conclusión más natural y lógica. Esta es la culminación de todas tus habilidades: en lugar de esperar una oportunidad, la fabricas. Implica entender las motivaciones de los demás, controlar el marco y preparar el terreno para que tus ideas sean recibidas de la forma más favorable posible.</p>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=Dise%C3%B1o+de+Escenarios" class="rounded-lg shadow-lg" alt="Planos de un arquitecto, simbolizando el diseño meticuloso de una situación.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. Pasos para Construir un Escenario (La Práctica)</h2>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>1. Define tu Objetivo Preciso:</strong> ¿Qué quieres lograr exactamente? No "hablar con el jefe", sino "conseguir que el jefe apruebe 15 minutos de su tiempo para escuchar mi propuesta sobre el problema X".</li>
+                <li><strong>2. Analiza a tu Objetivo:</strong> ¿Qué valora? ¿El tiempo, los datos, la audacia? ¿Cuándo está más receptivo? ¿Cuál es su estado de ánimo habitual?</li>
+                <li><strong>3. Diseña el Pretexto Perfecto:</strong> Tu razón para la interacción debe ser creíble, lógica y, si es posible, beneficiosa para la otra persona. "¿Puedo robarte un minuto?" es un mal pretexto. "He encontrado un dato que podría impactar tu proyecto, ¿tienes un momento para verlo?" es un gran pretexto.</li>
+                <li><strong>4. Monta el Escenario:</strong> Controla las variables: el lugar (su oficina vs. un café neutral), el momento (a primera hora vs. cuando está a punto de irse), y los materiales de apoyo (un resumen de una página vs. un PowerPoint de 50 diapositivas).</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Ejemplos en Acción</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-3">
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Quieres presentar una idea innovadora pero arriesgada a tu jefa.</strong><br>
+                    <strong class="text-yellow-300">Método Reactivo:</strong> Asaltarla en el pasillo o enviarle un email largo que probablemente no leerá con atención.<br>
+                    <strong class="text-white">Diseño de Escenario:</strong>
+                    <ol class="list-decimal list-inside ml-4 mt-2">
+                        <li><strong>Objetivo:</strong> Que mi jefa vea mi idea como una solución proactiva a un problema que a ella le importa.</li>
+                        <li><strong>Análisis:</strong> Ella valora la eficiencia y odia las reuniones sin un propósito claro.</li>
+                        <li><strong>Pretexto:</strong> En lugar de "tengo una idea", el pretexto es: "Hola [Jefa], he estado trabajando en una forma de optimizar el proceso X que nos costó retrasos el mes pasado. Tengo un borrador que creo que podría ahorrarnos 5 horas a la semana. ¿Tendrías 15 minutos para darle un vistazo y darme tu opinión experta?".</li>
+                        <li><strong>Resultado del Escenario:</strong> Has enmarcado la reunión no como una petición de tu tiempo, sino como una oferta de una solución a su problema. Has establecido tu autoridad y proactividad antes incluso de empezar a hablar.</li>
+                    </ol>
+                </p>
+                
+                <p class="text-gray-300">
+                    <strong class="text-white">Escenario: Quieres conocer a una persona influyente en una conferencia.</strong><br>
+                    <strong class="text-yellow-300">Método Reactivo:</strong> Acercarte torpemente y decir "Hola, admiro mucho tu trabajo".<br>
+                    <strong class="text-white">Diseño de Escenario:</strong>
+                     <ol class="list-decimal list-inside ml-4 mt-2">
+                        <li><strong>Objetivo:</strong> Crear una breve interacción memorable que pueda llevar a una conversación futura.</li>
+                        <li><strong>Análisis:</strong> La persona probablemente está aburrida de los halagos genéricos.</li>
+                        <li><strong>Pretexto:</strong> Te acercas después de su charla y dices: "Ha sido una charla fantástica. La parte en la que mencionaste [detalle específico e interesante] me ha hecho pensar en cómo se aplica a [un problema de tu sector]. No quiero robarte tiempo ahora, pero ¿te importaría si te envío una pregunta muy breve por email al respecto?".</li>
+                        <li><strong>Resultado del Escenario:</strong> Has demostrado que has escuchado atentamente, has hecho un cumplido específico, has mostrado respeto por su tiempo y has creado una razón legítima para un contacto futuro.</li>
+                    </ol>
+                </p>
+            </div>
+        </div>
+    </div>` 
+},
+  'is-a4': { 
+    title: 'La Ética de la Influencia: El Dilema del Poder', 
+    content: `<div class="space-y-6">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">1. La Diferencia Crucial: Influencia vs. Manipulación</h2>
+            <p class="text-gray-300">Las habilidades que has aprendido son herramientas de un poder inmenso. Y como toda herramienta poderosa, pueden usarse para construir o para destruir. Aquí yace la diferencia fundamental:</p>
+            <ul class="list-disc list-inside text-gray-300 space-y-2 mt-3">
+                <li><strong class="text-white">Influencia:</strong> Es el arte de la persuasión para un <strong class="text-green-400">beneficio mutuo (Ganar-Ganar)</strong>. Busca alinear intereses, crear valor y mejorar las situaciones para todas las partes. La influencia construye confianza y relaciones a largo plazo.</li>
+                <li><strong class="text-white">Manipulación:</strong> Es el uso de la persuasión para un <strong class="text-red-400">beneficio propio a costa de otros (Ganar-Perder)</strong>. Implica engaño, explotación de debilidades y falta de transparencia sobre la intención final. La manipulación destruye la confianza y las relaciones.</li>
+            </ul>
+        </div>
+        <img src="https://placehold.co/600x400/374151/E5E7EB?text=%C3%89tica" class="rounded-lg shadow-lg" alt="Una balanza equilibrada, simbolizando la justicia y la ética.">
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">2. El Marco de Decisión Ética (Tu Brújula Interna)</h2>
+            <p class="text-gray-300">Antes de usar una técnica de influencia, haz una pausa y pásala por este filtro de 4 preguntas:</p>
+            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                <li><strong>La Pregunta de la Transparencia:</strong> Si la otra persona supiera exactamente qué técnica estoy usando y por qué, ¿se sentiría respetada o engañada?</li>
+                <li><strong>La Pregunta del Valor:</strong> ¿Mi objetivo final crea valor genuino para la otra persona o solo para mí?</li>
+                <li><strong>La Pregunta de la Relación:</strong> ¿Esta acción fortalecerá o debilitará la confianza y la relación a largo plazo?</li>
+                <li><strong>La Pregunta de la Empatía (La Regla de Oro):</strong> ¿Me gustaría que alguien usara esta técnica conmigo de esta misma forma y con esta misma intención?</li>
+            </ul>
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-yellow-400 mb-2">3. Casos de Estudio: La Misma Técnica, Dos Caminos</h2>
+            <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 space-y-4">
+                <p class="text-gray-300">
+                    <strong class="text-white">Técnica:</strong> Principio de Autoridad.<br>
+                    <strong class="text-green-400">Uso Ético (Influencia):</strong> Un médico utiliza su conocimiento y su título para convencer a un paciente de que adopte hábitos más saludables, mejorando su calidad de vida.<br>
+                    <strong class="text-red-400">Uso No Ético (Manipulación):</strong> Una persona con una falsa credencial de "experto financiero" utiliza su supuesta autoridad para convencer a personas vulnerables de que inviertan en una estafa.
+                </p>
+                <p class="text-gray-300">
+                    <strong class="text-white">Técnica:</strong> Compromiso y Coherencia.<br>
+                    <strong class="text-green-400">Uso Ético (Influencia):</strong> Le pides a un amigo que se comprometa a ser tu "compañero de responsabilidad" para ir al gimnasio, ayudándose mutuamente a alcanzar un objetivo que ambos desean.<br>
+                    <strong class="text-red-400">Uso No Ético (Manipulación):</strong> Un vendedor te hace firmar un formulario de "sondeo sin compromiso" para luego presionarte, diciendo "pero si ya has mostrado tu interés por escrito", para que compres algo que no necesitas.
+                </p>
+            </div>
+            <p class="text-center font-bold text-lg mt-6 text-yellow-300">El verdadero poder no reside en saber cómo influir, sino en tener la sabiduría para saber cuándo, cómo y, lo más importante, por qué hacerlo.</p>
+        </div>
+    </div>` 
+}
         };
+      
+      
+      
         const challenges = { 
             'c-1': { title: 'Reto: Gestos Pacificadores', scenario: 'Estás en una reunión y le preguntas a un colega sobre el retraso de un proyecto. Él responde: "No te preocupes, todo está bajo control".', question: 'Mientras lo dice, ¿cuáles de los siguientes gestos podrían indicar que se siente internamente estresado, a pesar de sus palabras? <strong>Selecciona todos los que apliquen.</strong>', options: [ {text: 'Se toca la parte posterior del cuello.', correct: true}, {text: 'Mantiene contacto visual directo y firme.', correct: false}, {text: 'Se frota el brazo o la pierna.', correct: true}, {text: 'Se ajusta el nudo de la corbata o el collar.', correct: true} ]},
             'c-2': { title: 'Reto: Incongruencia en una Cita', scenario: 'Al final de una primera cita, le preguntas a la otra persona: "¿Te gustaría que nos volviéramos a ver?". Te responde "¡Sí, claro!", pero mientras lo dice, se encoge ligeramente de hombros y sus pies apuntan hacia la salida.', question: '¿Cuál es el mensaje más probable?', options: [ {text: 'Está muy entusiasmada y quiere volver a verte.', correct: false}, {text: 'Sus palabras son amables, pero su cuerpo indica duda o deseo de irse.', correct: true}, {text: 'Está pensando en su agenda para la próxima cita.', correct: false} ]},
@@ -306,8 +717,475 @@
             'c-27': { title: 'Reto: Ojos que Mienten', scenario: 'Le preguntas a un empleado que llegó tarde: "¿El tráfico estaba mal en la autopista principal?". Él responde "Sí, terrible" mientras mira hacia arriba y a la derecha. Sabes que él normalmente toma una ruta secundaria.', question: '¿Qué sugiere su respuesta no verbal?', options: [ {text: 'Está recordando el tráfico que vio.', correct: false}, {text: 'Está construyendo una imagen visual para justificar su retraso, lo que podría indicar una mentira.', correct: true}, {text: 'Está recordando el sonido del claxon de los coches.', correct: false} ]},
             'c-28': { title: 'Reto: Proceso Doble', scenario: 'Le dices a una amiga: "Tu presentación fue increíble". Ella responde "Gracias" y mira hacia su lado izquierdo, y luego baja la mirada a su derecha.', question: '¿Qué proceso doble podría estar ocurriendo?', options: [ {text: 'Está construyendo una mentira y luego sintiéndose mal por ello.', correct: false}, {text: 'Está recordando tus palabras exactas (Auditivo Recordado) y luego conectando con el sentimiento de orgullo (Kinestésico).', correct: true}, {text: 'Está hablando consigo misma y luego visualizando el futuro.', correct: false} ]},
             'c-29': { title: 'Reto: El Plan del Arquitecto', scenario: 'Un arquitecto te explica los planos de una casa. Cuando le preguntas sobre el color de las paredes, mira hacia arriba a la izquierda. Cuando le preguntas por qué eligió una viga de soporte específica, mira hacia abajo a la izquierda.', question: '¿Qué indican estos dos movimientos?', options: [ {text: 'Recordó el color (Visual Recordado) y luego procesó la lógica de la viga (Diálogo Interno).', correct: true}, {text: 'Inventó el color y luego recordó la lógica.', correct: false}, {text: 'Sintió el color y luego escuchó el sonido de la viga.', correct: false} ]},
-            'c-30': { title: 'Reto: Calibración Inversa', scenario: 'Antes de una pregunta importante, calibras a una persona zurda. Le preguntas por el color de su coche (mira arriba-derecha) y luego le pides que imagine un perro verde (mira arriba-izquierda).', question: '¿Qué has descubierto?', options: [ {text: 'La persona está mintiendo sobre el color de su coche.', correct: false}, {text: 'Esta persona tiene el mapa de claves oculares invertido, lo cual es común en personas zurdas.', correct: true}, {text: 'Las claves oculares no funcionan con esta persona.', correct: false} ]},
+            'c-30': { title: 'Reto: Calibración Inversa', scenario: 'Antes de una pregunta importante, calibras a una persona zurda. Le preguntas por el color de su coche (mira arriba-derecha) y luego le pides que imagine un perro verde (mira arriba-izquierda).', question: '¿Qué has descubierto?', options: [ {text: 'La persona está mintiendo sobre el color de su coche.', correct: false}, {text: 'Esta persona tiene el mapa de claves oculares invertido, lo cual es común en personas zurdas.', correct: true}, {text: 'Las claves oculares no funcionan con esta persona.', correct: false} ]}, 'c-31': { 
+    title: 'Reto: El Primer Paso (Reciprocidad)', 
+    scenario: 'Eres nuevo en un departamento y quieres construir una buena relación con un colega senior que parece muy ocupado y reservado. Quieres aplicar el principio de reciprocidad.', 
+    question: '¿Cuál sería el primer paso más efectivo y ético?', 
+    options: [ 
+        {text: 'Pedirle un favor importante para demostrar que valoras su experiencia.', correct: false}, 
+        {text: 'Encontrar una forma genuina de ayudarle en algo pequeño sin que te lo pida, como enviarle un artículo útil sobre un problema que le oíste mencionar.', correct: true}, 
+        {text: 'Esperar a que él te ofrezca su ayuda primero para no molestarle.', correct: false}
+    ]
+},
+'c-32': { 
+    title: 'Reto: La Interrupción Justificada', 
+    scenario: 'Necesitas hacerle una pregunta urgente a tu jefa, que está visiblemente concentrada en una tarea importante.', 
+    question: '¿Cuál es la forma más eficaz de interrumpirla usando una justificación legítima?', 
+    options: [ 
+        {text: 'Decir: "Disculpa, ¿tienes un minuto? Es importante".', correct: false}, 
+        {text: 'Decir: "Jefa, sé que estás ocupada, pero necesito una respuesta sobre el proyecto X porque el cliente está esperando en la otra línea".', correct: true},
+        {text: 'Esperar a que termine, aunque la pregunta sea urgente.', correct: false} 
+    ]
+},
+'c-33': { 
+    title: 'Reto: El Pie en la Puerta', 
+    scenario: 'Quieres que un amigo muy ocupado te ayude con una tarea grande, como revisar a fondo un proyecto personal tuyo.', 
+    question: 'Aplicando la técnica del "Pie en la Puerta", ¿cuál debería ser tu petición INICIAL?', 
+    options: [ 
+        {text: 'Pedirle directamente que dedique una tarde a revisar tu proyecto.', correct: false}, 
+        {text: 'Preguntarle si se considera un buen amigo que ayuda a los demás.', correct: false},
+        {text: 'Pedirle si puede echarle un vistazo de 5 minutos a una sola página del proyecto para darte su opinión sobre el título.', correct: true}
+    ]
+},
+'c-34': { 
+    title: 'Reto: La Fuerza del Grupo', 
+    scenario: 'Estás en una reunión tratando de convencer a tu equipo de adoptar una nueva metodología de trabajo. Hay bastante escepticismo.', 
+    question: '¿Qué argumento se basa más fuertemente en el principio de Prueba Social?', 
+    options: [ 
+        {text: 'Explicar detalladamente por qué, en tu opinión, esta metodología es superior.', correct: false}, 
+        {text: 'Mencionar que el equipo de al lado, con retos similares, la adoptó hace un mes y ya reporta una mejora del 20% en su eficiencia.', correct: true},
+        {text: 'Decir que si no innovan, la empresa podría quedarse atrás.', correct: false}
+    ]
+}, 'c-35': { 
+    title: 'Reto: Conexión Instantánea (Afinidad)', 
+    scenario: 'Estás en un evento de networking y quieres conectar con un ponente que te interesa. Sabes que un simple "me ha gustado tu charla" es demasiado genérico.', 
+    question: '¿Qué frase utiliza mejor el principio de Afinidad a través de la similaridad y el elogio sincero?', 
+    options: [ 
+        {text: '"Hola, ¿puedo hacerte una pregunta sobre tu trabajo?".', correct: false}, 
+        {text: '"La forma en que explicaste [Concepto X] fue brillante. Me recordó a un problema que tuve en [Tu Campo], lo que demuestra lo universal que es tu punto. Soy [Tu Nombre], por cierto".', correct: true},
+        {text: '"Necesito tu consejo sobre un tema, ¿tienes un minuto?".', correct: false} 
+    ]
+},
+'c-36': { 
+    title: 'Reto: Proyectando Credibilidad (Autoridad)', 
+    scenario: 'Eres un profesional freelance y un cliente potencial duda de tu capacidad para manejar su proyecto porque eres un "equipo de uno".', 
+    question: '¿Cuál es la mejor manera de proyectar autoridad sin sonar arrogante?', 
+    options: [ 
+        {text: '"No te preocupes, soy muy bueno en lo que hago y tengo mucha experiencia".', correct: false},
+        {text: '"Entiendo tu duda. Precisamente por eso, en mi web puedes ver testimonios de clientes como [Cliente Importante] y un caso de estudio detallado de cómo resolví un problema similar al tuyo".', correct: true},
+        {text: '"Te aseguro que soy más eficiente que muchas agencias grandes".', correct: false}
+    ]
+},
+'c-37': { 
+    title: 'Reto: La Batalla de Marcos', 
+    scenario: 'Un entrevistador te lanza una pregunta para ponerte a prueba: "¿Por qué debería contratarte a ti si tengo a otros diez candidatos con más experiencia?". Su marco es: "Tú eres uno más del montón".', 
+    question: '¿Cuál es la mejor forma de tomar el control del marco (Frame Control)?', 
+    options: [ 
+        {text: 'Defenderte diciendo: "Aunque tengan más años, mi experiencia es más relevante y aprendo rápido".', correct: false},
+        {text: 'Reencuadrar con calma: "Esa es una buena pregunta. No se trata de años de experiencia, sino de resultados. En mi último puesto, lideré un proyecto que generó [Resultado Concreto]. La pregunta es si buscáis a alguien que acumule años o a alguien que genere resultados".', correct: true},
+        {text: 'Aceptar su marco y decir: "Es cierto, hay gente con más experiencia, pero yo le pondré más ganas que nadie".', correct: false}
+    ]
+},
+'c-38': { 
+    title: 'Reto: El Juego a Largo Plazo', 
+    scenario: 'Un cliente te pide un pequeño descuento en un proyecto que, si lo haces bien, podría llevar a una colaboración mucho más grande y duradera.', 
+    question: '¿Cómo evalúas la situación con un "Pensamiento en Capas"?', 
+    options: [ 
+        {text: 'Capa 1 (Transacción): Rechazas el descuento porque reduce tu beneficio inmediato.', correct: false},
+        {text: 'Capa 4 (Posicionamiento): Aceptas el pequeño descuento, verbalizando que lo haces como gesto de confianza para iniciar una relación a largo plazo, posicionándote como un socio flexible y estratégico.', correct: true},
+        {text: 'Capa 2 (Reputación): Te niegas firmemente para construir una reputación de que no negocias tus precios.', correct: false}
+    ]
+},
+'c-39': { 
+    title: 'Reto: El Escenario Perfecto', 
+    scenario: 'Quieres proponer a tu equipo un cambio importante que requiere más trabajo al principio, pero que traerá grandes beneficios después. Sabes que si lo propones en la reunión semanal, habrá quejas por la carga de trabajo extra.', 
+    question: '¿Cuál es la mejor forma de "diseñar el escenario" para tu propuesta?', 
+    options: [ 
+        {text: 'Enviar un email masivo a todo el equipo con la propuesta detallada para que todos la lean.', correct: false},
+        {text: 'Hablar primero en privado con el miembro más influyente y respetado del equipo, convencerle de los beneficios y pedirle su apoyo. Luego, presentar la idea al resto del equipo con su respaldo.', correct: true},
+        {text: 'Presentar la idea por sorpresa en la reunión para que no tengan tiempo de coordinar una respuesta negativa.', correct: false}
+    ]
+},
+'c-40': { 
+    title: 'Reto: El Dilema Ético', 
+    scenario: 'Descubres una forma de usar la "Prueba Social" mostrando estadísticas de una manera que, aunque técnicamente es cierta, es engañosa y podría llevar a los clientes a comprar un producto que no es el mejor para ellos.', 
+    question: 'Aplicando el marco de decisión ética, ¿qué pregunta es la más importante que debes hacerte?', 
+    options: [ 
+        {text: '"¿Es legal hacer esto?".', correct: false},
+        {text: '"Si mis clientes supieran exactamente cómo estoy presentando los datos, ¿se sentirían respetados o engañados?".', correct: true},
+        {text: '"¿Podría la competencia usar esta misma táctica contra mí?".', correct: false}
+    ]
+},
+'c-41': { 
+    title: 'Reto Avanzado: Rompiendo el Marco', 
+    scenario: 'En una negociación, la otra parte intenta intimidarte diciendo: "Tenemos otras ofertas mucho mejores sobre la mesa. Tienes una hora para aceptar o nos vamos". Su marco es de urgencia y escasez.', 
+    question: '¿Cuál es la respuesta más poderosa para romper su marco?', 
+    options: [ 
+        {text: 'Apresurarte y tratar de mejorar tu oferta dentro de esa hora.', correct: false},
+        {text: 'Con calma, levantarte, sonreír y decir: "Entiendo. Parece que no estamos en el mismo punto. Tómense el tiempo que necesiten con las otras ofertas. Si algo cambia, saben dónde encontrarme". Y te vas.', correct: true},
+        {text: 'Preguntarles cuáles son esas otras ofertas para poder igualarlas.', correct: false}
+    ]
+},
+'c-42': { 
+    title: 'Reto Avanzado: La Reputación Silenciosa', 
+    scenario: 'En tu empresa, hay dos expertos en un tema. El Experto A habla constantemente de sus logros. El Experto B rara vez habla de sí mismo, pero dedica tiempo a ayudar a otros a resolver sus problemas más difíciles, a menudo sin pedir nada a cambio.', 
+    question: 'Desde la perspectiva del "Pensamiento en Capas", ¿quién está construyendo un poder y una reputación más sólidos a largo plazo?', 
+    options: [ 
+        {text: 'El Experto A, porque se asegura de que todos conozcan sus éxitos (Capa 1 y 2).', correct: false},
+        {text: 'El Experto B, porque sus acciones (ayudar a otros) construyen una reputación de valor incalculable y una red de aliados que le apoyarán en el futuro (Capa 2, 3 y 4).', correct: true},
+        {text: 'Ambos construyen el mismo nivel de poder, pero de formas diferentes.', correct: false}
+    ]
+},
         };
+      
+      const simulations = {
+    'sim-1': {
+        title: 'El Colega Escéptico',
+        description: 'Tu objetivo: Presentar una nueva idea a un colega experimentado pero cínico y conseguir que acepte explorarla en una breve reunión, en lugar de rechazarla de plano.',
+        npc: { name: 'Javier', mood: 'Escéptico' },
+        conversation: {
+            'start': {
+                npc_line: 'Hola. Oye, he visto tu email sobre la "nueva iniciativa". Suena a más trabajo y a la típica idea del mes. ¿De qué va esto?',
+                options: [
+                    { text: 'Defender la idea directamente.', technique: 'Argumentación Lógica', target_node: 'node_defense' },
+                    { text: 'Validar su escepticismo primero.', technique: 'Validación y Escucha Activa', target_node: 'node_validate' },
+                    { text: 'Intentar imponer un marco de poder.', technique: 'Control del Marco (Agresivo)', target_node: 'node_frame_power' }
+                ]
+            },
+            'node_defense': {
+                npc_line: 'Ya, ya. "Eficiencia", "optimización"... siempre es la misma historia. Al final, solo son más dolores de cabeza para los que de verdad hacemos el trabajo. No tengo tiempo para esto.',
+                is_end: true,
+                feedback: 'Resultado: RECHAZO. Al defender tu idea directamente, ignoraste su estado emocional. Chocaste contra su muro en lugar de rodearlo. No se sintió escuchado y se cerró en banda.'
+            },
+            'node_validate': {
+                npc_line: 'Bueno, al menos no eres un optimista ciego. Tienes razón, hemos visto muchas ideas ir y venir. ¿Qué hace que esto sea diferente?',
+                options: [
+                    { text: 'Presentar la idea como una solución a su "dolor".', technique: 'Reencuadre + Justificación', target_node: 'node_reframe' },
+                    { text: 'Presumir de los beneficios de la idea.', technique: 'Argumentación Lógica', target_node: 'node_defense' }
+                ]
+            },
+            'node_frame_power': {
+                npc_line: '¿Perdona? Mira, no sé de dónde vienes tú, pero aquí valoramos la experiencia, no las ínfulas de grandeza. Si crees que esto va a funcionar, buena suerte. Yo no cuentes conmigo.',
+                is_end: true,
+                feedback: 'Resultado: HOSTILIDAD. Intentaste imponer un marco de poder sin haber construido rapport ni autoridad. Se sintió atacado y reaccionó de forma agresiva. El control del marco sin calibración es un desastre.'
+            },
+            'node_reframe': {
+                npc_line: 'Hmm... eso que dices sobre los informes manuales es cierto, es una pérdida de tiempo enorme. ¿De verdad crees que tu idea puede solucionar eso?',
+                options: [
+                    { text: 'Cerrar con una petición grande.', technique: 'Exageración', target_node: 'node_fail_close' },
+                    { text: 'Cerrar con una petición pequeña y concreta.', technique: 'Pie en la Puerta', target_node: 'node_success_close' }
+                ]
+            },
+            'node_fail_close': {
+                npc_line: '¡Uf! ¿Implementar todo un sistema nuevo? Olvídalo. Es demasiado riesgo y demasiado trabajo. No va a pasar.',
+                is_end: true,
+                feedback: 'Resultado: ABUMADO. Has pasado de 0 a 100. La idea le interesaba, pero tu petición fue demasiado grande y activó de nuevo su aversión al riesgo. Debiste pedir un paso más pequeño.'
+            },
+            'node_success_close': {
+                npc_line: '¿Una reunión de 15 minutos? Sin PowerPoints, solo tú, yo y una pizarra... Vale, eso es razonable. El jueves por la mañana tengo un hueco. A ver qué tienes.',
+                is_end: true,
+                feedback: '¡ÉXITO! Has validado su emoción, reencuadrado la idea como una solución a su problema y has cerrado con una petición pequeña y de bajo riesgo. Has convertido a un escéptico en un posible colaborador.'
+            }
+        }
+    },
+        'sim-2': {
+    title: 'La Guardiana',
+    description: 'Tu objetivo: Necesitas hablar urgentemente con un directivo (Sr. Morales), pero su asistente personal (Laura) es extremadamente protectora y tiene instrucciones de no interrumpirle.',
+    npc: { name: 'Laura', mood: 'Profesional y firme' },
+    conversation: {
+        'start': {
+            npc_line: 'Buenas tardes, oficina del Sr. Morales. ¿En qué puedo ayudarle?',
+            options: [
+                { text: 'Exigir hablar con él por la urgencia.', technique: 'Presión', target_node: 'node_demand' },
+                { text: 'Validar su rol y crear afinidad.', technique: 'Validación + Afinidad', target_node: 'node_ally' },
+                { text: 'Intentar engañarla sobre la importancia.', technique: 'Engaño', target_node: 'node_deceive' }
+            ]
+        },
+        'node_demand': {
+            npc_line: 'Entiendo que es urgente para usted, pero el Sr. Morales está en una reunión crucial y me ha pedido explícitamente que no le interrumpa. Si me deja el recado, me aseguraré de que lo reciba.',
+            is_end: true,
+            feedback: 'Resultado: BLOQUEADO. Tu urgencia no es su urgencia. Al presionarla, la pusiste a la defensiva y activaste su modo "guardiana".'
+        },
+        'node_deceive': {
+            npc_line: '¿Un asunto personal? El Sr. Morales no me ha informado de que esperara ninguna llamada personal. Tendrá que darme más detalles o dejar un recado como todo el mundo.',
+            is_end: true,
+            feedback: 'Resultado: SOSPECHA. Intentaste un engaño poco creíble. Los asistentes experimentados han oído todas las excusas y tu falta de transparencia te ha hecho parecer poco fiable.'
+        },
+        'node_ally': {
+            npc_line: 'Le agradezco su comprensión. Es un día complicado. ¿De qué se trata exactamente?',
+            options: [
+                { text: 'Explicar el problema y pedirle su consejo.', technique: 'Posicionarla como experta', target_node: 'node_expert' },
+                { text: 'Minimizar el problema para no preocuparla.', technique: 'Restar importancia', target_node: 'node_minimize' }
+            ]
+        },
+        'node_minimize': {
+            npc_line: 'Si es un "pequeño detalle", entonces seguro que puede esperar. Le daré el recado cuando el Sr. Morales se desocupe.',
+            is_end: true,
+            feedback: 'Resultado: POSPUESTO. Al minimizar el problema, le diste la excusa perfecta para no tratarlo como una prioridad. Contradijiste tu propia necesidad de urgencia.'
+        },
+        'node_expert': {
+            npc_line: 'Vaya, eso que me cuentas sobre el servidor sí que suena importante... y él odia los problemas técnicos. Mira, ahora mismo es imposible, pero tiene una pausa de 5 minutos en 15 minutos. Si te acercas a su despacho entonces, le pasaré una nota diciendo que es una emergencia técnica. Es lo mejor que puedo ofrecer.',
+            is_end: true,
+            feedback: '¡ÉXITO! No luchaste contra la guardiana, la convertiste en tu aliada. Validaste su rol, le diste la información de forma transparente y le pediste consejo, posicionándola como la experta que puede solucionar tu problema de acceso. Ella te ha abierto la puerta.'
+        }
+    }
+},
+'sim-3': {
+    title: 'El Cliente Furioso',
+    description: 'Tu objetivo: Un cliente llama furioso porque un producto llegó tarde y defectuoso. Debes calmarlo y encontrar una solución para retenerlo.',
+    npc: { name: 'Cliente', mood: 'Furioso' },
+    conversation: {
+        'start': {
+            npc_line: '¡Estoy harto! ¡No solo el pedido llega tres días tarde, sino que la caja está rota y el producto no funciona! ¡Es inaceptable! ¡Quiero mi dinero de vuelta ahora mismo!',
+            options: [
+                { text: 'Pedirle que se calme y explicarle el procedimiento.', technique: 'Racionalización', target_node: 'node_calm_down' },
+                { text: 'Disculparse inmediatamente y ofrecer una solución.', technique: 'Solución Rápida', target_node: 'node_quick_fix' },
+                { text: 'Dejar que se desahogue y etiquetar su emoción.', technique: 'Escucha Activa + Etiquetado', target_node: 'node_listen' }
+            ]
+        },
+        'node_calm_down': {
+            npc_line: '¡No me digas que me calme! ¡Tengo todo el derecho a estar enfadado! ¡Pásame con tu supervisor ahora mismo!',
+            is_end: true,
+            feedback: 'Resultado: ESCALADA. Nunca le pidas a alguien enfadado que se calme. Se interpreta como una invalidación de sus sentimientos y solo aumenta su ira.'
+        },
+        'node_quick_fix': {
+            npc_line: 'No quiero otro producto, ¿no me has oído? ¡Vuestra empresa es un desastre! ¡Quiero mi dinero y punto!',
+            is_end: true,
+            feedback: 'Resultado: RECHAZO. Te adelantaste. Al ofrecer una solución antes de que el cliente se sintiera escuchado, pareció que solo querías quitarte el problema de encima, no que entendías su frustración.'
+        },
+        'node_listen': {
+            npc_line: '¡Pues claro que estoy frustrado! ¡He perdido tiempo y dinero por vuestra culpa! ... (suspira) ... Vale, ¿y ahora qué?',
+            options: [
+                { text: 'Explicar por qué ocurrió el problema.', technique: 'Justificación', target_node: 'node_explain' },
+                { text: 'Ofrecer una solución que compense el daño.', technique: 'Reciprocidad + Solución', target_node: 'node_solution' }
+            ]
+        },
+        'node_explain': {
+            npc_line: '¡A mí no me importan vuestros problemas de logística! ¡Me importa que me habéis fallado! ¡Esto es increíble!',
+            is_end: true,
+            feedback: 'Resultado: IRRELEVANTE. Al cliente no le importan tus excusas o razones, solo su problema. Justificar el error solo echa más leña al fuego de su frustración.'
+        },
+        'node_solution': {
+            npc_line: '¿Un reembolso completo y me envían uno nuevo sin coste por las molestias? ... Bueno... supongo que es aceptable. Al menos alguien se hace responsable. De acuerdo, procedamos así.',
+            is_end: true,
+            feedback: '¡ÉXITO! Dejaste que el cliente expresara su ira, validaste su emoción y luego ofreciste una solución que no solo arreglaba el problema, sino que compensaba las molestias. Convertiste un desastre en una oportunidad para demostrar un excelente servicio al cliente.'
+        }
+    }
+},
+'sim-4': {
+    title: 'La Entrevista de Trabajo',
+    description: 'Estás en una entrevista para un puesto que realmente quieres. El entrevistador te lanza la pregunta clásica para ponerte a prueba.',
+    npc: { name: 'Entrevistador', mood: 'Analítico' },
+    conversation: {
+        'start': {
+            npc_line: 'Tu currículum es impresionante. Pero todo el mundo tiene puntos débiles. Dime, ¿cuál es tu mayor debilidad?',
+            options: [
+                { text: 'Dar una falsa debilidad que es en realidad una fortaleza.', technique: 'Respuesta Cliché', target_node: 'node_cliche' },
+                { text: 'Mencionar una debilidad real pero irrelevante para el puesto.', technique: 'Evasión', target_node: 'node_irrelevant' },
+                { text: 'Admitir una debilidad real y enmarcarla en el crecimiento.', technique: 'Reencuadre Honesto', target_node: 'node_reframe' }
+            ]
+        },
+        'node_cliche': {
+            npc_line: 'Ya veo. "Perfeccionista". Es la respuesta que da todo el mundo. Seamos un poco más originales, por favor.',
+            is_end: true,
+            feedback: 'Resultado: PÉRDIDA DE CREDIBILIDAD. Esta respuesta es tan usada que suena falsa y poco original. El entrevistador la interpreta como una falta de autoconciencia.'
+        },
+        'node_irrelevant': {
+            npc_line: 'Entiendo. Bueno, es bueno saber que no se te da bien cocinar, pero me gustaría que nos centráramos en el ámbito profesional. Volvamos a la pregunta.',
+            is_end: true,
+            feedback: 'Resultado: EVASIVO. El entrevistador percibe que estás esquivando la pregunta, lo que puede interpretarse como que tienes algo que ocultar.'
+        },
+        'node_reframe': {
+            npc_line: 'Interesante. Así que reconoces que la delegación era un punto a mejorar y has tomado pasos activos para solucionarlo. Eso demuestra madurez y autoconciencia. Muy bien. Hablemos ahora de tus expectativas salariales.',
+            is_end: true,
+            feedback: '¡ÉXITO! No has negado tener una debilidad, lo cual te hace humano y creíble. Has elegido una debilidad real, has demostrado que eres consciente de ella y, lo más importante, has probado que eres proactivo para mejorar. Has convertido una pregunta trampa en una demostración de tu capacidad de crecimiento.'
+        }
+    }
+},
+'sim-5': {
+    title: 'El Grupo Cerrado',
+    description: 'Estás en un evento y ves a un grupo de personas, incluyendo a alguien que te interesa conocer. El grupo está en una conversación animada y parece difícil entrar.',
+    npc: { name: 'Grupo', mood: 'Animado y cerrado' },
+    conversation: {
+        'start': {
+            npc_line: '(El grupo está riendo sobre una broma interna. Te acercas y hay una pausa mientras te miran).',
+            options: [
+                { text: 'Presentarte directamente e interrumpir.', technique: 'Interrupción', target_node: 'node_interrupt' },
+                { text: 'Quedarte cerca en silencio, esperando que te incluyan.', technique: 'Pasividad', target_node: 'node_passive' },
+                { text: 'Escuchar, encontrar un punto de entrada y hacer una pregunta abierta.', technique: 'Escucha Activa + Pregunta Abierta', target_node: 'node_listen_ask' }
+            ]
+        },
+        'node_interrupt': {
+            npc_line: '(Sonrisas educadas pero forzadas). "Hola". La conversación se detiene torpemente y luego alguien intenta retomarla, excluyéndote sutilmente.',
+            is_end: true,
+            feedback: 'Resultado: EXCLUSIÓN. Interrumpir una conversación fluida es socialmente torpe. El grupo, para proteger su dinámica, te ha dejado fuera.'
+        },
+        'node_passive': {
+            npc_line: '(El grupo te ignora educadamente y continúa su conversación. Te sientes cada vez más incómodo y fuera de lugar).',
+            is_end: true,
+            feedback: 'Resultado: IGNORADO. La gente absorta en una conversación rara vez se detiene para incluir a un extraño. La responsabilidad de entrar era tuya.'
+        },
+        'node_listen_ask': {
+            npc_line: '"¡Exacto! Estábamos hablando de la última temporada de esa serie. ¿Tú también la has visto?".',
+            is_end: true,
+            feedback: '¡ÉXITO! No interrumpiste, sino que demostraste que estabas prestando atención. Tu pregunta abierta sobre el tema que ya estaban tratando fue la invitación perfecta para que te incluyeran. Has entrado en el círculo.'
+        }
+    }
+},
+'sim-6': {
+    title: 'Conflicto de Equipo',
+    description: 'Dos miembros clave de tu equipo, Ana (creativa) y David (analítico), están discutiendo acaloradamente sobre cómo abordar un nuevo proyecto.',
+    npc: { name: 'Ana y David', mood: 'Enfrentados' },
+    conversation: {
+        'start': {
+            npc_line: 'Ana: "¡Tu enfoque es demasiado rígido, matará la creatividad!". David: "¡Y tu enfoque es un caos, nos hará perder tiempo y dinero!".',
+            options: [
+                { text: 'Tomar partido por la idea que crees que es mejor.', technique: 'Tomar Partido', target_node: 'node_side' },
+                { text: 'Decirles que dejen de discutir y se pongan a trabajar.', technique: 'Autoritarismo', target_node: 'node_authoritarian' },
+                { text: 'Mediar, validando ambos puntos de vista.', technique: 'Mediación y Reencuadre', target_node: 'node_mediate' }
+            ]
+        },
+        'node_side': {
+            npc_line: '(El miembro al que no apoyaste se cruza de brazos, resentido). "Vale, si creéis que esa es la mejor forma, allá vosotros. Luego no digáis que no os lo advertí".',
+            is_end: true,
+            feedback: 'Resultado: EQUIPO DIVIDIDO. Al tomar partido, has creado un ganador y un perdedor. Has alienado a un miembro del equipo y has dañado la moral del grupo.'
+        },
+        'node_authoritarian': {
+            npc_line: '(Ambos te miran con resentimiento. La discusión se detiene, pero la tensión es palpable. El trabajo se hará de mala gana).',
+            is_end: true,
+            feedback: 'Resultado: CALMA Tensa. Has detenido la discusión, pero no has resuelto el conflicto. La tensión subyacente afectará negativamente al proyecto.'
+        },
+        'node_mediate': {
+            npc_line: 'Ana: "Bueno, supongo que un poco de estructura no vendría mal...". David: "Y supongo que podríamos ser más flexibles en la fase inicial...".',
+            is_end: true,
+            feedback: '¡ÉXITO! No tomaste partido. En lugar de eso, actuaste como un líder. Validaste las preocupaciones de ambos, reencuadraste el problema como un objetivo común y les hiciste responsables de encontrar una solución conjunta. Has transformado un conflicto en una colaboración.'
+        }
+    }
+},
+'sim-7': {
+    title: 'La Negociación Salarial',
+    description: 'Te han ofrecido un puesto que te encanta, pero el salario ofrecido es un 10% menor de lo que esperabas y de lo que crees que vales.',
+    npc: { name: 'Director de RRHH', mood: 'Amable pero firme' },
+    conversation: {
+        'start': {
+            npc_line: 'Estamos muy contentos de ofrecerte el puesto con un salario de 50.000€. Creemos que es una oferta muy competitiva.',
+            options: [
+                { text: 'Aceptar la oferta por miedo a perder el puesto.', technique: 'Conformismo', target_node: 'node_accept' },
+                { text: 'Rechazar la oferta de plano si no suben a 55.000€.', technique: 'Ultimátum', target_node: 'node_ultimatum' },
+                { text: 'Agradecer la oferta y presentar un caso basado en valor.', technique: 'Negociación Basada en Valor', target_node: 'node_value' }
+            ]
+        },
+        'node_accept': {
+            npc_line: '¡Fantástico! Nos alegramos de tenerte a bordo. Te enviaré el contrato ahora mismo.',
+            is_end: true,
+            feedback: 'Resultado: ACEPTADO PERO... Has conseguido el trabajo, pero has dejado dinero sobre la mesa y probablemente sentirás un ligero resentimiento. Has perdido la oportunidad de ser valorado en tu justo precio.'
+        },
+        'node_ultimatum': {
+            npc_line: 'Entiendo. 50.000€ es nuestra oferta final para este nivel. Es una pena, te deseamos mucha suerte en tu búsqueda.',
+            is_end: true,
+            feedback: 'Resultado: OFERTA RETIRADA. Un ultimátum cierra la puerta a la negociación. La empresa prefiere perder un candidato a ceder ante una demanda inflexible.'
+        },
+        'node_value': {
+            npc_line: 'Entiendo tu punto. El valor que aportas en [área específica] es ciertamente alto. Déjame ver qué puedo hacer. ¿Qué te parecerían 53.500€ y una revisión en 6 meses? Es lo máximo que puedo estirar el presupuesto.',
+            is_end: true,
+            feedback: '¡ÉXITO! No has exigido, has justificado. Al expresar tu entusiasmo, reafirmar tu valor con datos y mantener la conversación abierta, has conseguido que el director de RRHH se convierta en tu aliado para encontrar una solución. Has negociado un aumento significativo y has ganado respeto.'
+        }
+    }
+},
+'sim-8': {
+    title: 'El Rival "Amistoso"',
+    description: 'En una reunión de equipo, después de tu presentación, un colega conocido por ser muy competitivo te lanza un cumplido envenenado.',
+    npc: { name: 'Colega Rival', mood: 'Sarcástico' },
+    conversation: {
+        'start': {
+            npc_line: '¡Vaya presentación! Es increíble cómo has conseguido montar algo tan decente con tan poco tiempo. ¡Felicidades!',
+            options: [
+                { text: 'Enfrentarte a él directamente.', technique: 'Confrontación', target_node: 'node_confront' },
+                { text: 'Ignorar el sarcasmo y agradecer el "cumplido".', technique: 'Pasividad', target_node: 'node_passive_agressive' },
+                { text: 'Aceptar el cumplido y reencuadrar el veneno con humor.', technique: 'Reencuadre (Amused Mastery)', target_node: 'node_reframe_humor' }
+            ]
+        },
+        'node_confront': {
+            npc_line: '"¡Oye, tranquilo! ¡Solo era una broma! Parece que alguien no se aguanta nada..." (El resto del equipo se siente incómodo).',
+            is_end: true,
+            feedback: 'Resultado: PIERDES ESTATUS. Has caído en su trampa. Al reaccionar a la defensiva, le has dado el poder y has quedado como alguien que no tiene sentido del humor o que es demasiado sensible.'
+        },
+        'node_passive_agressive': {
+            npc_line: '(Sonríe, satisfecho). "De nada".',
+            is_end: true,
+            feedback: 'Resultado: HAS PERDIDO. Al aceptar el cumplido envenenado, has aceptado su marco. Él te ha menospreciado sutilmente y tú lo has permitido.'
+        },
+        'node_reframe_humor': {
+            npc_line: '(Se queda ligeramente descolocado por tu respuesta, sin saber cómo continuar. El resto del equipo sonríe ante tu ingenio).',
+            is_end: true,
+            feedback: '¡ÉXITO! Has demostrado un control del marco magistral. No has reaccionado a su provocación. Has cogido la parte positiva (el cumplido), has exagerado la parte negativa con humor y has mantenido un estatus alto. Le has desarmado por completo.'
+        }
+    }
+},
+'sim-9': {
+    title: 'La Cita Incómoda',
+    description: 'Estás en una primera cita. La conversación inicial ha fluido bien, pero de repente se produce un silencio incómodo y ambos os quedáis sin saber qué decir.',
+    npc: { name: 'Cita', mood: 'Nerviosa/o' },
+    conversation: {
+        'start': {
+            npc_line: '(Silencio... ambos miráis alrededor, evitando el contacto visual).',
+            options: [
+                { text: 'Hacer una pregunta genérica y aburrida.', technique: 'Pregunta de Relleno', target_node: 'node_boring' },
+                { text: 'Entrar en pánico y hablar de ti mismo sin parar.', technique: 'Monólogo Nervioso', target_node: 'node_monologue' },
+                { text: 'Reconocer el silencio con humor y cambiar de tema.', technique: 'Romper el Marco', target_node: 'node_break_frame' }
+            ]
+        },
+        'node_boring': {
+            npc_line: '"Sí, hace buen tiempo..." (La conversación muere de nuevo, la incomodidad aumenta).',
+            is_end: true,
+            feedback: 'Resultado: MÁS INCOMODIDAD. Has intentado rellenar el silencio con algo aburrido, lo que solo ha acentuado la falta de conexión en ese momento.'
+        },
+        'node_monologue': {
+            npc_line: '(Asiente educadamente, pero sus ojos parecen vidriosos. Está claro que ha desconectado y está abrumado por tu verborrea).',
+            is_end: true,
+            feedback: 'Resultado: DESCONEXIÓN. El pánico te ha hecho egocéntrico. En lugar de crear una conversación de dos, la has convertido en un monólogo que ha alejado a la otra persona.'
+        },
+        'node_break_frame': {
+            npc_line: '(Se ríe, visiblemente aliviada). "¡Totalmente! ¡Jajaja! Vale, mi turno. Pregunta aleatoria: ¿cuál es el viaje más raro que has hecho?".',
+            is_end: true,
+            feedback: '¡ÉXITO! Has hecho lo más valiente y efectivo: has reconocido la situación (el marco de "silencio incómodo") y lo has destruido con humor. Al hacerlo, has eliminado toda la presión y has demostrado confianza y habilidades sociales, permitiendo que la conversación se reinicie de forma divertida y relajada.'
+        }
+    }
+},
+'sim-10': {
+    title: 'El Vago del Grupo',
+    description: 'Estás en un proyecto universitario importante. Un miembro del equipo, Carlos, no ha entregado su parte y está poniendo en riesgo la nota de todos.',
+    npc: { name: 'Carlos', mood: 'Evasivo' },
+    conversation: {
+        'start': {
+            npc_line: 'Cuando le preguntas por su parte, te dice: "Sí, sí, tranquilo. Lo tengo casi listo. He estado súper liado con otras cosas".',
+            options: [
+                { text: 'Acusarle directamente de vago y amenazar con hablar con el profesor.', technique: 'Confrontación Agresiva', target_node: 'node_threat' },
+                { text: 'Hacer su parte del trabajo para evitar el conflicto.', technique: 'Evasión del Conflicto', target_node: 'node_avoidance' },
+                { text: 'Usar un enfoque de "nosotros" y establecer un compromiso claro.', technique: 'Marco Colaborativo', target_node: 'node_collaborative' }
+            ]
+        },
+        'node_threat': {
+            npc_line: '"¿Ah, sí? ¡Pues habla con el profesor! ¡A ver qué te dice! ¡Yo también puedo contarle un par de cosas! ¡Ahora sí que no hago nada!"',
+            is_end: true,
+            feedback: 'Resultado: GUERRA ABIERTA. La agresión ha generado más agresión. Carlos se ha puesto a la defensiva y ahora saboteará activamente el proyecto. El equipo está roto.'
+        },
+        'node_avoidance': {
+            npc_line: '"¡Genial, gracias! ¡Sabía que podía contar contigo!".',
+            is_end: true,
+            feedback: 'Resultado: RESENTIMIENTO. Has evitado el conflicto, pero has creado un precedente terrible. Carlos ha aprendido que puede aprovecharse de ti, y tú te sentirás resentido, lo que afectará a tu motivación y a la dinámica del grupo.'
+        },
+        'node_collaborative': {
+            npc_line: '(Suspira, un poco avergonzado). "Tienes razón... he estado procrastinando. Vale, me comprometo. Esta tarde a las 7 te envío mi parte terminada. Gracias por el toque".',
+            is_end: true,
+            feedback: '¡ÉXITO! No le has atacado a él, sino al problema. Has usado un marco de "nosotros" para recordarle que estáis en el mismo barco. Has validado su "estar liado" pero sin aceptar la excusa, y le has hecho verbalizar un compromiso específico (hora y fecha). Has salvado el proyecto y mantenido la integridad del equipo.'
+        }
+    }
+}
+        
+};
+      
+      
         const microExpressionsData = [
             { emotion: 'Alegría', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Alegr%C3%ADa' },
             { emotion: 'Tristeza', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Tristeza' },
@@ -430,6 +1308,31 @@
                 showChallengeLibrary();
             }
         }
+      
+      
+      function showSimulationLibrary() {
+    const libraryView = document.getElementById('simulation-library-view');
+    let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">Biblioteca de Simulaciones</h1></header><div class="space-y-4">`;
+    
+    for (const simId in simulations) {
+        const sim = simulations[simId];
+        content += `
+            <div onclick="startSimulation('${simId}')" class="bg-gray-800 p-4 rounded-lg flex items-center cursor-pointer hover:bg-gray-700 transition-colors">
+                <i data-lucide="message-square" class="text-yellow-400 mr-4"></i>
+                <div class="flex-grow">
+                    <h3 class="font-bold">${sim.title}</h3>
+                    <p class="text-sm text-gray-400">${sim.npc.name} (${sim.npc.mood})</p>
+                </div>
+                <i data-lucide="chevron-right" class="text-gray-500"></i>
+            </div>
+        `;
+    }
+
+    content += `</div>`;
+    libraryView.innerHTML = content;
+    navigateTo('simulation-library-view');
+}
+      
 
         function showChallengeLibrary() {
             const libraryView = document.getElementById('challenge-library-view');
@@ -628,7 +1531,90 @@
                 location.reload();
             }
         }
+      
+      let currentSim = null;
 
+function startSimulation(simId) {
+    currentSim = simulations[simId];
+    if (!currentSim) return;
+
+    const simView = document.getElementById('simulation-view');
+    simView.innerHTML = `
+        <header class="flex items-center mb-4">
+            <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+            <h1 class="text-2xl font-bold">${currentSim.title}</h1>
+        </header>
+        <div id="conversation-container" class="flex-grow flex flex-col justify-end space-y-4">
+            </div>
+    `;
+    navigateTo('simulation-view');
+    renderConversationNode('start');
+}
+
+function renderConversationNode(nodeId) {
+    const node = currentSim.conversation[nodeId];
+    if (!node) return;
+
+    const conversationContainer = document.getElementById('conversation-container');
+    
+    // Limpia las opciones anteriores
+    const oldOptions = conversationContainer.querySelector('#user-options');
+    if(oldOptions) oldOptions.remove();
+
+    // Añade la línea del NPC
+    const npcBubble = document.createElement('div');
+    npcBubble.className = 'p-4 bg-gray-700 rounded-lg max-w-lg self-start animate-fade-in';
+    npcBubble.innerHTML = `<p class="font-bold text-blue-400 mb-1">${currentSim.npc.name} (${currentSim.npc.mood})</p><p class="text-gray-200">${node.npc_line}</p>`;
+    conversationContainer.appendChild(npcBubble);
+    
+    // Si es un nodo final, muestra el feedback
+    if (node.is_end) {
+        const feedbackBubble = document.createElement('div');
+        const feedbackColor = node.feedback.startsWith('¡ÉXITO!') ? 'border-green-500 bg-green-900_bg-opacity-25' : 'border-red-500 bg-red-900_bg-opacity-25';
+        feedbackBubble.className = `p-4 rounded-lg mt-4 border-2 ${feedbackColor} animate-fade-in`;
+        feedbackBubble.innerHTML = `<h3 class="font-bold text-lg mb-2">Resultado de la Simulación:</h3><p>${node.feedback}</p>`;
+        
+        const restartButton = document.createElement('button');
+        restartButton.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors mt-4';
+        restartButton.innerText = 'Volver a Intentar';
+        restartButton.onclick = () => startSimulation(Object.keys(simulations).find(key => simulations[key] === currentSim));
+        
+        conversationContainer.appendChild(feedbackBubble);
+        conversationContainer.appendChild(restartButton);
+
+    } else { // Si no es un nodo final, muestra las opciones del usuario
+        const optionsContainer = document.createElement('div');
+        optionsContainer.id = 'user-options';
+        optionsContainer.className = 'w-full pt-4 space-y-3 animate-fade-in';
+        node.options.forEach(opt => {
+            const optionButton = document.createElement('button');
+            optionButton.className = 'w-full text-left p-4 bg-blue-800 hover:bg-blue-700 rounded-lg transition-colors';
+            optionButton.innerHTML = `<p class="font-semibold">${opt.text}</p><p class="text-xs text-blue-300">Técnica: ${opt.technique}</p>`;
+            optionButton.onclick = () => selectSimOption(opt.target_node);
+            optionsContainer.appendChild(optionButton);
+        });
+        conversationContainer.appendChild(optionsContainer);
+    }
+    
+    // Scroll hasta el final
+    conversationContainer.scrollTop = conversationContainer.scrollHeight;
+    lucide.createIcons(); // Para el icono de la flecha
+}
+
+function selectSimOption(targetNodeId) {
+    renderConversationNode(targetNodeId);
+}
+
+// Pequeño estilo para la animación de fade-in
+const styleSheet = document.createElement("style");
+styleSheet.innerText = `
+    @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+`;
+document.head.appendChild(styleSheet);
+      
+      
+       // EventListeners
         document.addEventListener('DOMContentLoaded', () => {
             renderModules();
             showTab('inicio');
