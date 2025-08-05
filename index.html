@@ -24,6 +24,13 @@
     <!-- ===== FIN DE CÓDIGO AÑADIDO PARA PWA EN IOS ===== -->
 
     <style>
+      
+#breathing-visualizer {
+    /* La duración de la transición se adaptará a la fase de la respiración. 
+       Una base de 3s funciona bien para las exhalaciones largas. */
+    transition: transform 3s ease-in-out; 
+}
+      
         /* Estilos base y tema oscuro */
         body {
             font-family: 'Inter', sans-serif;
@@ -204,42 +211,66 @@
 </div>
             </section>
 
-            <!-- Pestaña 5: AJUSTES -->
+            <!-- Pestaña 5: Santuario -->
             <section id="ajustes" class="tab-content hidden">
                 <header class="mb-8">
-                    <h1 class="text-3xl font-bold">Ajustes</h1>
-                    <p class="text-md text-gray-400">Personaliza tu experiencia en la aplicación.</p>
-                </header>
-                <div class="space-y-6">
-                    <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center">
-                        <div class="flex items-center">
-                            <i data-lucide="moon" class="mr-3"></i>
-                            <span>Modo Oscuro</span>
-                        </div>
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                            <input type="checkbox" name="toggle" id="dark-mode-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                            <label for="dark-mode-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
-                        </div>
-                    </div>
-                    <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center">
-                        <div class="flex items-center">
-                            <i data-lucide="bell" class="mr-3"></i>
-                            <span>Notificaciones</span>
-                        </div>
-                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                            <input type="checkbox" name="toggle" id="notifications-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                            <label for="notifications-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
-                        </div>
-                    </div>
-                    <div class="bg-gray-800 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold mb-2">Zona de Peligro</h3>
-                        <p class="text-sm text-gray-400 mb-3">Esta acción no se puede deshacer. Perderás todo tu progreso, incluyendo lecciones completadas, retos y notas.</p>
-                        <button onclick="confirmResetProgress()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                            Reiniciar Progreso
-                        </button>
-                    </div>
-                </div>
+    <h1 class="text-3xl font-bold">Santuario de Relajación</h1>
+    <p class="text-md text-gray-400">Personaliza tu sesión de respiración y relajación guiada.</p>
+</header>
+
+<div class="space-y-8">
+    <div>
+        <h3 class="text-lg font-semibold mb-3">1. Elige una técnica de respiración</h3>
+        <div id="breathing-technique-selector" class="grid grid-cols-2 gap-3">
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-blue-600">
+                <input type="radio" name="technique" value="box" class="hidden" checked>
+                <p class="font-bold">Cuadrada (4-4-4-4)</p>
+                <p class="text-xs text-gray-400">Concentración</p>
+            </label>
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="technique" value="478" class="hidden">
+                <p class="font-bold">Relajante (4-7-8)</p>
+                <p class="text-xs text-gray-400">Descanso</p>
+            </label>
+        </div>
+    </div>
+
+    <div>
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold">2. Elige la duración</h3>
+            <span id="duration-display" class="font-bold text-blue-400 bg-gray-700 px-3 py-1 rounded-lg">5 min</span>
+        </div>
+        <input id="duration-slider" type="range" min="1" max="15" value="5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+    </div>
+
+    <div>
+        <h3 class="text-lg font-semibold mb-3">3. Elige un paisaje sonoro</h3>
+        <div id="soundscape-selector" class="grid grid-cols-2 gap-3">
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-blue-600">
+                <input type="radio" name="sound" value="rain" class="hidden" checked>
+                <p class="font-bold">Lluvia Suave</p>
+            </label>
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="sound" value="waves" class="hidden">
+                <p class="font-bold">Olas del Mar</p>
+            </label>
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="sound" value="forest" class="hidden">
+                <p class="font-bold">Bosque</p>
+            </label>
+            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="sound" value="none" class="hidden">
+                <p class="font-bold">Silencio</p>
+            </label>
+        </div>
+    </div>
+    
+    <button id="start-session-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-extrabold py-4 px-4 rounded-lg text-lg transition-colors flex items-center justify-center">
+        <i data-lucide="play" class="mr-3"></i>COMENZAR SESIÓN
+    </button>
+</div>
             </section>
+          
         </div>
 
         <!-- Vista de Detalle de Módulo -->
@@ -277,6 +308,15 @@
         <button onclick="saveNote()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">Guardar Nota</button>
     </div>
 </div>
+      
+        <!-- Vista de la Sesión Inmersiva de Relajación -->
+        <div id="breathing-session-view" class="view hidden fixed inset-0 bg-gray-900 z-50 flex flex-col items-center justify-center p-4">
+    <div id="breathing-visualizer" class="w-48 h-48 bg-blue-500 rounded-full flex items-center justify-center">
+        <p id="breathing-instruction" class="text-white text-2xl font-bold">Prepárate...</p>
+    </div>
+    <p id="breathing-timer" class="text-white text-xl mt-8">--:--</p>
+    <button id="end-session-btn" class="absolute bottom-10 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">Finalizar</button>
+</div>
 
         <!-- Vista de la Biblioteca de Retos -->
         <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
@@ -289,8 +329,9 @@
             <button onclick="showTab('inicio')" class="nav-button active flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="home"></i><span class="text-xs mt-1">Inicio</span></button>
             <button onclick="showTab('modulos')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="book-open"></i><span class="text-xs mt-1">Módulos</span></button>
             <button onclick="showTab('laboratorio')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="flask-conical"></i><span class="text-xs mt-1">Lab</span></button>
+          <button onclick="showTab('ajustes')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="wind"></i><span class="text-xs mt-1">Santuario</span></button>
             <button onclick="showTab('diario')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="notebook-tabs"></i><span class="text-xs mt-1">Diario</span></button>
-            <button onclick="showTab('ajustes')" class="nav-button flex-1 flex flex-col items-center justify-center p-3 text-gray-400 hover:bg-gray-800 transition-colors"><i data-lucide="settings"></i><span class="text-xs mt-1">Ajustes</span></button>
+            
         </div>
     </nav>
 
@@ -3059,6 +3100,145 @@ function checkMentalismAnswer(exerciseId, chosenOptionIndex) {
     document.getElementById('mentalism-final-choice-area').innerHTML = `<p class="text-center text-gray-400">Decisión final: Mano ${chosenHand}.</p>`;
 }
       
+      
+   // --- INICIO DEL CÓDIGO DEL SANTUARIO DE RELAJACIÓN ---
+
+// Variables para controlar el estado de la sesión
+let sessionTimerInterval = null;
+let breathingCycleInterval = null;
+let sessionAudio = null;
+
+// Objeto con las pistas de audio (usa enlaces a sonidos gratuitos)
+const soundscapes = {
+    rain: 'https://www.soundjay.com/nature/rain-01.mp3',
+    waves: 'https://www.soundjay.com/nature/ocean-wave-1.mp3',
+    forest: 'https://www.soundjay.com/nature/forest-01.mp3'
+};
+
+// Objeto con los patrones de respiración en milisegundos
+const breathingPatterns = {
+    'box': [
+        { instruction: 'Inhala...', duration: 4000, scale: 1.4 },
+        { instruction: 'Sostén...', duration: 4000, scale: 1.4 },
+        { instruction: 'Exhala...', duration: 4000, scale: 1 },
+        { instruction: 'Sostén...', duration: 4000, scale: 1 }
+    ],
+    '478': [
+        { instruction: 'Inhala...', duration: 4000, scale: 1.4 },
+        { instruction: 'Sostén...', duration: 7000, scale: 1.4 },
+        { instruction: 'Exhala...', duration: 8000, scale: 1 }
+    ]
+};
+
+// Array de sugestiones de PNL para el final
+const pnlSuggestions = [
+    "Tengo todos los recursos internos que necesito para tener éxito.",
+    "Cada respiración profunda me llena de calma y confianza.",
+    "Veo los desafíos como oportunidades para crecer y aprender.",
+    "Mi mente está clara y enfocada.",
+    "Elijo sentirme bien y en control de mis emociones."
+];
+
+function startBreathingSession() {
+    // 1. Leer las selecciones del usuario
+    const technique = document.querySelector('input[name="technique"]:checked').value;
+    const durationMinutes = document.getElementById('duration-slider').value;
+    const sound = document.querySelector('input[name="sound"]:checked').value;
+    let totalSeconds = durationMinutes * 60;
+    
+    const pattern = breathingPatterns[technique];
+    
+    // 2. Navegar a la vista de sesión
+    navigateTo('breathing-session-view');
+    
+    // 3. Iniciar el paisaje sonoro
+    if (sound !== 'none' && soundscapes[sound]) {
+        sessionAudio = new Audio(soundscapes[sound]);
+        sessionAudio.loop = true;
+        sessionAudio.play();
+    }
+    
+    // 4. Iniciar el temporizador principal de la sesión
+    const timerDisplay = document.getElementById('breathing-timer');
+    timerDisplay.textContent = `${String(durationMinutes).padStart(2, '0')}:00`;
+    
+    sessionTimerInterval = setInterval(() => {
+        totalSeconds--;
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+        const seconds = String(totalSeconds % 60).padStart(2, '0');
+        timerDisplay.textContent = `${minutes}:${seconds}`;
+        
+        if (totalSeconds <= 0) {
+            endBreathingSession(true); // Finaliza con sugestión
+        }
+    }, 1000);
+    
+    // 5. Iniciar el ciclo de respiración
+    const visualizer = document.getElementById('breathing-visualizer');
+    const instructionDisplay = document.getElementById('breathing-instruction');
+    let currentStep = 0;
+    
+    // --- INICIO DE CÓDIGO AÑADIDO ---
+    // Objeto que mapea cada instrucción a una clase de color de Tailwind.
+    // Puedes personalizar los colores aquí si lo deseas.
+    const colors = {
+        'Inhala...': 'bg-green-500',
+        'Sostén...': 'bg-yellow-500',
+        'Exhala...': 'bg-blue-500' // Usamos azul para exhalar, es más relajante que el rojo.
+    };
+    // --- FIN DE CÓDIGO AÑADIDO ---
+    
+    const runCycle = () => {
+        const step = pattern[currentStep];
+        instructionDisplay.textContent = step.instruction;
+        
+        // --- INICIO DE LÓGICA DE COLOR MODIFICADA ---
+        // 1. Se eliminan todas las posibles clases de color para limpiar el estado anterior.
+        visualizer.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-blue-500', 'bg-red-500');
+        
+        // 2. Se añade la clase de color que corresponde a la instrucción actual.
+        if (colors[step.instruction]) {
+            visualizer.classList.add(colors[step.instruction]);
+        }
+        // --- FIN DE LÓGICA DE COLOR MODIFICADA ---
+        
+        visualizer.style.transform = `scale(${step.scale})`;
+        
+        currentStep = (currentStep + 1) % pattern.length;
+        
+        // El timeout se ajusta a la duración del paso actual
+        breathingCycleInterval = setTimeout(runCycle, step.duration);
+    };
+    
+    runCycle(); // Inicia el primer ciclo
+}
+      
+
+function endBreathingSession(withSuggestion = false) {
+    // Detener todos los temporizadores e intervalos
+    clearInterval(sessionTimerInterval);
+    clearTimeout(breathingCycleInterval);
+    sessionTimerInterval = null;
+    breathingCycleInterval = null;
+    
+    // Detener y limpiar el audio
+    if (sessionAudio) {
+        sessionAudio.pause();
+        sessionAudio = null;
+    }
+    
+    // Volver a la vista principal
+    navigateBack();
+    
+    // Mostrar la sugestión de PNL si corresponde
+    if (withSuggestion) {
+        const randomSuggestion = pnlSuggestions[Math.floor(Math.random() * pnlSuggestions.length)];
+        setTimeout(() => {
+            alert(`Sesión completada.\n\nSugestión del día:\n"${randomSuggestion}"`);
+        }, 200); // Pequeño delay para que la transición de vista termine
+    }
+}
+      
 
 // Pequeño estilo para la animación de fade-in
 const styleSheet = document.createElement("style");
@@ -3076,6 +3256,41 @@ document.head.appendChild(styleSheet);
           renderNotesList();
           showDailyMission();
           showDailyLesson();
+          
+          // --- Activadores para el Santuario de Relajación ---
+const startBtn = document.getElementById('start-session-btn');
+if (startBtn) {
+    startBtn.addEventListener('click', startBreathingSession);
+}
+
+const endBtn = document.getElementById('end-session-btn');
+if (endBtn) {
+    endBtn.addEventListener('click', () => endBreathingSession(false)); // Finaliza sin sugestión
+}
+
+const durationSlider = document.getElementById('duration-slider');
+const durationDisplay = document.getElementById('duration-display');
+if (durationSlider) {
+    durationSlider.addEventListener('input', (e) => {
+        durationDisplay.textContent = `${e.target.value} min`;
+    });
+}
+
+// Lógica para el feedback visual de los botones de radio
+document.querySelectorAll('#breathing-technique-selector label, #soundscape-selector label').forEach(label => {
+    label.addEventListener('click', () => {
+        // Primero, quita el borde azul de todos los botones del mismo grupo
+        const groupName = label.querySelector('input').name;
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(radio => {
+            radio.parentElement.classList.remove('border-blue-600');
+            radio.parentElement.classList.add('border-gray-700');
+        });
+        // Luego, añade el borde azul solo al que se ha hecho clic
+        label.classList.remove('border-gray-700');
+        label.classList.add('border-blue-600');
+    });
+});
+          
         });
       
     </script>
