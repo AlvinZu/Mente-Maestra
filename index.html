@@ -2697,29 +2697,24 @@ function showDailyMission() {
     const missionCard = document.getElementById('mission-content');
     if (!missionCard) return;
 
-    const today = new Date().toISOString().slice(0, 10); // Formato YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 10);
     const lastMissionDate = localStorage.getItem('lastMissionDate');
     let missionId = localStorage.getItem('dailyMissionId');
 
+    // Si es un nuevo día o no hay ninguna misión, elige una nueva.
     if (lastMissionDate !== today || !missionId) {
-        // Es un nuevo día o no hay misión guardada, elegimos una nueva.
-        const missionKeys = Object.keys(missions);
-        missionId = missionKeys[Math.floor(Math.random() * missionKeys.length)];
-        localStorage.setItem('dailyMissionId', missionId);
-        localStorage.setItem('lastMissionDate', today);
-        localStorage.setItem('missionCompleted', 'false');
+        missionId = pickNewDailyMission();
     }
 
     currentMission = missions[missionId];
     const isCompleted = localStorage.getItem('missionCompleted') === 'true';
 
+    // Esta parte es la misma que antes, solo que ahora la usaremos menos.
     if (isCompleted) {
         missionCard.innerHTML = `
             <h3 class="text-xl font-bold mb-2 text-purple-400">${currentMission.title}</h3>
             <p class="text-gray-300 mb-4">${currentMission.description}</p>
-            <div class="p-3 text-center bg-green-800 rounded-lg text-white font-bold">
-                ¡Misión Completada! ¡Buen trabajo!
-            </div>
+            <button onclick="generateNewMission()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">¡Dame otra misión!</button>
         `;
     } else {
         missionCard.innerHTML = `
@@ -2729,27 +2724,45 @@ function showDailyMission() {
         `;
     }
 }
+      
+      function pickNewDailyMission() {
+    const today = new Date().toISOString().slice(0, 10);
+    const missionKeys = Object.keys(missions);
+    const missionId = missionKeys[Math.floor(Math.random() * missionKeys.length)];
+
+    localStorage.setItem('dailyMissionId', missionId);
+    localStorage.setItem('lastMissionDate', today);
+    localStorage.setItem('missionCompleted', 'false'); // Siempre la reseteamos al elegir una nueva.
+
+    return missionId;
+}
+
+function generateNewMission() {
+    pickNewDailyMission();
+    showDailyMission();
+}
+      
 
 function completeMission(missionId) {
-    localStorage.setItem('missionCompleted', 'true');
-    showDailyMission(); // Re-renderizar la tarjeta en su estado completado.
-
+    // La parte de crear la nota de reflexión sigue siendo la misma y es genial.
     const mission = missions[missionId];
     let notes = getNotes();
-
-    // 1. Crear el objeto de la nueva nota con la plantilla
     const newReflectionNote = {
         id: new Date().getTime().toString(),
         title: `Reflexión: ${mission.title}`,
         content: `Misión de Campo Completada.\n\n- ¿Qué hice exactamente?\n\n- ¿Qué observé en mí y en los demás?\n\n- ¿Qué aprendí o qué podría hacer diferente la próxima vez?\n`
     };
-
-    // 2. Añadir la nueva nota a la lista y guardarla en el almacenamiento
     notes.push(newReflectionNote);
     saveNotesToStorage(notes);
-    
-    // 3. Llevar al usuario directamente a la pantalla de edición de esta nueva nota
-    // La función editNote ya se encarga de llamar a navigateTo()
+
+    // ¡Aquí está la magia! Inmediatamente después de guardar la nota,
+    // elegimos la siguiente misión.
+    pickNewDailyMission();
+
+    // Actualizamos la tarjeta de misión en la pantalla de inicio (aunque no la veamos).
+    showDailyMission(); 
+
+    // Llevamos al usuario a editar la nota de reflexión que acabamos de crear.
     editNote(newReflectionNote.id); 
 }
       
