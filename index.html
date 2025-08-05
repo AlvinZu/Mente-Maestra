@@ -87,11 +87,11 @@
               
               
                 <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
-                    <div class="flex items-center mb-3"><i data-lucide="sparkles" class="text-yellow-400 mr-3"></i><h2 class="text-lg font-semibold">Lección del Día</h2></div>
-                    <h3 class="text-xl font-bold mb-2 text-blue-400">La Técnica del Espejo (Rapport)</h3>
-                    <p class="text-gray-300 mb-4">Aprende a crear una conexión instantánea emulando sutilmente el lenguaje corporal.</p>
-                    <button onclick="showLesson('tecnica-espejo')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Empezar Lección (5 min)</button>
-                </div>             
+    <div class="flex items-center mb-3"><i data-lucide="sparkles" class="text-yellow-400 mr-3"></i><h2 class="text-lg font-semibold">Lección del Día</h2></div>
+    <div id="daily-lesson-container">
+        <p class="text-gray-400">Cargando lección...</p>
+    </div>
+</div>             
                               
               
                 <div>
@@ -2766,6 +2766,39 @@ function completeMission(missionId) {
     editNote(newReflectionNote.id); 
 }
       
+      
+      function createSnippetFromHtml(html, length = 100) {
+    // Esta pequeña función ayuda a crear una descripción corta a partir del contenido de la lección
+    const text = html.replace(/<[^>]*>?/gm, ' '); // Elimina todas las etiquetas HTML
+    return text.substring(0, length).trim() + '...';
+}
+
+function showDailyLesson() {
+    const lessonContainer = document.getElementById('daily-lesson-container');
+    if (!lessonContainer) return;
+
+    const today = new Date().toISOString().slice(0, 10);
+    const lastLessonDate = localStorage.getItem('lastLessonDate');
+    let lessonId = localStorage.getItem('dailyLessonId');
+
+    if (lastLessonDate !== today || !lessonId) {
+        // Es un nuevo día o no hay lección guardada, elegimos una nueva.
+        const lessonKeys = Object.keys(lessons);
+        lessonId = lessonKeys[Math.floor(Math.random() * lessonKeys.length)];
+        localStorage.setItem('dailyLessonId', lessonId);
+        localStorage.setItem('lastLessonDate', today);
+    }
+
+    const lesson = lessons[lessonId];
+    const snippet = createSnippetFromHtml(lesson.content);
+
+    lessonContainer.innerHTML = `
+        <h3 class="text-xl font-bold mb-2 text-blue-400">${lesson.title}</h3>
+        <p class="text-gray-300 mb-4">${snippet}</p>
+        <button onclick="showLesson('${lessonId}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Empezar Lección</button>
+    `;
+}
+      
 
 function startSimulation(simId) {
     currentSim = simulations[simId];
@@ -3038,11 +3071,13 @@ document.head.appendChild(styleSheet);
       
        // EventListeners
         document.addEventListener('DOMContentLoaded', () => {
-            renderModules();
-            showTab('inicio');
-            renderNotesList();
-            showDailyMission();
+          renderModules();
+          showTab('inicio');
+          renderNotesList();
+          showDailyMission();
+          showDailyLesson();
         });
+      
     </script>
 </body>
 </html>
