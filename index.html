@@ -194,11 +194,14 @@
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-xl font-semibold mb-3">Mis Notas</h2>
-                    <textarea id="journal-notes" class="w-full h-40 bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Escribe aquí tus observaciones, ideas o reflexiones del día..."></textarea>
-                    <button onclick="saveNotes()" class="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Guardar Notas</button>
-                    <p id="save-feedback" class="text-center text-green-500 mt-2 text-sm opacity-0 transition-opacity">¡Notas guardadas!</p>
-                </div>
+    <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-semibold">Mis Notas</h2>
+        <button onclick="showNoteEditor()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg flex items-center"><i data-lucide="plus" class="mr-2 h-5 w-5"></i>Crear Nota</button>
+    </div>
+    <div id="notes-list-container" class="space-y-3">
+        <p class="text-gray-400">No tienes notas guardadas todavía.</p>
+    </div>
+</div>
             </section>
 
             <!-- Pestaña 5: AJUSTES -->
@@ -262,6 +265,18 @@
       
       <!-- Vista de la Biblioteca de Misiones -->
       <div id="mission-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+      <div id="note-editor-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto">
+    <header class="flex items-center mb-6">
+        <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+        <h1 id="note-editor-title" class="text-2xl font-bold">Crear Nota</h1>
+    </header>
+    <div class="space-y-4">
+        <input type="hidden" id="note-id-input">
+        <input type="text" id="note-title-input" placeholder="Título de la nota..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-xl text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <textarea id="note-content-input" class="w-full h-64 bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Escribe aquí tu nota..."></textarea>
+        <button onclick="saveNote()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">Guardar Nota</button>
+    </div>
+</div>
 
         <!-- Vista de la Biblioteca de Retos -->
         <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
@@ -2268,14 +2283,18 @@
             if (isCompleted) console.log("Actividad completada!");
         }
 
+      
         function showTab(tabId) {
-            navigationHistory = ['tabs-view'];
-            showView('tabs-view');
-            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
-            document.getElementById(tabId)?.classList.remove('hidden');
-            document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
-            document.querySelector(`button[onclick="showTab('${tabId}')"]`)?.classList.add('active');
-        }
+    if (tabId === 'diario') {
+        renderNotesList(); // <-- AÑADE ESTA LÍNEA
+    }
+    navigationHistory = ['tabs-view'];
+    showView('tabs-view');
+    document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+    document.getElementById(tabId)?.classList.remove('hidden');
+    document.querySelectorAll('.nav-button').forEach(b => b.classList.remove('active'));
+    document.querySelector(`button[onclick="showTab('${tabId}')"]`)?.classList.add('active');
+}
 
         function renderModules() {
             const grid = document.getElementById('modules-grid');
@@ -2550,22 +2569,117 @@
             document.getElementById('next-button').classList.remove('hidden');
         }
 
-        function saveNotes() {
-            const notes = document.getElementById('journal-notes').value;
-            localStorage.setItem('journalNotes', notes);
-            const feedback = document.getElementById('save-feedback');
-            feedback.style.opacity = '1';
-            setTimeout(() => {
-                feedback.style.opacity = '0';
-            }, 2000);
-        }
+        // --- Lógica del Sistema de Notas (Diario) ---
 
-        function loadNotes() {
-            const savedNotes = localStorage.getItem('journalNotes');
-            if (savedNotes) {
-                document.getElementById('journal-notes').value = savedNotes;
-            }
+function getNotes() {
+    // Obtiene las notas de localStorage y las convierte de texto a un objeto.
+    // Si no hay notas, devuelve un array vacío.
+    const notesJSON = localStorage.getItem('journalNotes');
+    try {
+        return notesJSON ? JSON.parse(notesJSON) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveNotesToStorage(notes) {
+    // Guarda el array de notas en localStorage como texto.
+    localStorage.setItem('journalNotes', JSON.stringify(notes));
+}
+
+function renderNotesList() {
+    const notes = getNotes();
+    const container = document.getElementById('notes-list-container');
+
+    if (notes.length === 0) {
+        container.innerHTML = '<p class="text-gray-400">No tienes notas guardadas todavía.</p>';
+        return;
+    }
+
+    container.innerHTML = ''; // Limpiar el contenedor
+    notes.forEach(note => {
+        const noteElement = document.createElement('div');
+        noteElement.className = 'bg-gray-800 p-4 rounded-lg';
+        noteElement.innerHTML = `
+            <h3 class="font-bold text-lg truncate">${note.title || 'Nota sin título'}</h3>
+            <p class="text-sm text-gray-400 mt-1 h-6 overflow-hidden">${note.content || 'Sin contenido...'}</p>
+            <div class="flex justify-end space-x-2 mt-3">
+                <button onclick="editNote('${note.id}')" class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-3 rounded text-sm">Editar</button>
+                <button onclick="deleteNote('${note.id}')" class="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded text-sm">Eliminar</button>
+            </div>
+        `;
+        container.appendChild(noteElement);
+    });
+}
+
+function showNoteEditor(noteId = null) {
+    const notes = getNotes();
+    const editorTitle = document.getElementById('note-editor-title');
+    const idInput = document.getElementById('note-id-input');
+    const titleInput = document.getElementById('note-title-input');
+    const contentInput = document.getElementById('note-content-input');
+
+    if (noteId) {
+        // Estamos editando una nota existente
+        const noteToEdit = notes.find(note => note.id === noteId);
+        if (noteToEdit) {
+            editorTitle.innerText = 'Editar Nota';
+            idInput.value = noteToEdit.id;
+            titleInput.value = noteToEdit.title;
+            contentInput.value = noteToEdit.content;
         }
+    } else {
+        // Estamos creando una nota nueva
+        editorTitle.innerText = 'Crear Nota';
+        idInput.value = '';
+        titleInput.value = '';
+        contentInput.value = '';
+    }
+    navigateTo('note-editor-view');
+}
+
+function saveNote() {
+    const id = document.getElementById('note-id-input').value;
+    const title = document.getElementById('note-title-input').value;
+    const content = document.getElementById('note-content-input').value;
+    let notes = getNotes();
+
+    if (id) {
+        // Actualizar nota existente
+        const noteIndex = notes.findIndex(note => note.id === id);
+        if (noteIndex > -1) {
+            notes[noteIndex].title = title;
+            notes[noteIndex].content = content;
+        }
+    } else {
+        // Crear nota nueva
+        const newNote = {
+            id: new Date().getTime().toString(), // ID único basado en la fecha
+            title: title,
+            content: content
+        };
+        notes.push(newNote);
+    }
+
+    saveNotesToStorage(notes);
+    renderNotesList(); // Actualizar la lista en la vista del diario
+    navigateBack(); // Volver a la vista del diario
+}
+
+function editNote(noteId) {
+    showNoteEditor(noteId);
+}
+
+function deleteNote(noteId) {
+    const confirmation = confirm('¿Estás seguro de que quieres eliminar esta nota? Esta acción no se puede deshacer.');
+    if (confirmation) {
+        let notes = getNotes();
+        notes = notes.filter(note => note.id !== noteId);
+        saveNotesToStorage(notes);
+        renderNotesList(); // Volver a renderizar la lista actualizada
+    }
+}
+      
         
         function confirmResetProgress() {
             const confirmation = confirm("¿Estás seguro de que quieres reiniciar tu progreso? Esta acción no se puede deshacer.");
@@ -2619,15 +2733,24 @@ function showDailyMission() {
 function completeMission(missionId) {
     localStorage.setItem('missionCompleted', 'true');
     showDailyMission(); // Re-renderizar la tarjeta en su estado completado.
-    
-    // Opcional: Llevar al usuario al diario para que reflexione.
-    showTab('diario');
-    const journal = document.getElementById('journal-notes');
+
     const mission = missions[missionId];
-    const reflection_prompt = `\n\n---\nReflexión sobre la Misión "${mission.title}":\n- ¿Qué hice exactamente?\n- ¿Qué observé en mí y en los demás?\n- ¿Qué aprendí o qué podría hacer diferente la próxima vez?\n`;
-    journal.value += reflection_prompt;
-    journal.scrollTop = journal.scrollHeight; // Scroll al final
-    alert('¡Misión completada! Se ha añadido una plantilla de reflexión a tu diario. Anotar lo que has aprendido es clave para interiorizar la habilidad.');
+    let notes = getNotes();
+
+    // 1. Crear el objeto de la nueva nota con la plantilla
+    const newReflectionNote = {
+        id: new Date().getTime().toString(),
+        title: `Reflexión: ${mission.title}`,
+        content: `Misión de Campo Completada.\n\n- ¿Qué hice exactamente?\n\n- ¿Qué observé en mí y en los demás?\n\n- ¿Qué aprendí o qué podría hacer diferente la próxima vez?\n`
+    };
+
+    // 2. Añadir la nueva nota a la lista y guardarla en el almacenamiento
+    notes.push(newReflectionNote);
+    saveNotesToStorage(notes);
+    
+    // 3. Llevar al usuario directamente a la pantalla de edición de esta nueva nota
+    // La función editNote ya se encarga de llamar a navigateTo()
+    editNote(newReflectionNote.id); 
 }
       
 
@@ -2904,7 +3027,7 @@ document.head.appendChild(styleSheet);
         document.addEventListener('DOMContentLoaded', () => {
             renderModules();
             showTab('inicio');
-            loadNotes();
+            renderNotesList();
             showDailyMission();
         });
     </script>
