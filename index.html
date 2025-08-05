@@ -69,23 +69,35 @@
                 <header class="mb-8">
                     <h1 class="text-3xl font-bold">Hola, Maestro</h1>
                     <p class="text-md text-gray-400">Comencemos tu entrenamiento de hoy.</p>
+                  
                 </header>
-                <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
-                    <div class="flex items-center mb-3"><i data-lucide="sparkles" class="text-yellow-400 mr-3"></i><h2 class="text-lg font-semibold">Lección del Día</h2></div>
-                    <h3 class="text-xl font-bold mb-2 text-blue-400">La Técnica del Espejo (Rapport)</h3>
-                    <p class="text-gray-300 mb-4">Aprende a crear una conexión instantánea emulando sutilmente el lenguaje corporal.</p>
-                    <button onclick="showLesson('tecnica-espejo')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Empezar Lección (5 min)</button>
-                </div>
-                <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
+              <div id="daily-mission-card" class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
+    <div class="flex items-center mb-3"><i data-lucide="compass" class="text-purple-400 mr-3"></i><h2 class="text-lg font-semibold">Misión de Campo del Día</h2></div>
+    <div id="mission-content">
+        <p class="text-gray-400">Cargando misión...</p>
+    </div>
+</div>
+              
+              <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
                     <div class="flex items-center mb-3"><i data-lucide="target" class="text-green-400 mr-3"></i><h2 class="text-lg font-semibold">Reto Práctico Aleatorio</h2></div>
                     <h3 class="text-xl font-bold mb-2 text-green-400">Pon a Prueba tus Habilidades</h3>
                     <p class="text-gray-300 mb-4">Enfréntate a un escenario de la vida real y demuestra tu capacidad de observación y análisis.</p>
                     <button onclick="startRandomChallenge()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Aceptar Reto</button>
                 </div>
+              
+              
+                <div class="bg-gray-800 p-5 rounded-xl mb-6 shadow-lg border border-gray-700">
+                    <div class="flex items-center mb-3"><i data-lucide="sparkles" class="text-yellow-400 mr-3"></i><h2 class="text-lg font-semibold">Lección del Día</h2></div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-400">La Técnica del Espejo (Rapport)</h3>
+                    <p class="text-gray-300 mb-4">Aprende a crear una conexión instantánea emulando sutilmente el lenguaje corporal.</p>
+                    <button onclick="showLesson('tecnica-espejo')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Empezar Lección (5 min)</button>
+                </div>             
+                              
+              
                 <div>
                     <h2 class="text-lg font-semibold mb-3">Tu Progreso General</h2>
-                    <div class="w-full bg-gray-700 rounded-full h-4"><div class="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full" style="width: 25%"></div></div>
-                    <div class="flex justify-between text-sm text-gray-400 mt-2"><span>Observador Nivel 3</span><span>250/1000 XP</span></div>
+                    <div class="w-full bg-gray-700 rounded-full h-4"><div class="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full" style="width: 75%"></div></div>
+                    <div class="flex justify-between text-sm text-gray-400 mt-2"><span>Observador Nivel 3</span><span>750/1000 XP</span></div>
                 </div>
             </section>
 
@@ -129,6 +141,15 @@
     <div>
         <h3 class="text-xl font-bold text-purple-400">Laboratorio de Mentalismo</h3>
         <p class="text-gray-400">Practica técnicas de forzaje e influencia sutil.</p>
+    </div>
+    <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+</div>
+                   
+                   <div onclick="showMissionLibrary()" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+    <div class="p-3 bg-green-600 rounded-lg mr-4"><i data-lucide="map"></i></div>
+    <div>
+        <h3 class="text-xl font-bold text-green-400">Biblioteca de Misiones</h3>
+        <p class="text-gray-400">Explora todos los desafíos de campo disponibles.</p>
     </div>
     <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
 </div>
@@ -238,6 +259,9 @@
       <div id="mentalism-lab-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
 
 <div id="mentalism-exercise-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
+      
+      <!-- Vista de la Biblioteca de Misiones -->
+      <div id="mission-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
 
         <!-- Vista de la Biblioteca de Retos -->
         <div id="challenge-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
@@ -2022,6 +2046,189 @@
         
 };
       
+      const missions = {
+    'm-1': {
+        title: 'El Observador Silencioso',
+        category: 'Lenguaje Corporal',
+        difficulty: 'Fácil',
+        description: 'En tu próxima conversación o reunión, tu único objetivo es no hablar. Concéntrate en observar el lenguaje corporal de los demás. ¿Quién se inclina hacia quién? ¿Quién tiene los pies apuntando a la salida? No analices, solo absorbe la información.'
+    },
+    'm-2': {
+        title: 'El Eco Consciente',
+        category: 'PNL',
+        difficulty: 'Fácil',
+        description: 'En una conversación casual, utiliza la técnica del parafraseo al menos una vez. Repite la idea de la otra persona con tus propias palabras para confirmar que la has entendido. Ejemplo: "Entonces, si no he entendido mal, lo que más te estresa es...". Observa su reacción.'
+    },
+    'm-3': {
+        title: 'El Favor Anónimo',
+        category: 'Ingeniería Social',
+        difficulty: 'Fácil',
+        description: 'Realiza un pequeño acto de reciprocidad sin esperar nada a cambio. Sujétale la puerta a alguien, cede el paso en el tráfico de forma obvia, o deja que alguien pase antes que tú en la cola del café. Observa si genera una sonrisa o un gesto de agradecimiento.'
+    },
+    'm-4': {
+        title: 'El Ancla del Café',
+        category: 'Hipnosis / PNL',
+        difficulty: 'Intermedia',
+        description: 'Si vas a tomar un café con alguien, cuando la conversación llegue a un punto álgido y positivo (risas, un acuerdo), coge tu taza y da un sorbo de forma deliberada. Intenta repetir esta acción en otro momento positivo. Estás creando un ancla kinestésica.'
+    },
+    'm-5': {
+        title: 'El Sondeo de Calibración',
+        category: 'Mentalismo',
+        difficulty: 'Fácil',
+        description: 'Hazle a un amigo o familiar dos preguntas cuya respuesta sepas que es "SÍ" y dos cuya respuesta sepas que es "NO". No te fijes en las palabras, fíjate en su cara y sus ojos. ¿Hay alguna diferencia sutil en cómo su cuerpo dice "sí" y cómo dice "no"?'
+    },
+    'm-6': {
+        title: 'La Caza de Incongruencias',
+        category: 'Lenguaje Corporal',
+        difficulty: 'Intermedia',
+        description: 'Hoy, tu misión es encontrar UNA incongruencia. Alguien que diga "sí" mientras niega sutilmente con la cabeza, o alguien que diga "estoy bien" con los hombros caídos y el ceño fruncido. Anótala.'
+    },
+    'm-7': {
+        title: 'El Reencuadre de un Pensamiento',
+        category: 'PNL',
+        difficulty: 'Fácil',
+        description: 'La próxima vez que tengas un pensamiento negativo (ej. "Qué pereza tengo que hacer esto"), detente y reencuadrálo. Cámbialo por "Voy a hacer esto para poder relajarme después" o "¿Cuál es la forma más divertida o rápida de terminar con esto?".'
+    },
+    'm-8': {
+        title: 'El Poder del Nombre',
+        category: 'Ingeniería Social',
+        difficulty: 'Fácil',
+        description: 'En una conversación con alguien que no conoces muy bien, utiliza su nombre una vez de forma natural. Ejemplo: "Esa es una idea muy interesante, Laura". Nota si su nivel de atención hacia ti cambia, aunque sea ligeramente.'
+    },
+    'm-9': {
+        title: 'El Desafío del Contacto Visual',
+        category: 'Lenguaje Corporal',
+        difficulty: 'Fácil',
+        description: 'Con la próxima persona que te atienda en una tienda o cafetería, haz un esfuerzo consciente por mantener un contacto visual amable y sonreír mientras le das las gracias. Observa si su respuesta es más cálida que la habitual.'
+    },
+    'm-10': {
+        title: 'El Test del "Porque"',
+        category: 'Ingeniería Social',
+        difficulty: 'Intermedia',
+        description: 'Haz una pequeña petición a alguien y añade una justificación con la palabra "porque". Ejemplo: "¿Podemos usar esta mesa? Es que tiene mejor luz para leer". Comprueba si la justificación facilita el "sí".'
+    },
+        'm-11': {
+    title: 'El Baile del Espacio Personal',
+    category: 'Lenguaje Corporal',
+    difficulty: 'Fácil',
+    description: 'En una conversación de pie, da un pequeño e imperceptible paso hacia atrás. Observa si la otra persona instintivamente avanza para cerrar el espacio. Esto te dará una pista sobre su nivel de comodidad y rapport contigo.'
+},
+'m-12': {
+    title: 'La Mirada del Líder',
+    category: 'Lenguaje Corporal',
+    difficulty: 'Intermedia',
+    description: 'En una reunión de grupo, cuando alguien termine de hablar, fíjate a quién mira primero. La persona a la que se dirige la mirada instintivamente suele ser la que se percibe como el líder o la figura de autoridad en ese momento.'
+},
+'m-13': {
+    title: 'La Postura Expansiva',
+    category: 'Lenguaje Corporal',
+    difficulty: 'Fácil',
+    description: 'Antes de una llamada o tarea que te genere un poco de estrés, busca un lugar privado y mantén una "postura de poder" (manos en las caderas, pecho abierto) durante 60 segundos. Nota si tu estado mental y tu confianza cambian, aunque sea ligeramente.'
+},
+'m-14': {
+    title: 'El Reflejo Sutil',
+    category: 'Lenguaje Corporal',
+    difficulty: 'Intermedia',
+    description: 'En una conversación tranquila, si la otra persona cruza una pierna, espera unos 5-10 segundos y cruza la tuya de forma similar. Si se toca la barbilla, espera y haz un gesto parecido. Observa si esto aumenta la fluidez y la conexión de la charla.'
+},
+'m-15': {
+    title: 'La Brújula de los Pies',
+    category: 'Lenguaje Corporal',
+    difficulty: 'Fácil',
+    description: 'Cuando hables con alguien en un entorno social, fíjate en la dirección de sus pies. Si sus pies te apuntan a ti, está comprometido con la conversación. Si apuntan hacia la salida o hacia otra persona, su mente ya quiere irse.'
+},
+'m-16': {
+    title: 'Caza de Predicados (VAK)',
+    category: 'PNL',
+    difficulty: 'Intermedia',
+    description: 'Hoy, tu misión es identificar el sistema representacional dominante de una persona. ¿Usa más palabras visuales ("veo tu punto"), auditivas ("me suena bien") o kinestésicas ("siento que es lo correcto")? Intenta responderle usando su mismo tipo de lenguaje.'
+},
+'m-17': {
+    title: 'El Ancla Personal',
+    category: 'PNL',
+    difficulty: 'Fácil',
+    description: 'Piensa en un momento en el que te sentiste increíblemente seguro y feliz. Mientras revives esa emoción intensamente, aprieta el pulgar y el índice de tu mano no dominante. Hazlo 2 o 3 veces hoy. Estás creando un "botón" para acceder a ese estado a voluntad.'
+},
+'m-18': {
+    title: 'Romper un Patrón Negativo',
+    category: 'PNL',
+    difficulty: 'Fácil',
+    description: 'La próxima vez que te sorprendas en un bucle de pensamientos negativos, interrúmpelo físicamente de forma brusca: levántate, aplaude una vez con fuerza, estírate o cambia de habitación. El objetivo es romper el "trance" negativo con una acción física.'
+},
+'m-19': {
+    title: 'El Pre-encuadre Positivo',
+    category: 'PNL',
+    difficulty: 'Intermedia',
+    description: 'Antes de empezar una tarea o reunión que no te apetece, dedica 30 segundos a visualizar el resultado final siendo un éxito total. Imagina la sensación de alivio y satisfacción. Pre-encuadrar tu mente para el éxito cambia tu enfoque.'
+},
+'m-20': {
+    title: 'El "Sí" Implícito',
+    category: 'PNL',
+    difficulty: 'Intermedia',
+    description: 'En lugar de preguntar "¿Quieres hacer X?", utiliza una pregunta que presuponga el "sí". En lugar de "¿Salimos a cenar?", prueba con "¿Prefieres comida italiana o mexicana para nuestra cena de esta noche?". Observa la reacción a esta ilusión de elección.'
+},
+'m-21': {
+    title: 'El Efecto Benjamin Franklin',
+    category: 'Ingeniería Social',
+    difficulty: 'Fácil',
+    description: 'Pídele a alguien un favor muy pequeño y fácil de conceder (ej. "¿me sujetas esto un segundo?", "¿me pasas la sal?"). Paradójicamente, la gente tiende a sentir más simpatía por aquellos a quienes han ayudado. Es una forma sutil de construir afinidad.'
+},
+'m-22': {
+    title: 'Usa la Prueba Social',
+    category: 'Ingeniería Social',
+    difficulty: 'Fácil',
+    description: 'Cuando recomiendes algo (una película, un libro, un restaurante), en lugar de decir "me gustó mucho", intenta usar la prueba social. Di algo como "Tiene unas críticas fantásticas, casi todo el mundo dice que es increíble".'
+},
+'m-23': {
+    title: 'Validación Activa',
+    category: 'Ingeniería Social',
+    difficulty: 'Intermedia',
+    description: 'Cuando alguien te cuente un problema, resiste el impulso de dar una solución. En su lugar, valida su emoción. Di: "Suena increíblemente frustrante" o "Entiendo perfectamente por qué te sientes así". Observa cómo esto fortalece la conexión.'
+},
+'m-24': {
+    title: 'Elicitación por Declaración',
+    category: 'Ingeniería Social',
+    difficulty: 'Avanzada',
+    description: 'En lugar de preguntar a alguien a qué se dedica, haz una declaración general para elicitar la información. Por ejemplo: "El mercado inmobiliario está muy complicado últimamente". Si se dedica a eso, será casi imposible que no responda con una opinión experta.'
+},
+'m-25': {
+    title: 'La Siembra de Ideas',
+    category: 'Ingeniería Social',
+    difficulty: 'Avanzada',
+    description: 'Si quieres que alguien piense en una idea (ej. "vacaciones"), no la menciones. En su lugar, introduce conceptos relacionados en la conversación: "Estoy agotado", "necesito desconectar", "el sol y la playa suenan bien ahora mismo". Observa si la persona saca el tema de las vacaciones por su cuenta.'
+},
+'m-26': {
+    title: 'El Test de la Mirada',
+    category: 'Mentalismo',
+    difficulty: 'Fácil',
+    description: 'Pide a un amigo que piense en una persona que le cae bien y luego en una que le cae mal. Mientras piensa en cada una, fíjate en sus ojos. ¿Hay alguna diferencia en la dilatación de sus pupilas o en la tensión de los músculos oculares?'
+},
+'m-27': {
+    title: 'La Lectura del "No"',
+    category: 'Mentalismo',
+    difficulty: 'Intermedia',
+    description: 'Pide a un amigo que responda "NO" a todas las preguntas que le hagas, incluso si la respuesta es sí. Hazle preguntas simples ("¿El cielo es azul?", "¿Te llamas [su nombre]?"). Observa si el "NO" a una verdad suena diferente o tiene un lenguaje corporal distinto (una micro-sonrisa, una duda) que el "NO" a una falsedad.'
+},
+'m-28': {
+    title: 'El Forzaje Ambiental',
+    category: 'Mentalismo',
+    difficulty: 'Avanzada',
+    description: 'Tu misión es hacer que alguien diga la palabra "agua". Para ello, antes de la conversación, asegúrate de que haya una botella de agua visible en la mesa. Durante la charla, bebe agua tú mismo. Luego, haz una pregunta abierta como "¿Qué te apetece tomar?". El primado visual y la acción de imitación aumentan la probabilidad.'
+},
+'m-29': {
+    title: 'La Declaración Barnum',
+    category: 'Mentalismo',
+    difficulty: 'Intermedia',
+    description: 'Usa una "declaración Barnum" (algo que parece específico pero es universal) con alguien. Por ejemplo: "Valoras mucho tu independencia, pero también hay una parte de ti que anhela una conexión segura y estable". Dilo con confianza y observa la reacción de validación.'
+},
+'m-30': {
+    title: 'El Pulso de la Mente',
+    category: 'Mentalismo',
+    difficulty: 'Avanzada',
+    description: 'Pide a un amigo que apriete su puño. Dile que vas a contar hasta tres y que en uno de los números apriete con más fuerza. Intenta sentir el cambio de presión en su muñeca o antebrazo. Es un ejercicio de sensibilidad kinestésica extrema.'
+}
+};
+      
       
         const microExpressionsData = [
             { emotion: 'Alegría', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Alegr%C3%ADa' },
@@ -2370,6 +2577,59 @@
         }
       
       let currentSim = null;
+      let currentMission = null;
+
+function showDailyMission() {
+    const missionCard = document.getElementById('mission-content');
+    if (!missionCard) return;
+
+    const today = new Date().toISOString().slice(0, 10); // Formato YYYY-MM-DD
+    const lastMissionDate = localStorage.getItem('lastMissionDate');
+    let missionId = localStorage.getItem('dailyMissionId');
+
+    if (lastMissionDate !== today || !missionId) {
+        // Es un nuevo día o no hay misión guardada, elegimos una nueva.
+        const missionKeys = Object.keys(missions);
+        missionId = missionKeys[Math.floor(Math.random() * missionKeys.length)];
+        localStorage.setItem('dailyMissionId', missionId);
+        localStorage.setItem('lastMissionDate', today);
+        localStorage.setItem('missionCompleted', 'false');
+    }
+
+    currentMission = missions[missionId];
+    const isCompleted = localStorage.getItem('missionCompleted') === 'true';
+
+    if (isCompleted) {
+        missionCard.innerHTML = `
+            <h3 class="text-xl font-bold mb-2 text-purple-400">${currentMission.title}</h3>
+            <p class="text-gray-300 mb-4">${currentMission.description}</p>
+            <div class="p-3 text-center bg-green-800 rounded-lg text-white font-bold">
+                ¡Misión Completada! ¡Buen trabajo!
+            </div>
+        `;
+    } else {
+        missionCard.innerHTML = `
+            <h3 class="text-xl font-bold mb-2 text-purple-400">${currentMission.title}</h3>
+            <p class="text-gray-300 mb-4">${currentMission.description}</p>
+            <button onclick="completeMission('${missionId}')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">Marcar como Completada</button>
+        `;
+    }
+}
+
+function completeMission(missionId) {
+    localStorage.setItem('missionCompleted', 'true');
+    showDailyMission(); // Re-renderizar la tarjeta en su estado completado.
+    
+    // Opcional: Llevar al usuario al diario para que reflexione.
+    showTab('diario');
+    const journal = document.getElementById('journal-notes');
+    const mission = missions[missionId];
+    const reflection_prompt = `\n\n---\nReflexión sobre la Misión "${mission.title}":\n- ¿Qué hice exactamente?\n- ¿Qué observé en mí y en los demás?\n- ¿Qué aprendí o qué podría hacer diferente la próxima vez?\n`;
+    journal.value += reflection_prompt;
+    journal.scrollTop = journal.scrollHeight; // Scroll al final
+    alert('¡Misión completada! Se ha añadido una plantilla de reflexión a tu diario. Anotar lo que has aprendido es clave para interiorizar la habilidad.');
+}
+      
 
 function startSimulation(simId) {
     currentSim = simulations[simId];
@@ -2476,6 +2736,40 @@ function startMentalismExercise(exerciseId) {
         renderForcingExercise(exerciseId);
     }
 }
+      
+      function showMissionLibrary() {
+    const libraryView = document.getElementById('mission-library-view');
+    let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">Biblioteca de Misiones de Campo</h1></header><div class="space-y-4">`;
+
+    // Un objeto para agrupar las misiones por categoría
+    const missionsByCategory = {};
+
+    for (const missionId in missions) {
+        const mission = missions[missionId];
+        if (!missionsByCategory[mission.category]) {
+            missionsByCategory[mission.category] = [];
+        }
+        missionsByCategory[mission.category].push(mission);
+    }
+
+    // Ahora iteramos sobre las categorías para mostrar títulos
+    for (const category in missionsByCategory) {
+        content += `<h2 class="text-xl font-semibold text-gray-300 pt-4">${category}</h2>`;
+        missionsByCategory[category].forEach(mission => {
+            content += `
+                <div class="bg-gray-800 p-4 rounded-lg">
+                    <h3 class="font-bold text-purple-400">${mission.title} <span class="text-xs font-light text-gray-400">(${mission.difficulty})</span></h3>
+                    <p class="text-sm text-gray-300 mt-1">${mission.description}</p>
+                </div>
+            `;
+        });
+    }
+
+    content += `</div>`;
+    libraryView.innerHTML = content;
+    navigateTo('mission-library-view');
+}
+      
       
       function renderForcingExercise(exerciseId) {
     const exercise = mentalism_exercises[exerciseId];
@@ -2611,6 +2905,7 @@ document.head.appendChild(styleSheet);
             renderModules();
             showTab('inicio');
             loadNotes();
+            showDailyMission();
         });
     </script>
 </body>
