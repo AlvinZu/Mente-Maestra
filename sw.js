@@ -5,7 +5,7 @@ const urlsToCache = [
     'index.html',
     'manifest.json',
     'Icon-Mente-Maestra.png',
-    'Icon-Mente-Maestra-512x512.png',
+    'Icon-Mente-Maestra-500x500.png',
     // Recursos externos (Scripts y Fuentes)
     'https://cdn.tailwindcss.com',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
