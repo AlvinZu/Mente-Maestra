@@ -220,7 +220,12 @@
 
 <div class="space-y-8">
     <div>
-        <h3 class="text-lg font-semibold mb-3">1. Elige una técnica de respiración</h3>
+        <div class="flex items-center mb-3">
+    <h3 class="text-lg font-semibold">1. Elige una técnica de respiración</h3>
+    <button onclick="showBreathingGuide()" class="ml-2 p-1 rounded-full hover:bg-yellow-700">
+        <i data-lucide="help-circle" class="w-5 h-5 text-yellow-400"></i>
+    </button>
+</div>
         <div id="breathing-technique-selector" class="grid grid-cols-2 gap-3">
             <label data-technique="box" class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-blue-600">
                 <input type="radio" name="technique" value="box" class="hidden" checked>
@@ -3433,6 +3438,21 @@ function endBreathingSession(withSuggestion = false) {
     }
 }
       
+      function showBreathingGuide() {
+    const modal = document.getElementById('breathing-guide-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        lucide.createIcons(); // Para renderizar los iconos dentro del modal
+    }
+}
+
+function hideBreathingGuide() {
+    const modal = document.getElementById('breathing-guide-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+      
 
 // Pequeño estilo para la animación de fade-in
 const styleSheet = document.createElement("style");
@@ -3515,5 +3535,122 @@ document.querySelectorAll('#breathing-technique-selector label, #soundscape-sele
         });
       
     </script>
+  
+  <div id="breathing-guide-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div class="bg-gray-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 border border-gray-700 relative">
+        <button onclick="hideBreathingGuide()" class="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-700">
+            <i data-lucide="x"></i>
+        </button>
+
+        <h2 class="text-2xl font-bold mb-6 text-center">Guía de Técnicas de Respiración</h2>
+
+        <div class="space-y-8">
+            <div>
+                <h3 class="text-xl font-semibold text-cyan-400 mb-2">Respiración Wim Hof</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold mb-1">Beneficios Principales:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Aumento notable de energía y vitalidad.</li>
+                            <li>Fortalecimiento del sistema inmunológico.</li>
+                            <li>Reducción del estrés y la inflamación.</li>
+                            <li>Aumento de la concentración y la fuerza de voluntad.</li>
+                            <li>Mejora de la tolerancia al frío y la recuperación física.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">Cuándo Usarla:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Por la mañana para un impulso de energía potente.</li>
+                            <li>Antes de un desafío mental o físico (ej. deporte).</li>
+                            <li>Para combatir la fatiga o la sensación de letargo.</li>
+                            <li>Antes de una exposición al frío (ducha fría).</li>
+                            <li>Cuando buscas aumentar tu resiliencia y fortaleza mental.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-blue-400 mb-2">Respiración Cuadrada (4-4-4-4)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold mb-1">Beneficios Principales:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Calma el sistema nervioso de forma inmediata.</li>
+                            <li>Reduce los síntomas físicos del estrés.</li>
+                            <li>Aumenta el enfoque y la concentración mental.</li>
+                            <li>Fácil de realizar en cualquier lugar y situación.</li>
+                            <li>Ayuda a controlar respuestas de pánico.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">Cuándo Usarla:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Durante una situación estresante en el trabajo.</li>
+                            <li>Antes de un evento importante (una presentación, una conversación difícil).</li>
+                            <li>Cuando te sientas abrumado o tu mente esté dispersa.</li>
+                            <li>Para hacer una pausa y "resetear" tu estado mental durante el día.</li>
+                            <li>Al tomar una decisión importante para aclarar la mente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-semibold text-purple-400 mb-2">Respiración Relajante (4-7-8)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold mb-1">Beneficios Principales:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Activa la respuesta de relajación profunda del cuerpo (sistema parasimpático).</li>
+                            <li>Muy efectiva para combatir el insomnio y conciliar el sueño.</li>
+                            <li>Reduce la ansiedad de forma significativa.</li>
+                            <li>Ayuda a gestionar antojos y respuestas emocionales intensas como la ira.</li>
+                            <li>Disminuye el ritmo cardíaco y la presión arterial.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">Cuándo Usarla:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Justo antes de dormir para apagar la mente.</li>
+                            <li>En medio de un pico de ansiedad o nerviosismo.</li>
+                            <li>Cuando sientas que una emoción fuerte (como el enojo) te va a desbordar.</li>
+                            <li>Para transicionar del estado de "trabajo" al de "descanso" al final del día.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-semibold text-orange-400 mb-2">Respiración Energizante (de Fuelle)</h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-bold mb-1">Beneficios Principales:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Proporciona un impulso de energía casi instantáneo.</li>
+                            <li>Aumenta la claridad mental y disipa la "niebla" cerebral.</li>
+                            <li>Mejora la capacidad pulmonar y fortalece el sistema respiratorio.</li>
+                            <li>Desintoxica el cuerpo al expulsar toxinas.</li>
+                            <li>Estimula el metabolismo y la digestión.</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-1">Cuándo Usarla:</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                            <li>Como alternativa a una taza de café por la tarde.</li>
+                            <li>Cuando necesites un extra de concentración para una tarea.</li>
+                            <li>Al sentir congestión o pesadez en el sistema respiratorio.</li>
+                            <li>Antes de una sesión de meditación para activar la mente.</li>
+                            <li>Al inicio del día para despertar el cuerpo y la mente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+  
 </body>
 </html>
