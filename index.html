@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
     <title>Mente Maestra</title>
     
     <!-- Tailwind CSS -->
@@ -287,9 +288,17 @@
                 <p class="font-bold">Olas del Mar</p>
             </label>
             <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
-                <input type="radio" name="sound" value="forest" class="hidden">
-                <p class="font-bold">Bosque</p>
-            </label>
+    <input type="radio" name="sound" value="bowls" class="hidden">
+    <p class="font-bold">Cuencos Tibetanos</p>
+</label>
+          <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+        <input type="radio" name="sound" value="fire" class="hidden">
+        <p class="font-bold">Hoguera</p>
+    </label>
+    <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+    <input type="radio" name="sound" value="nature" class="hidden">
+    <p class="font-bold">Naturaleza</p>
+</label>
             <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
                 <input type="radio" name="sound" value="none" class="hidden">
                 <p class="font-bold">Silencio</p>
@@ -3157,7 +3166,9 @@ let recoveryCountdown = null;
 const soundscapes = {
     rain: 'https://www.soundjay.com/nature/rain-01.mp3',
     waves: 'https://www.soundjay.com/nature/ocean-wave-1.mp3',
-    forest: 'https://www.soundjay.com/nature/forest-01.mp3'
+    bowls: 'https://cdn.pixabay.com/audio/2022/03/15/audio_5463b22b17.mp3',
+    fire: 'https://cdn.pixabay.com/audio/2022/10/20/audio_2903333c1c.mp3',
+    nature: 'https://cdn.pixabay.com/audio/2023/10/01/audio_51c6c97a8e.mp3'
 };
 
 // Objeto con los patrones de respiración en milisegundos
@@ -3651,6 +3662,20 @@ document.querySelectorAll('#breathing-technique-selector label, #soundscape-sele
         </div>
     </div>
 </div>
+  
+  <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker registrado con éxito:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Fallo en el registro del Service Worker:', error);
+                });
+        });
+    }
+</script>
   
 </body>
 </html>
