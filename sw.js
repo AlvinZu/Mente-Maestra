@@ -13,9 +13,9 @@ const urlsToCache = [
     // Paisajes Sonoros ( crucial para el Santuario offline )
     'https://www.soundjay.com/nature/rain-01.mp3',
     'https://www.soundjay.com/nature/ocean-wave-1.mp3',
-    'https://cdn.pixabay.com/audio/2022/03/10/audio_5852b12046.mp3',
-    'https://cdn.pixabay.com/audio/2024/02/09/audio_394300a894.mp3',
-    'https://cdn.pixabay.com/audio/2022/08/27/audio_5823cbf927.mp3'
+    'https://www.soundjay.com/healing/singing-bowl-1.mp3',
+    'https://www.soundjay.com/nature/campfire-1.mp3',
+    'https://www.soundjay.com/nature/crickets-1.mp3'
 ];
 
 // Evento de instalación: se abre el caché y se guardan los recursos.
