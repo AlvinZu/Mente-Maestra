@@ -11,10 +11,10 @@ const urlsToCache = [
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
     'https://unpkg.com/lucide@latest',
     // Paisajes Sonoros ( crucial para el Santuario offline )
-    'https://www.soundjay.com/nature/rain-01.mp3',
-    'https://www.soundjay.com/nature/ocean-wave-1.mp3',
-    'https://www.soundjay.com/healing/singing-bowl-1.mp3',
-    'https://www.soundjay.com/nature/campfire-1.mp3',
+    'rain.mp3',
+    'waves.mp3',
+    'bowls.mp3',
+    'fire.mp3',
     'nature.mp3'
 ];
 
