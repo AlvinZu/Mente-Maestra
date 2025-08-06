@@ -1,6 +1,6 @@
 {
     "name": "Mente Maestra por Alvín Herrera",
-    "short_name": "MenteMaestra",
+    "short_name": "Mente Maestra",
     "description": "Una PWA para el dominio del Mentalismo, PNL, Hipnosis y Lenguaje Corporal.",
     "start_url": ".",
     "display": "standalone",
