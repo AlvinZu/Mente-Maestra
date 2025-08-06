@@ -222,20 +222,47 @@
     <div>
         <h3 class="text-lg font-semibold mb-3">1. Elige una técnica de respiración</h3>
         <div id="breathing-technique-selector" class="grid grid-cols-2 gap-3">
-            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-blue-600">
+            <label data-technique="box" class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-blue-600">
                 <input type="radio" name="technique" value="box" class="hidden" checked>
                 <p class="font-bold">Cuadrada (4-4-4-4)</p>
                 <p class="text-xs text-gray-400">Concentración</p>
             </label>
-            <label class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+            <label data-technique="478" class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
                 <input type="radio" name="technique" value="478" class="hidden">
                 <p class="font-bold">Relajante (4-7-8)</p>
                 <p class="text-xs text-gray-400">Descanso</p>
             </label>
+            <label data-technique="wimhof" class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="technique" value="wimhof" class="hidden">
+                <p class="font-bold">Wim Hof</p>
+                <p class="text-xs text-gray-400">Energía y Resiliencia</p>
+            </label>
+            <label data-technique="energy" class="p-4 bg-gray-800 rounded-lg text-center cursor-pointer border-2 border-gray-700">
+                <input type="radio" name="technique" value="energy" class="hidden">
+                <p class="font-bold">Energizante</p>
+                <p class="text-xs text-gray-400">Impulso Rápido</p>
+            </label>
         </div>
     </div>
 
-    <div>
+    <div id="wimhof-controls" class="hidden space-y-4">
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-semibold">2. Número de Respiraciones por Ciclo</h3>
+                <span id="wh-breaths-display" class="font-bold text-blue-400 bg-gray-700 px-3 py-1 rounded-lg">30</span>
+            </div>
+            <input id="wh-breaths-slider" type="range" min="20" max="40" value="30" step="5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-semibold">3. Número de Ciclos Totales</h3>
+                <span id="wh-cycles-display" class="font-bold text-blue-400 bg-gray-700 px-3 py-1 rounded-lg">3</span>
+            </div>
+            <input id="wh-cycles-slider" type="range" min="2" max="4" value="3" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+        </div>
+    </div>
+
+    <div id="duration-controls" class="space-y-4">
         <div class="flex justify-between items-center mb-2">
             <h3 class="text-lg font-semibold">2. Elige la duración</h3>
             <span id="duration-display" class="font-bold text-blue-400 bg-gray-700 px-3 py-1 rounded-lg">5 min</span>
@@ -310,12 +337,23 @@
 </div>
       
         <!-- Vista de la Sesión Inmersiva de Relajación -->
-        <div id="breathing-session-view" class="view hidden fixed inset-0 bg-gray-900 z-50 flex flex-col items-center justify-center p-4">
+        <div id="breathing-session-view" class="view hidden fixed inset-0 bg-gray-900 z-50 flex flex-col items-center justify-center p-4 pb-40 text-center">
+    
+    <p id="cycle-display" class="text-xl text-gray-400 h-8"></p>
+    <p id="unified-timer-display" class="text-8xl font-bold text-white h-28"></p>
+
     <div id="breathing-visualizer" class="w-48 h-48 bg-blue-500 rounded-full flex items-center justify-center">
         <p id="breathing-instruction" class="text-white text-2xl font-bold">Prepárate...</p>
     </div>
-    <p id="breathing-timer" class="text-white text-xl mt-8">--:--</p>
-    <button id="end-session-btn" class="absolute bottom-10 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg">Finalizar</button>
+
+    <div id="detailed-instructions" class="mt-8 h-24">
+        <p class="text-gray-300"></p>
+    </div>
+    
+    <div id="action-buttons" class="absolute bottom-10 w-full px-4">
+        <button id="retention-btn" class="hidden w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg">ACCIÓN</button>
+        <button id="end-session-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg mt-4">Finalizar</button>
+    </div>
 </div>
 
         <!-- Vista de la Biblioteca de Retos -->
@@ -3107,6 +3145,8 @@ function checkMentalismAnswer(exerciseId, chosenOptionIndex) {
 let sessionTimerInterval = null;
 let breathingCycleInterval = null;
 let sessionAudio = null;
+let stopwatchInterval = null;
+let recoveryCountdown = null;
 
 // Objeto con las pistas de audio (usa enlaces a sonidos gratuitos)
 const soundscapes = {
@@ -3118,15 +3158,24 @@ const soundscapes = {
 // Objeto con los patrones de respiración en milisegundos
 const breathingPatterns = {
     'box': [
-        { instruction: 'Inhala...', duration: 4000, scale: 1.4 },
-        { instruction: 'Sostén...', duration: 4000, scale: 1.4 },
-        { instruction: 'Exhala...', duration: 4000, scale: 1 },
-        { instruction: 'Sostén...', duration: 4000, scale: 1 }
+        { instruction: 'Inhala...', duration: 4000, scale: 1.4, color: 'bg-green-500' },
+        { instruction: 'Sostén...', duration: 4000, scale: 1.4, color: 'bg-yellow-500' },
+        { instruction: 'Exhala...', duration: 4000, scale: 1, color: 'bg-blue-500' },
+        { instruction: 'Sostén...', duration: 4000, scale: 1, color: 'bg-yellow-500' }
     ],
     '478': [
-        { instruction: 'Inhala...', duration: 4000, scale: 1.4 },
-        { instruction: 'Sostén...', duration: 7000, scale: 1.4 },
-        { instruction: 'Exhala...', duration: 8000, scale: 1 }
+        { instruction: 'Inhala...', duration: 4000, scale: 1.4, color: 'bg-green-500' },
+        { instruction: 'Sostén...', duration: 7000, scale: 1.4, color: 'bg-yellow-500' },
+        { instruction: 'Exhala...', duration: 8000, scale: 1, color: 'bg-blue-500' }
+    ],
+    'wimhof': [ // <-- NUEVA TÉCNICA
+        { instruction: 'Inhala Fuerte', duration: 1200, scale: 1.4, color: 'bg-orange-500' },
+        { instruction: 'Exhala Suave', duration: 800, scale: 1, color: 'bg-yellow-700' }
+        // Nota: La retención larga se maneja fuera del ciclo visual principal.
+    ],
+    'energy': [ // <-- NUEVA TÉCNICA
+        { instruction: 'Inhala Rápido', duration: 500, scale: 1.2, color: 'bg-orange-600' },
+        { instruction: 'Exhala Fuerte', duration: 500, scale: 1, color: 'bg-yellow-500' }
     ]
 };
 
@@ -3140,27 +3189,36 @@ const pnlSuggestions = [
 ];
 
 function startBreathingSession() {
-    // 1. Leer las selecciones del usuario
     const technique = document.querySelector('input[name="technique"]:checked').value;
+
+    if (technique === 'wimhof') {
+        // Si es Wim Hof, llama a su motor específico y complejo.
+        startWimHofSession();
+    } else {
+        // Para todas las demás, llama al motor de respiración estándar.
+        startStandardBreathingSession(technique);
+    }
+}
+      
+function startStandardBreathingSession(technique) {
     const durationMinutes = document.getElementById('duration-slider').value;
     const sound = document.querySelector('input[name="sound"]:checked').value;
     let totalSeconds = durationMinutes * 60;
-    
     const pattern = breathingPatterns[technique];
     
-    // 2. Navegar a la vista de sesión
     navigateTo('breathing-session-view');
     
-    // 3. Iniciar el paisaje sonoro
     if (sound !== 'none' && soundscapes[sound]) {
         sessionAudio = new Audio(soundscapes[sound]);
         sessionAudio.loop = true;
         sessionAudio.play();
     }
     
-    // 4. Iniciar el temporizador principal de la sesión
-    const timerDisplay = document.getElementById('breathing-timer');
-    timerDisplay.textContent = `${String(durationMinutes).padStart(2, '0')}:00`;
+    // --- LÓGICA SIMPLIFICADA ---
+    const timerDisplay = document.getElementById('unified-timer-display');
+    document.getElementById('cycle-display').textContent = 'Sesión de Relajación';
+    document.querySelector('#detailed-instructions p').textContent = '';
+    document.getElementById('retention-btn').classList.add('hidden');
     
     sessionTimerInterval = setInterval(() => {
         totalSeconds--;
@@ -3168,74 +3226,179 @@ function startBreathingSession() {
         const seconds = String(totalSeconds % 60).padStart(2, '0');
         timerDisplay.textContent = `${minutes}:${seconds}`;
         
-        if (totalSeconds <= 0) {
-            endBreathingSession(true); // Finaliza con sugestión
+        if (totalSeconds < 0) { // Usamos < 0 para que se muestre el 00:00
+            endBreathingSession(true);
         }
     }, 1000);
     
-    // 5. Iniciar el ciclo de respiración
+    // El ciclo de respiración visual (runCycle) no cambia y funciona perfecto.
     const visualizer = document.getElementById('breathing-visualizer');
     const instructionDisplay = document.getElementById('breathing-instruction');
     let currentStep = 0;
     
-    // --- INICIO DE CÓDIGO AÑADIDO ---
-    // Objeto que mapea cada instrucción a una clase de color de Tailwind.
-    // Puedes personalizar los colores aquí si lo deseas.
-    const colors = {
-        'Inhala...': 'bg-green-500',
-        'Sostén...': 'bg-yellow-500',
-        'Exhala...': 'bg-blue-500' // Usamos azul para exhalar, es más relajante que el rojo.
-    };
-    // --- FIN DE CÓDIGO AÑADIDO ---
-    
     const runCycle = () => {
         const step = pattern[currentStep];
         instructionDisplay.textContent = step.instruction;
-        
-        // --- INICIO DE LÓGICA DE COLOR MODIFICADA ---
-        // 1. Se eliminan todas las posibles clases de color para limpiar el estado anterior.
-        visualizer.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-blue-500', 'bg-red-500');
-        
-        // 2. Se añade la clase de color que corresponde a la instrucción actual.
-        if (colors[step.instruction]) {
-            visualizer.classList.add(colors[step.instruction]);
+        visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center';
+        if (step.color) {
+            visualizer.classList.add(step.color);
         }
-        // --- FIN DE LÓGICA DE COLOR MODIFICADA ---
-        
         visualizer.style.transform = `scale(${step.scale})`;
-        
         currentStep = (currentStep + 1) % pattern.length;
-        
-        // El timeout se ajusta a la duración del paso actual
         breathingCycleInterval = setTimeout(runCycle, step.duration);
     };
+    runCycle();
+}
+      
+function startWimHofSession() {
+    const breathsPerCycle = parseInt(document.getElementById('wh-breaths-slider').value);
+    const totalCycles = parseInt(document.getElementById('wh-cycles-slider').value);
+    const sound = document.querySelector('input[name="sound"]:checked').value;
     
-    runCycle(); // Inicia el primer ciclo
+    let currentCycle = 1;
+    let breathCount = 1;
+    let lastRetentionTime = '0:00';
+
+    // Elementos de la interfaz
+    const timerDisplay = document.getElementById('unified-timer-display');
+    const visualizer = document.getElementById('breathing-visualizer');
+    const instruction = document.getElementById('breathing-instruction');
+    const detailedInstructions = document.querySelector('#detailed-instructions p');
+    const cycleDisplay = document.getElementById('cycle-display');
+    const retentionBtn = document.getElementById('retention-btn');
+    
+    navigateTo('breathing-session-view');
+    
+    if (sound !== 'none' && soundscapes[sound]) {
+        sessionAudio = new Audio(soundscapes[sound]);
+        sessionAudio.loop = true;
+        sessionAudio.play();
+    }
+    
+    const runPhase = (phase) => {
+        switch(phase) {
+            case 'BREATHING':
+                cycleDisplay.textContent = `Ciclo ${currentCycle} de ${totalCycles}`;
+                retentionBtn.classList.add('hidden');
+                
+                const breathCycle = () => {
+                    if (breathCount > breathsPerCycle) {
+                        clearInterval(breathingCycleInterval);
+                        runPhase('RETENTION');
+                        return;
+                    }
+                    // El temporizador ahora es el contador de respiraciones
+                    timerDisplay.textContent = breathCount;
+                    instruction.textContent = 'Inhala';
+                    visualizer.style.transform = 'scale(1.4)';
+                    visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center bg-orange-500';
+                    detailedInstructions.textContent = "Inhala profundamente, llenando abdomen y pecho.";
+
+                    setTimeout(() => {
+                        instruction.textContent = 'Exhala';
+                        visualizer.style.transform = 'scale(1)';
+                        visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center bg-yellow-500';
+                        detailedInstructions.textContent = "Suelta el aire por la boca sin forzar.";
+                        breathCount++;
+                    }, 1200);
+                };
+                breathingCycleInterval = setInterval(breathCycle, 2000);
+                break;
+                
+            case 'RETENTION':
+                // El temporizador ahora es el cronómetro
+                instruction.textContent = 'Sostén';
+                visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center bg-yellow-500';
+                detailedInstructions.textContent = "Exhala completamente y retén. Presiona el botón cuando necesites inhalar.";
+                retentionBtn.textContent = 'INHALAR (Recuperación)';
+                retentionBtn.classList.remove('hidden');
+                retentionBtn.onclick = () => runPhase('RECOVERY');
+
+                let seconds = 0;
+                timerDisplay.textContent = '0:00';
+                stopwatchInterval = setInterval(() => {
+                    seconds++;
+                    const mins = String(Math.floor(seconds / 60));
+                    const secs = String(seconds % 60).padStart(2, '0');
+                    lastRetentionTime = `${mins}:${secs}`; // Guardamos el tiempo
+                    timerDisplay.textContent = lastRetentionTime;
+                }, 1000);
+                break;
+                
+            case 'RECOVERY':
+                clearInterval(stopwatchInterval);
+                retentionBtn.classList.add('hidden');
+                instruction.textContent = 'Sostén';
+                visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center bg-green-500';
+                visualizer.style.transform = 'scale(1.4)';
+                detailedInstructions.textContent = "Inhala profundamente y retén durante 15 segundos.";
+                
+                let recoverySeconds = 15;
+                timerDisplay.textContent = recoverySeconds;
+                recoveryCountdown = setInterval(() => {
+                    recoverySeconds--;
+                    timerDisplay.textContent = recoverySeconds;
+                    if (recoverySeconds < 0) {
+                        clearInterval(recoveryCountdown);
+                        if (currentCycle < totalCycles) {
+                            runPhase('PAUSE_BETWEEN_CYCLES');
+                        } else {
+                            endBreathingSession(true);
+                        }
+                    }
+                }, 1000);
+                break;
+
+            case 'PAUSE_BETWEEN_CYCLES':
+                instruction.textContent = 'Pausa';
+                visualizer.className = 'w-48 h-48 rounded-full flex items-center justify-center bg-gray-500';
+                visualizer.style.transform = 'scale(1)';
+                detailedInstructions.textContent = `Ciclo ${currentCycle} completado. Prepárate para el siguiente.`;
+                timerDisplay.textContent = lastRetentionTime; // Muestra el último tiempo de retención
+                cycleDisplay.textContent = `Última Retención`;
+                
+                retentionBtn.textContent = `COMENZAR CICLO ${currentCycle + 1}`;
+                retentionBtn.classList.remove('hidden');
+                retentionBtn.onclick = () => {
+                    currentCycle++;
+                    breathCount = 1;
+                    runPhase('BREATHING');
+                };
+                break;
+        }
+    };
+    runPhase('BREATHING');
 }
       
 
 function endBreathingSession(withSuggestion = false) {
-    // Detener todos los temporizadores e intervalos
-    clearInterval(sessionTimerInterval);
-    clearTimeout(breathingCycleInterval);
+    // Detenemos todos los posibles temporizadores e intervalos de forma segura
+    if (sessionTimerInterval) clearInterval(sessionTimerInterval);
+    if (breathingCycleInterval) clearTimeout(breathingCycleInterval);
+    if (stopwatchInterval) clearInterval(stopwatchInterval);
+    if (recoveryCountdown) clearInterval(recoveryCountdown);
+
+    // Reseteamos todas las variables a null
     sessionTimerInterval = null;
     breathingCycleInterval = null;
+    stopwatchInterval = null;
+    recoveryCountdown = null;
     
-    // Detener y limpiar el audio
+    // Detenemos y limpiamos el audio
     if (sessionAudio) {
         sessionAudio.pause();
         sessionAudio = null;
     }
     
-    // Volver a la vista principal
+    // Volvemos a la vista anterior
     navigateBack();
     
-    // Mostrar la sugestión de PNL si corresponde
+    // Mostramos la sugestión de PNL si corresponde
     if (withSuggestion) {
         const randomSuggestion = pnlSuggestions[Math.floor(Math.random() * pnlSuggestions.length)];
         setTimeout(() => {
             alert(`Sesión completada.\n\nSugestión del día:\n"${randomSuggestion}"`);
-        }, 200); // Pequeño delay para que la transición de vista termine
+        }, 200);
     }
 }
       
@@ -3256,6 +3419,33 @@ document.head.appendChild(styleSheet);
           renderNotesList();
           showDailyMission();
           showDailyLesson();
+          
+          // --- Lógica para mostrar/ocultar controles específicos ---
+document.querySelectorAll('input[name="technique"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        const whControls = document.getElementById('wimhof-controls');
+        const durationControls = document.getElementById('duration-controls');
+        if (e.target.value === 'wimhof') {
+            whControls.classList.remove('hidden');
+            durationControls.classList.add('hidden');
+        } else {
+            whControls.classList.add('hidden');
+            durationControls.classList.remove('hidden');
+        }
+    });
+});
+
+// --- Lógica para los sliders de Wim Hof ---
+const whBreathsSlider = document.getElementById('wh-breaths-slider');
+const whBreathsDisplay = document.getElementById('wh-breaths-display');
+if(whBreathsSlider) {
+    whBreathsSlider.addEventListener('input', (e) => whBreathsDisplay.textContent = e.target.value);
+}
+const whCyclesSlider = document.getElementById('wh-cycles-slider');
+const whCyclesDisplay = document.getElementById('wh-cycles-display');
+if(whCyclesSlider) {
+    whCyclesSlider.addEventListener('input', (e) => whCyclesDisplay.textContent = e.target.value);
+}
           
           // --- Activadores para el Santuario de Relajación ---
 const startBtn = document.getElementById('start-session-btn');
