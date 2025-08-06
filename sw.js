@@ -15,7 +15,7 @@ const urlsToCache = [
     'https://www.soundjay.com/nature/ocean-wave-1.mp3',
     'https://www.soundjay.com/healing/singing-bowl-1.mp3',
     'https://www.soundjay.com/nature/campfire-1.mp3',
-    'https://www.soundjay.com/nature/crickets-1.mp3'
+    'nature.mp3'
 ];
 
 // Evento de instalación: se abre el caché y se guardan los recursos.
