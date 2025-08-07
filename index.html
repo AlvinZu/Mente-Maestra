@@ -162,6 +162,15 @@
     <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
 </div>
                    
+                   <div onclick="showIntegrationMissionLibrary()" class="bg-gray-800 p-5 rounded-xl shadow-lg border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors flex items-center">
+    <div class="p-3 bg-red-600 rounded-lg mr-4"><i data-lucide="swords"></i></div>
+    <div>
+        <h3 class="text-xl font-bold text-red-400">Misiones de Integración</h3>
+        <p class="text-gray-400">Combina todas tus habilidades en escenarios complejos.</p>
+    </div>
+    <i data-lucide="chevron-right" class="ml-auto text-gray-500"></i>
+</div>
+                   
                  </div>
             </section>
 
@@ -349,6 +358,13 @@
         <button onclick="saveNote()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">Guardar Nota</button>
     </div>
 </div>
+      
+      <!-- Vista de la Lista de Misiones de Integración -->
+      <div id="integration-mission-library-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto"></div>
+      
+<!-- Vista de la Misiones de Integración -->
+<div id="integration-mission-view" class="view hidden w-full h-full p-4 pb-24 overflow-y-auto flex flex-col"></div>
+      
       
         <!-- Vista de la Sesión Inmersiva de Relajación -->
         <div id="breathing-session-view" class="view hidden fixed inset-0 bg-gray-900 z-50 flex flex-col items-center justify-center p-4 pb-40 text-center">
@@ -2338,6 +2354,1738 @@
 };
       
       
+const integration_missions = {
+    'im-1': {
+        title: 'La Propuesta Arriesgada',
+        description: 'Tu objetivo: Presentar una idea innovadora a tu jefe escéptico (Javier) y sobrevivir a las objeciones de tu colega rival (Laura). Debes usar habilidades de múltiples disciplinas para tener éxito.',
+        characters: [
+            { id: 'jefe', name: 'Javier', mood: 'Escéptico' },
+            { id: 'rival', name: 'Laura', mood: 'Competitiva' }
+        ],
+        mission_state: { // Variables que cambiarán durante la misión
+            rapportJefe: 50, // Nivel de Rapport con Javier (0-100)
+            confianzaIdea: 20, // Nivel de Confianza de Javier en la idea (0-100)
+            objecionesLaura: 0 // Contador de objeciones exitosas de Laura
+        },
+        phases: {
+            'phase_1_inicio': {
+                title: 'Fase 1: Romper el Hielo',
+                goal: 'Establecer un rapport inicial con Javier antes de presentar tu idea.',
+                start_node: 'p1_start',
+                nodes: {
+                    'p1_start': {
+                        speaker: 'jefe',
+                        line: 'Gracias por venir. Tienes 10 minutos. Laura también está aquí para dar una segunda opinión. ¿De qué se trata esto?',
+                        options: [
+                            { text: 'Ir directo al grano y presentar los datos.', skill: {module: 'Lógica', name: 'Directo al Punto'}, effects: {rapportJefe: '-10'}, target_node: 'p1_fail' },
+                            { text: 'Reflejar sutilmente su postura y validar su falta de tiempo.', skill: {module: 'Lenguaje Corporal', name: 'Rapport (Espejo)'}, effects: {rapportJefe: '+15'}, target_node: 'p1_success' },
+                            { text: 'Reencuadrar la reunión como una oportunidad, no una carga.', skill: {module: 'PNL', name: 'Reencuadre'}, effects: {rapportJefe: '+20'}, target_node: 'p1_success' }
+                        ]
+                    },
+                    'p1_fail': {
+                        speaker: 'jefe',
+                        line: 'Vale, veo números, pero no siento la conexión. Continúa, pero rápido.',
+                        is_end_phase: true,
+                        next_phase: 'phase_2_presentacion'
+                    },
+                    'p1_success': {
+                        speaker: 'jefe',
+                        line: 'Aprecio que entiendas lo ocupado que estoy. Muy bien, tienes mi atención. Muéstrame lo que tienes.',
+                        is_end_phase: true,
+                        next_phase: 'phase_2_presentacion'
+                    }
+                }
+            },
+            'phase_2_presentacion': {
+                title: 'Fase 2: La Presentación',
+                goal: 'Presentar tu idea de la forma más persuasiva posible.',
+                start_node: 'p2_start',
+                nodes: {
+                    'p2_start': {
+                        speaker: 'jefe',
+                        line: 'De acuerdo, ¿cuál es la idea central?',
+                        options: [
+                            { text: 'Explicar que otros líderes del sector ya usan este enfoque.', skill: {module: 'Ingeniería Social', name: 'Prueba Social'}, effects: {confianzaIdea: '+30'}, target_node: 'p2_laura_interviene' },
+                            { text: 'Describir la idea con lenguaje vívido y enfocado en los beneficios que "sentirá".', skill: {module: 'PNL', name: 'Lenguaje Kinestésico'}, effects: {confianzaIdea: '+20', rapportJefe: '+10'}, target_node: 'p2_laura_interviene' },
+                            { text: 'Detallar técnicamente por qué la idea es superior.', skill: {module: 'Lógica', name: 'Argumento Técnico'}, effects: {confianzaIdea: '+10'}, target_node: 'p2_laura_interviene' }
+                        ]
+                    },
+                    'p2_laura_interviene': {
+                        speaker: 'rival',
+                        line: 'Si me permites, Javier, eso suena arriesgado. Podría desestabilizar nuestros procesos actuales y los costes iniciales parecen altos.',
+                        is_end_phase: true,
+                        next_phase: 'phase_3_objeciones'
+                    }
+                }
+            },
+            'phase_3_objeciones': {
+                title: 'Fase 3: Manejo de Objeciones',
+                goal: 'Neutralizar las objeciones de Laura sin alienar a Javier.',
+                start_node: 'p3_start',
+                nodes: {
+                    'p3_start': {
+                        speaker: 'rival',
+                        line: 'Francamente, no veo cómo esto podría funcionar sin una inversión masiva de tiempo y recursos que no tenemos.',
+                        options: [
+                            { text: 'Atacar su argumento directamente: "Estás equivocada, los datos no dicen eso".', skill: {module: 'Confrontación', name: 'Ataque Directo'}, effects: {rapportJefe: '-20', confianzaIdea: '-10'}, target_node: 'p3_fail' },
+                            { text: 'Validar y reencuadrar: "Laura tiene un punto excelente sobre la importancia de los recursos. Y es precisamente por eso que este sistema, una vez implementado, nos ahorrará cientos de horas al mes".', skill: {module: 'PNL', name: 'Validar y Reencuadrar'}, effects: {confianzaIdea: '+20'}, target_node: 'p3_success' },
+                            { text: 'Usar una metáfora: "Es como plantar un árbol. Requiere un esfuerzo inicial, pero luego nos dará frutos durante años".', skill: {module: 'Hipnosis', name: 'Metáfora'}, effects: {rapportJefe: '+10', confianzaIdea: '+15'}, target_node: 'p3_success' }
+                        ]
+                    },
+                    'p3_fail': {
+                        speaker: 'jefe',
+                        line: 'No me gusta este ambiente de confrontación. Lo siento, pero no estoy convencido. Necesito más tiempo para pensar. Gracias por tu tiempo.',
+                        is_end_mission: true, // Final de la misión
+                        feedback: 'MISIÓN FALLIDA: La confrontación directa creó un conflicto que hizo que tu jefe se cerrara. Aunque tu idea fuera buena, la gestión de la dinámica social fue deficiente.'
+                    },
+                    'p3_success': {
+                        speaker: 'jefe',
+                        line: 'Hmm, esa es una buena forma de verlo. Has pensado en las objeciones. Me gusta tu enfoque. De acuerdo, vamos a programar una reunión de seguimiento para ver un plan piloto.',
+                        is_end_mission: true, // Final de la misión
+                        feedback: '¡MISIÓN CUMPLIDA! Navegaste la situación con maestría. Construiste rapport, presentaste tu idea persuasivamente y manejaste las objeciones de forma elegante, validando a tu rival en lugar de atacarla. ¡Un verdadero estratega!'
+                    }
+                }
+            }
+        }
+    },
+  'im-2': {
+    title: 'La Negociación del Contrato',
+    description: 'Estás a punto de cerrar un contrato importante, pero el cliente (Sr. Méndez) tiene dudas de último minuto sobre el precio y los plazos. Debes salvar el acuerdo.',
+    characters: [ { id: 'cliente', name: 'Sr. Méndez', mood: 'Dudoso' } ],
+    mission_state: { rapport: 40, confianza: 30, estres: 60 },
+    phases: {
+        'phase_1_inicio': {
+            title: 'Fase 1: Manejar la Duda Inicial',
+            goal: 'Reducir el estrés del cliente y aumentar el rapport antes de abordar el problema.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cliente',
+                    line: 'He estado revisando la propuesta de nuevo y... sinceramente, el precio es más alto de lo que esperaba y los plazos son muy ajustados. No estoy seguro de que podamos seguir adelante así.',
+                    options: [
+                        { text: 'Justificar el precio inmediatamente con lógica.', skill: {module: 'Lógica', name: 'Defensa Racional'}, effects: {estres: '+10'}, target_node: 'p1_fail' },
+                        { text: 'Validar su preocupación: "Entiendo perfectamente su duda, es una inversión importante y es normal querer estar 100% seguro".', skill: {module: 'PNL', name: 'Validación'}, effects: {rapport: '+20', estres: '-20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'cliente', line: 'Sí, entiendo la lógica, pero sigo sintiendo que es demasiado arriesgado. La sensación no es la correcta.', is_end_phase: true, next_phase: 'phase_2_solucion' },
+                'p1_success': { speaker: 'cliente', line: 'Exacto. Gracias por entenderlo. Entonces, ¿qué podemos hacer al respecto?', is_end_phase: true, next_phase: 'phase_2_solucion' }
+            }
+        },
+        'phase_2_solucion': {
+            title: 'Fase 2: Presentar la Solución',
+            goal: 'Encontrar un punto medio que aumente la confianza del cliente en el acuerdo.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'cliente',
+                    line: 'Necesito una solución que me dé más seguridad.',
+                    options: [
+                        { text: 'Ofrecer un descuento directo, devaluando tu oferta.', skill: {module: 'Concesión', name: 'Ceder'}, effects: {confianza: '+10', rapport: '-5'}, target_node: 'p2_final' },
+                        { text: 'Reencuadrar el precio como una inversión en tranquilidad y ofrecer un pequeño extra (reciprocidad).', skill: {module: 'Ingeniería Social', name: 'Reencuadre y Reciprocidad'}, effects: {confianza: '+30', rapport: '+10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'cliente',
+                    line: 'De acuerdo, creo que podemos trabajar con eso. Ha sido una conversación productiva.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 50, confianza: 50 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has salvado el acuerdo. Manejaste la emoción antes que la lógica, construiste confianza y encontraste una solución de valor. ¡Excelente!',
+                        failure_feedback: 'MISIÓN FALLIDA: Aunque cerraste el trato, el rapport quedó dañado o la confianza es baja. La relación con el cliente podría ser frágil en el futuro.'
+                    }
+                }
+            }
+        }
+    }
+},
+'im-3': {
+    title: 'El Feedback Difícil',
+    description: 'Tienes que darle feedback a un miembro de tu equipo (Marcos) que es muy talentoso pero tiene una actitud defensiva.',
+    characters: [ { id: 'empleado', name: 'Marcos', mood: 'A la defensiva' } ],
+    mission_state: { rapport: 30, defensividad: 70 },
+    phases: {
+        'phase_1_inicio': {
+            title: 'Fase 1: El Acercamiento',
+            goal: 'Crear un ambiente seguro para reducir la defensividad de Marcos.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'empleado',
+                    line: 'Me dijiste que querías verme. ¿Pasa algo malo?',
+                    options: [
+                        { text: 'Ir directo al problema: "Sí, tenemos que hablar de tu actitud...".', skill: {module: 'Confrontación', name: 'Directo'}, effects: {defensividad: '+20'}, target_node: 'p1_fail' },
+                        { text: 'Empezar con un elogio sincero: "Marcos, antes que nada, quiero decirte que el trabajo que hiciste en el proyecto X fue excepcional".', skill: {module: 'Ingeniería Social', name: 'Elogio'}, effects: {rapport: '+20', defensividad: '-20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'empleado', line: 'Sabía que era por eso. Siempre hay algún problema. Pues dime.', is_end_phase: true, next_phase: 'phase_2_feedback' },
+                'p1_success': { speaker: 'empleado', line: 'Ah, gracias. Aprecio que lo reconozcas. Entonces, ¿de qué querías hablar?', is_end_phase: true, next_phase: 'phase_2_feedback' }
+            }
+        },
+        'phase_2_feedback': {
+            title: 'Fase 2: Entregar el Mensaje',
+            goal: 'Comunicar el feedback de forma clara pero sin activar de nuevo la defensividad.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'empleado',
+                    line: 'Te escucho.',
+                    options: [
+                        { text: 'Enfocarse en el comportamiento, no en la persona: "Noté que durante la reunión, cuando se presentó la idea X, tu reacción pareció un poco brusca. ¿Qué ocurrió?".', skill: {module: 'PNL', name: 'Separar Identidad de Comportamiento'}, effects: {defensividad: '-30'}, target_node: 'p2_final' },
+                        { text: 'Generalizar: "A veces puedes ser un poco negativo y eso afecta al equipo".', skill: {module: 'Crítica', name: 'Generalización'}, effects: {defensividad: '+30', rapport: '-10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'empleado',
+                    line: 'Ya veo... supongo que no me di cuenta. Gracias por decírmelo de esta manera.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { defensividad: 40 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has dado un feedback difícil de forma magistral. Al reducir la defensividad y enfocarte en el comportamiento, te aseguraste de que el mensaje fuera recibido.',
+                        failure_feedback: 'MISIÓN FALLIDA: El mensaje se entregó, pero la defensividad de Marcos siguió siendo alta. Es posible que no haya interiorizado el feedback y que la relación laboral se haya resentido.'
+                    }
+                }
+            }
+        }
+    }
+},
+'im-4': {
+    title: 'La Venta Consultiva',
+    description: 'Un cliente potencial (Ana) sabe que tiene un problema, pero no está seguro de cuál es la mejor solución. Tu objetivo no es "vender", sino "asesorar".',
+    characters: [ { id: 'cliente', name: 'Ana', mood: 'Confundida' } ],
+    mission_state: {
+        rapportAna: 50,
+        confianzaSolucion: 10
+    },
+    phases: {
+        'phase_1_diagnostico': {
+            title: 'Fase 1: Diagnóstico',
+            goal: 'Entender el verdadero problema de Ana usando preguntas efectivas.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cliente',
+                    line: 'Sé que necesitamos mejorar nuestra eficiencia, pero hay tantas opciones que no sé por dónde empezar. Estoy un poco abrumada.',
+                    options: [
+                        { text: 'Presentar tu producto inmediatamente como la solución a todo.', skill: {module: 'Venta', name: 'Cierre Prematuro'}, effects: {rapportAna: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Usar el Meta-Modelo para clarificar: "Entiendo. ¿Qué significa ‘eficiencia’ exactamente para tu equipo? ¿En qué área específica sienten más el problema?".', skill: {module: 'PNL', name: 'Meta-Modelo'}, effects: {rapportAna: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'cliente',
+                    line: 'Sí, tu producto parece bueno, pero no estoy segura de que ataque nuestro problema de raíz. Necesito pensarlo.',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: Intentaste vender antes de diagnosticar. El cliente no se sintió comprendido y, por lo tanto, no confió en tu solución.'
+                },
+                'p1_success': {
+                    speaker: 'cliente',
+                    line: 'Buena pregunta. Creo que el mayor problema es el tiempo que perdemos en los informes manuales cada viernes.',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_propuesta'
+                }
+            }
+        },
+        'phase_2_propuesta': {
+            title: 'Fase 2: Propuesta de Valor',
+            goal: 'Conectar tu solución directamente con el problema específico que has descubierto.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'cliente',
+                    line: 'Sí, los informes son nuestra pesadilla.',
+                    options: [
+                        { text: 'Conectar y liderar: "Perfecto. Imagina por un momento cómo sería llegar el viernes y que esos informes ya estuvieran hechos, dándote toda la tarde para planificar la siguiente semana. Nuestro módulo de automatización está diseñado precisamente para eso".', skill: {module: 'Hipnosis', name: 'Puente al Futuro'}, effects: {confianzaSolucion: '+50'}, target_node: 'p2_final' },
+                        { text: 'Listar características: "Nuestro software tiene exportación a PDF, 20 plantillas diferentes y se integra con tres plataformas".', skill: {module: 'Lógica', name: 'Características'}, effects: {confianzaSolucion: '+10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'cliente',
+                    line: 'Eso... eso suena exactamente como lo que necesito. De acuerdo, hablemos de los siguientes pasos.',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! No vendiste un producto, vendiste un resultado. Al diagnosticar primero y luego pintar una imagen vívida de la solución a su problema específico, generaste una confianza inquebrantable.'
+                }
+            }
+        }
+    }
+},
+'im-5': {
+    title: 'Calmar al Amigo Ansioso',
+    description: 'Tu amigo (Carlos) está muy ansioso por una entrevista de trabajo que tiene mañana. Tu objetivo es ayudarlo a cambiar su estado emocional a uno de más calma y confianza.',
+    characters: [ { id: 'amigo', name: 'Carlos', mood: 'Ansioso' } ],
+    mission_state: {
+        rapportCarlos: 60,
+        ansiedad: 80
+    },
+    phases: {
+        'phase_1_anclaje': {
+            title: 'Fase 1: Cambiar el Estado',
+            goal: 'Romper su bucle de pensamientos negativos y anclar un estado de recursos.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'amigo',
+                    line: 'No voy a poder hacerlo. Hay demasiada gente mejor que yo. Seguro que me quedo en blanco.',
+                    options: [
+                        { text: 'Decirle que no se preocupe, que todo saldrá bien.', skill: {module: 'Consuelo', name: 'Minimizar'}, effects: {ansiedad: '-5'}, target_node: 'p1_fail' },
+                        { text: 'Cambiar su enfoque y anclar: "Un momento. Olvida eso. Cuéntame de nuevo aquella vez que diste esa presentación increíble en la universidad. ¿Cómo te sentiste justo después? Conecta con esa sensación".', skill: {module: 'PNL', name: 'Anclaje de Recursos'}, effects: {ansiedad: '-30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'amigo',
+                    line: 'Es fácil para ti decirlo, pero no ayuda. Sigo sintiéndome igual.',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: Intentar calmar a alguien con lógica rara vez funciona. Invalidaste su sentimiento en lugar de ayudarlo a cambiarlo desde dentro.'
+                },
+                'p1_success': {
+                    speaker: 'amigo',
+                    line: 'Pues... me sentí genial, la verdad. Con mucha confianza. Hacía tiempo que no pensaba en eso.',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_proyeccion'
+                }
+            }
+        },
+        'phase_2_proyeccion': {
+            title: 'Fase 2: Proyección al Futuro',
+            goal: 'Ayudarle a llevar ese estado de confianza a la entrevista de mañana.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'amigo',
+                    line: 'Me siento un poco mejor recordando eso.',
+                    options: [
+                        { text: 'Proyectar el estado: "Perfecto. Ahora, quiero que lleves esa misma sensación de confianza contigo a la entrevista de mañana. Imagina entrar en esa sala sintiéndote exactamente así".', skill: {module: 'Hipnosis', name: 'Puente al Futuro'}, effects: {ansiedad: '-40'}, target_node: 'p2_final' },
+                        { text: 'Darle consejos lógicos: "Bueno, ahora repasa tu currículum y duerme bien".', skill: {module: 'Lógica', name: 'Consejo Racional'}, effects: {ansiedad: '-10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'amigo',
+                    line: 'Tienes razón. Si pude hacerlo entonces, puedo hacerlo mañana. Gracias, de verdad. Me siento mucho más preparado.',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! No le diste consejos, le diste un cambio de estado. Le ayudaste a acceder a sus propios recursos internos y a proyectarlos en el futuro, una de las aplicaciones más poderosas de la PNL.'
+                }
+            }
+        }
+    }
+},
+'im-6': {
+    title: 'La Reunión de Equipo Dividido',
+    description: 'Tu equipo está dividido sobre dos estrategias diferentes para un proyecto. La mitad apoya la Opción A (segura) y la otra mitad la Opción B (innovadora). Tu objetivo es unificar al equipo.',
+    characters: [ { id: 'equipo', name: 'Equipo', mood: 'Dividido' } ],
+    mission_state: {
+        unidadEquipo: 20,
+        confianzaDecision: 30
+    },
+    phases: {
+        'phase_1_reencuadre': {
+            title: 'Fase 1: Encontrar un Terreno Común',
+            goal: 'Reencuadrar el problema para que dejen de verse como oponentes.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'equipo',
+                    line: '(Murmullos y discusión). El bando A dice que el B es muy arriesgado. El bando B dice que el A es mediocre.',
+                    options: [
+                        { text: 'Pedir que voten para tomar una decisión rápida.', skill: {module: 'Gestión', name: 'Votación'}, effects: {unidadEquipo: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Reencuadrar el objetivo: "Un momento. ¿Estamos todos de acuerdo en que nuestro objetivo común es el éxito de este proyecto, y que ambos bandos quieren lo mejor para la empresa?".', skill: {module: 'PNL', name: 'Reencuadre de Intención'}, effects: {unidadEquipo: '+30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'equipo',
+                    line: 'La votación es 5 a 5. Ahora estamos igual, pero la mitad del equipo se siente ignorada y resentida. La tensión es máxima.',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: Una votación en un equipo dividido crea ganadores y perdedores, destruyendo la unidad. Tu rol era mediar, no forzar una decisión.'
+                },
+                'p1_success': {
+                    speaker: 'equipo',
+                    line: '(El equipo asiente). Sí, claro. Todos queremos que esto salga bien.',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_sintesis'
+                }
+            }
+        },
+        'phase_2_sintesis': {
+            title: 'Fase 2: Crear una Tercera Opción',
+            goal: 'Guiar al equipo para que creen una solución que integre lo mejor de ambas propuestas.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'equipo',
+                    line: 'Ahora que estamos de acuerdo en el objetivo, ¿cómo procedemos?',
+                    options: [
+                        { text: 'Proponer una síntesis: "¿Y si tomamos la seguridad de la Opción A como base, pero le integramos el elemento más innovador y de bajo riesgo de la Opción B como un proyecto piloto?".', skill: {module: 'Ingeniería Social', name: 'Creación de Consenso'}, effects: {unidadEquipo: '+40', confianzaDecision: '+50'}, target_node: 'p2_final' },
+                        { text: 'Imponer tu propia decisión como líder.', skill: {module: 'Autoridad', name: 'Imposición'}, effects: {unidadEquipo: '-10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'equipo',
+                    line: 'Esa es una idea excelente. Nos permite avanzar de forma segura pero sin estancarnos. ¡Vamos a desarrollarla!',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! Actuaste como un verdadero líder. No elegiste un bando, sino que elevaste la perspectiva del equipo hacia un objetivo común y les ayudaste a sintetizar una tercera opción superior. Has creado unidad y una solución robusta.'
+                }
+            }
+        }
+    }
+},
+'im-7': {
+    title: 'La Cita de Café (Interés Oculto)',
+    description: 'Estás en una cita de café. La conversación es agradable, pero no estás seguro de si hay interés real o solo cortesía. Tu objetivo es descubrir la verdadera intención.',
+    characters: [ { id: 'cita', name: 'Alex', mood: 'Amable' } ],
+    mission_state: {
+        rapport: 60,
+        interesReal: 50
+    },
+    phases: {
+        'phase_1_calibracion': {
+            title: 'Fase 1: Calibración',
+            goal: 'Establecer una línea base y observar el lenguaje corporal.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cita',
+                    line: 'Sí, mi trabajo es interesante. Siempre estoy ocupado/a, pero me gusta.',
+                    options: [
+                        { text: 'Seguir haciendo preguntas lógicas sobre su trabajo.', skill: {module: 'Conversación', name: 'Lógica'}, effects: {}, target_node: 'p1_neutral' },
+                        { text: 'Observar: notar que aunque sonríe, sus pies apuntan a la puerta y mantiene su taza como una barrera.', skill: {module: 'Lenguaje Corporal', name: 'Observación'}, effects: {}, target_node: 'p1_lectura' }
+                    ]
+                },
+                'p1_neutral': {
+                    speaker: 'cita',
+                    line: 'Sí, es un puesto de gestión. Bueno, se me hace tarde...',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN INCONCLUSA: La conversación fue cortés, pero no obtuviste ninguna información real porque te quedaste en la superficie. La cita terminó sin claridad.'
+                },
+                'p1_lectura': {
+                    speaker: 'cita',
+                    line: '(Continúa hablando amablemente, pero su lenguaje corporal no cambia).',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_test'
+                }
+            }
+        },
+        'phase_2_test': {
+            title: 'Fase 2: El Test de Interés',
+            goal: 'Realizar una acción para probar si su interés es real.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'cita',
+                    line: 'Así que sí, ha sido una semana de locos.',
+                    options: [
+                        { text: 'Hacer una declaración de interés directo: "Me gustaría volver a verte".', skill: {module: 'Comunicación', name: 'Directa'}, effects: {}, target_node: 'p2_resultado_directo' },
+                        { text: 'Hacer una "proyección futura" sutil: "La próxima vez que hablemos, tienes que contarme cómo terminó ese proyecto".', skill: {module: 'Hipnosis', name: 'Proyección Futura'}, effects: {}, target_node: 'p2_resultado_sutil' }
+                    ]
+                },
+                'p2_resultado_directo': {
+                    speaker: 'cita',
+                    line: 'Oh... gracias. Eres muy amable. Bueno, ya veremos, con tanto trabajo... ¡cuídate!',
+                    is_end_mission: true,
+                    feedback: 'RESULTADO: RECHAZO CORTÉS. Tu pregunta directa, ante su lenguaje corporal cerrado, forzó una respuesta socialmente educada pero negativa. No había suficiente rapport para ese nivel de franqueza.'
+                },
+                'p2_resultado_sutil': {
+                    speaker: 'cita',
+                    line: '¡Claro! Sí, te cuento. Oye, ha sido un placer. Hablamos pronto.',
+                    is_end_mission: true,
+                    feedback: '¡ÉXITO! Tu proyección futura fue el test perfecto. No la forzaste a un sí/no. Su respuesta positiva ("¡Claro! Hablamos pronto") es una señal de que está abierta a una futura interacción. Has obtenido la información que buscabas sin crear una situación incómoda.'
+                }
+            }
+        }
+    }
+},
+'im-8': {
+    title: 'El Favor al Vecino',
+    description: 'Tu vecino (Sr. García) es un poco gruñón y rara vez saluda. Quieres mejorar la relación. Una mañana, lo ves luchando por subir unas bolsas pesadas por las escaleras.',
+    characters: [ { id: 'vecino', name: 'Sr. García', mood: 'Gruñón' } ],
+    mission_state: {
+        rapportVecino: 10
+    },
+    phases: {
+        'phase_1_oferta': {
+            title: 'Fase 1: La Oferta',
+            goal: 'Ofrecer ayuda de una manera que sea aceptada.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'vecino',
+                    line: '(Luchando con las bolsas, resoplando, sin mirarte).',
+                    options: [
+                        { text: 'Preguntar: "¿Necesita ayuda?".', skill: {module: 'Comunicación', name: 'Pregunta Directa'}, effects: {}, target_node: 'p1_fail' },
+                        { text: 'Actuar y justificar: Coger una bolsa y decir "Permítame, esas bolsas pesan una tonelada. Yo le llevo esta".', skill: {module: 'Ingeniería Social', name: 'Acción y Justificación'}, effects: {rapportVecino: '+30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'vecino',
+                    line: '"No, no. Yo puedo solo." (Sigue luchando, ignorándote).',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: La pregunta "¿Necesita ayuda?" a menudo activa el orgullo y la respuesta automática es "no". Era una oferta fácil de rechazar.'
+                },
+                'p1_success': {
+                    speaker: 'vecino',
+                    line: '(Sorprendido). "Eh... bueno... gracias, muchacho/a. Muy amable de tu parte."',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_cierre'
+                }
+            }
+        },
+        'phase_2_cierre': {
+            title: 'Fase 2: El Cierre',
+            goal: 'Dejar una impresión positiva y duradera.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'vecino',
+                    line: '(Ya en su puerta). "Bueno, muchas gracias de nuevo."',
+                    options: [
+                        { text: '"De nada. Por cierto, necesitaré que me riegue las plantas la semana que viene".', skill: {module: 'Reciprocidad', name: 'Cobro Inmediato'}, effects: {rapportVecino: '-40'}, target_node: 'p2_final_fail' },
+                        { text: '"De nada, Sr. García. ¡Que tenga un buen día!". (Y te vas sin pedir nada).', skill: {module: 'Reciprocidad', name: 'Incondicional'}, effects: {rapportVecino: '+30'}, target_node: 'p2_final_success' }
+                    ]
+                },
+                'p2_final_fail': {
+                    speaker: 'vecino',
+                    line: '(Te mira con recelo). "Ah. Ya veo. Bueno, lo pensaré."',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: Destruiste todo el rapport al convertir un acto de amabilidad en una transacción. La reciprocidad funciona cuando es incondicional.'
+                },
+                'p2_final_success': {
+                    speaker: 'vecino',
+                    line: '(Asiente, gratamente sorprendido). "Igualmente."',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! Has aplicado la reciprocidad de forma magistral. Al dar valor sin pedir nada a cambio, has creado una "deuda" social positiva. La próxima vez que el Sr. García te vea, te sonreirá. Has plantado la semilla de una buena relación.'
+                }
+            }
+        }
+    }
+},
+'im-9': {
+    title: 'La Presentación al Inversor',
+    description: 'Estás presentando tu proyecto a un inversor (Isabel) que es muy analítica y tiene poco tiempo. Tu objetivo es captar su interés y asegurar una segunda reunión.',
+    characters: [ { id: 'inversor', name: 'Isabel', mood: 'Analítica y Apresurada' } ],
+    mission_state: {
+        interesInversor: 30,
+        credibilidad: 40
+    },
+    phases: {
+        'phase_1_apertura': {
+            title: 'Fase 1: La Apertura (Primeros 30 segundos)',
+            goal: 'Captar su atención y establecer credibilidad rápidamente.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'inversor',
+                    line: 'Buenos días. Tengo 20 minutos exactos. Empiece cuando quiera.',
+                    options: [
+                        { text: 'Empezar con tu historia personal y tu pasión por el proyecto.', skill: {module: 'Storytelling', name: 'Historia Personal'}, effects: {interesInversor: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Empezar con el problema que resuelves y el tamaño del mercado: "El problema es X, que afecta a Y millones de personas y cuesta Z millones al año. Nosotros lo solucionamos".', skill: {module: 'Comunicación', name: 'Enfoque en el Problema'}, effects: {interesInversor: '+30', credibilidad: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'inversor',
+                    line: 'Aprecio su pasión, pero necesito datos. Vayamos al grano, por favor.',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: No te adaptaste a tu audiencia. Una persona analítica y con prisa responde a datos y soluciones, no a historias personales en la apertura.'
+                },
+                'p1_success': {
+                    speaker: 'inversor',
+                    line: 'Interesante. Tiene mi atención. ¿Cuál es su solución?',
+                    is_end_phase: true,
+                    next_phase: 'phase_2_cierre'
+                }
+            }
+        },
+        'phase_2_cierre': {
+            title: 'Fase 2: El Cierre',
+            goal: 'Terminar la reunión asegurando el siguiente paso.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'inversor',
+                    line: 'El tiempo se acaba. Esto parece prometedor. Envíeme la presentación.',
+                    options: [
+                        { text: 'Aceptar y preguntar cuándo tendrás noticias: "Perfecto, se la envío. ¿Cuándo podría esperar una respuesta?".', skill: {module: 'Seguimiento', name: 'Pasivo'}, effects: {}, target_node: 'p2_final_pasivo' },
+                        { text: 'Aceptar y proponer el siguiente paso: "Se la enviaré en una hora. ¿Le parece bien si agendamos 20 minutos para el próximo martes para resolver cualquier duda específica que le surja tras leerla?".', skill: {module: 'Ingeniería Social', name: 'Cierre con Acción'}, effects: {credibilidad: '+20'}, target_node: 'p2_final_activo' }
+                    ]
+                },
+                'p2_final_pasivo': {
+                    speaker: 'inversor',
+                    line: 'No estoy segura, tengo una agenda complicada. Yo le aviso.',
+                    is_end_mission: true,
+                    feedback: 'RESULTADO: INCIERTO. Has perdido el control de la situación. Al dejar el siguiente paso en sus manos, es muy probable que tu propuesta se enfríe.'
+                },
+                'p2_final_activo': {
+                    speaker: 'inversor',
+                    line: 'Martes a las 10. De acuerdo. Envíeme la presentación. Espero su llamada.',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! Has mantenido el control del proceso. Al proponer una acción concreta y fácil de aceptar, has asegurado el siguiente punto de contacto y has demostrado ser una persona proactiva y profesional.'
+                }
+            }
+        }
+    }
+},
+'im-10': {
+    title: 'Detectar la Verdadera Objeción',
+    description: 'Estás vendiendo un servicio de alto valor. El cliente (David) parece convencido pero al final dice "Tengo que pensarlo". Tu objetivo es descubrir la verdadera objeción oculta.',
+    characters: [ { id: 'cliente', name: 'David', mood: 'Evasivo' } ],
+    mission_state: {
+        rapport: 70,
+        objecionReal: 0 // 0 = no descubierta, 1 = descubierta
+    },
+    phases: {
+        'phase_1_investigacion': {
+            title: 'Fase 1: Investigación',
+            goal: 'Ir más allá de la respuesta superficial.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cliente',
+                    line: 'Todo suena muy bien, de verdad. Pero es una decisión importante, necesito pensarlo con calma.',
+                    options: [
+                        { text: 'Presionar para que decida ahora.', skill: {module: 'Venta', name: 'Presión'}, effects: {rapport: '-30'}, target_node: 'p1_fail' },
+                        { text: 'Aceptar y validar, luego usar una pregunta de sondeo: "Por supuesto, David. Normalmente cuando alguien dice que necesita pensarlo, es porque o bien el precio no encaja, o bien no está seguro de que esto sea para él. ¿Cuál de las dos resuena más contigo?".', skill: {module: 'Mentalismo', name: 'Horquillado'}, effects: {rapport: '+10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': {
+                    speaker: 'cliente',
+                    line: 'No, no, no me presiones. Si decido algo, ya te llamaré.',
+                    is_end_mission: true,
+                    feedback: 'MISIÓN FALLIDA: La presión rompió el rapport. El cliente se sintió acorralado y levantó un muro definitivo.'
+                },
+                'p1_success': {
+                    speaker: 'cliente',
+                    line: '(Sorprendido por tu franqueza). Bueno... siendo honesto, tengo que hablarlo con mi socio. Él es el que aprueba el presupuesto final.',
+                    is_end_mission: true,
+                    feedback: '¡MISIÓN CUMPLIDA! Has descubierto la objeción real. No era "pensarlo", era "necesito la aprobación de otro". La técnica del horquillado (dar dos opciones probables) le dio la seguridad para revelar la verdadera barrera. Ahora puedes trabajar en la solución real: darle las herramientas para convencer a su socio.'
+                }
+            }
+        }
+    }
+},
+  'im-11': {
+    title: 'Pedir un Aumento',
+    description: 'Has trabajado duro y tus resultados son excelentes. Es hora de pedir un aumento a tu jefa (Sara), quien es justa pero muy orientada a los datos.',
+    characters: [ { id: 'jefa', name: 'Sara', mood: 'Ocupada y Analítica' } ],
+    mission_state: { rapport: 40, confianza: 50, justificacion: 10 },
+    phases: {
+        'phase_1_apertura': {
+            title: 'Fase 1: El Acercamiento',
+            goal: 'Presentar el tema de forma profesional sin generar una reacción defensiva.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'jefa',
+                    line: 'Hola, ¿qué tal? Tengo unos minutos. ¿En qué puedo ayudarte?',
+                    options: [
+                        { text: 'Ir directo al grano: "Hola Sara, creo que merezco un aumento y me gustaría discutirlo".', skill: {module: 'Comunicación', name: 'Directa'}, effects: {rapport: '-10', justificacion: '+5'}, target_node: 'p1_directo' },
+                        { text: 'Enmarcar la conversación: "Gracias por tu tiempo. Me gustaría hablar sobre mi trayectoria en la empresa y mi futuro rol aquí".', skill: {module: 'PNL', name: 'Reencuadre'}, effects: {rapport: '+10'}, target_node: 'p1_enmarcado' }
+                    ]
+                },
+                'p1_directo': { speaker: 'jefa', line: 'Un aumento. De acuerdo. ¿En qué te basas?', is_end_phase: true, next_phase: 'phase_2_argumento' },
+                'p1_enmarcado': { speaker: 'jefa', line: 'Interesante. Me parece una conversación importante. Te escucho.', is_end_phase: true, next_phase: 'phase_2_argumento' }
+            }
+        },
+        'phase_2_argumento': {
+            title: 'Fase 2: La Justificación',
+            goal: 'Presentar tus logros de una manera que resuene con su estilo analítico.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'jefa',
+                    line: 'Entonces, ¿cuáles son tus argumentos?',
+                    options: [
+                        { text: 'Hablar de tu esfuerzo: "He trabajado muy duro este año y siento que he aportado mucho".', skill: {module: 'Argumento', name: 'Subjetivo'}, effects: {justificacion: '+10'}, target_node: 'p2_final' },
+                        { text: 'Presentar datos concretos: "Durante los últimos 12 meses, lideré el proyecto X que resultó en un aumento del 15% en la eficiencia y generé Y en nuevos ingresos. Me gustaría que mi compensación reflejara este valor".', skill: {module: 'Ingeniería Social', name: 'Prueba y Valor'}, effects: {justificacion: '+50', confianza: '+20'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'jefa',
+                    line: 'Entiendo. Gracias por presentar esto de forma tan clara. Déjame revisar los números y te daré una respuesta esta semana.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { justificacion: 60, rapport: 40 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has presentado un caso sólido y profesional. Al usar datos concretos y mantener un marco de valor, has maximizado tus posibilidades de éxito.',
+                        failure_feedback: 'MISIÓN INCIERTA: Aunque has abierto la conversación, tu argumento se basó más en sentimientos que en datos. La falta de justificación concreta podría debilitar tu posición.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-12': {
+    title: 'La Disculpa Necesaria',
+    description: 'Cometiste un error que afectó a un cliente y tu colega (Elena) tuvo que solucionarlo. Debes disculparte y restaurar la confianza con ella.',
+    characters: [ { id: 'colega', name: 'Elena', mood: 'Decepcionada' } ],
+    mission_state: { rapport: 20, confianza: 10 },
+    phases: {
+        'phase_1_disculpa': {
+            title: 'Fase 1: La Disculpa',
+            goal: 'Ofrecer una disculpa genuina que sea aceptada.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'colega',
+                    line: 'Ah, hola. Sí, la situación con el cliente ya está controlada. Fue una tarde complicada.',
+                    options: [
+                        { text: 'Justificarte: "Lo siento, pero es que estaba sobrecargado con otras tareas".', skill: {module: 'Comunicación', name: 'Justificación'}, effects: {rapport: '-10', confianza: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Asumir responsabilidad total: "Elena, no hay excusas. Cometí un error, te afectó a ti y lo siento de verdad. Vengo a disculparme y a asegurarme de que no vuelva a pasar".', skill: {module: 'Inteligencia Emocional', name: 'Responsabilidad'}, effects: {rapport: '+30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'colega', line: 'Todos estamos sobrecargados. No se trata de eso.', is_end_phase: true, next_phase: 'phase_2_reparacion' },
+                'p1_success': { speaker: 'colega', line: '... Vale. Aprecio que lo digas así. Gracias.', is_end_phase: true, next_phase: 'phase_2_reparacion' }
+            }
+        },
+        'phase_2_reparacion': {
+            title: 'Fase 2: La Reparación',
+            goal: 'Tomar acciones para reconstruir la confianza.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'colega',
+                    line: 'Espero que no se repita.',
+                    options: [
+                        { text: 'Hacer una promesa: "No volverá a pasar, te lo prometo".', skill: {module: 'Comunicación', name: 'Promesa'}, effects: {confianza: '+10'}, target_node: 'p2_final' },
+                        { text: 'Proponer un plan de acción: "Para asegurarme de que no se repita, he implementado un nuevo sistema de doble chequeo para estas tareas. ¿Te parece bien si te lo muestro?".', skill: {module: 'Ingeniería Social', name: 'Acción y Compromiso'}, effects: {confianza: '+40'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'colega',
+                    line: 'Un sistema de doble chequeo... De acuerdo, eso suena como un buen plan. Muéstramelo. Y gracias de nuevo por hablar conmigo.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 50, confianza: 40 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! No solo te disculpaste, sino que tomaste medidas concretas para reparar el daño y asegurar el futuro. Has convertido un error en una oportunidad para demostrar profesionalismo y fortalecer la relación.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Te has disculpado, lo cual es un primer paso, pero la confianza sigue frágil. Las acciones pesan más que las palabras y aún tienes trabajo por hacer para demostrar tu fiabilidad.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-13': {
+    title: 'El Puente Creativo',
+    description: 'Debes mediar en un conflicto entre la jefa de diseño (Sofía), que quiere usar materiales caros y de alta calidad, y el gerente de finanzas (Roberto), que necesita recortar el presupuesto del proyecto.',
+    characters: [
+        { id: 'sofia', name: 'Sofía', mood: 'Apasionada' },
+        { id: 'roberto', name: 'Roberto', mood: 'Pragmático' }
+    ],
+    mission_state: { unidad: 30, viabilidad: 40 },
+    phases: {
+        'phase_1_reencuadre': {
+            title: 'Fase 1: Encontrar el Objetivo Común',
+            goal: 'Evitar que la discusión se centre en "visión vs. dinero" y reencuadrarla hacia un objetivo compartido.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'roberto',
+                    line: 'Sofía, es simple: no hay presupuesto para esos materiales. Es inviable.',
+                    options: [
+                        { text: 'Apoyar a Roberto: "Sofía, Roberto tiene razón, tenemos que ser realistas".', skill: {module: 'Lógica', name: 'Tomar Partido'}, effects: {unidad: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Validar a ambos y buscar el meta-objetivo: "Entiendo ambos puntos. Roberto, necesitas que el proyecto sea rentable. Sofía, necesitas que el producto final sea excelente. ¿Estamos de acuerdo en que ambos queremos un producto de alta calidad que también sea un éxito comercial?".', skill: {module: 'PNL', name: 'Meta-Objetivo'}, effects: {unidad: '+30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'sofia', line: '¡No se trata de ser realista, se trata de no sacrificar la calidad! No me siento apoyada.', is_end_mission: true, evaluation: { failure_feedback: 'MISIÓN FALLIDA: Al tomar partido, alienaste a una de las partes y destruiste la posibilidad de una solución creativa. El conflicto escaló.' } },
+                'p1_success': { speaker: 'roberto', line: 'Bueno, sí, obviamente ese es el objetivo final de todos.', is_end_phase: true, next_phase: 'phase_2_solucion' }
+            }
+        },
+        'phase_2_solucion': {
+            title: 'Fase 2: La Propuesta Híbrida',
+            goal: 'Proponer una solución que satisfaga las necesidades subyacentes de ambas partes.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'sofia',
+                    line: 'Exacto. Pero, ¿cómo logramos eso con estas restricciones?',
+                    options: [
+                        { text: 'Proponer una solución de compromiso: "¿Qué pasaría si usamos los materiales de alta calidad solo en las partes más visibles y críticas del producto, y optimizamos los costes en los componentes internos?".', skill: {module: 'Ingeniería Social', name: 'Solución de Compromiso'}, effects: {unidad: '+20', viabilidad: '+40'}, target_node: 'p2_final' },
+                        { text: 'Pedirles que lo resuelvan ellos: "Ambos tienen buenos puntos, necesitan encontrar una solución".', skill: {module: 'Gestión', name: 'Delegación Pasiva'}, effects: {unidad: '-10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'roberto',
+                    line: 'Hmm... eso podría funcionar. Necesitaría ver los números, pero es una vía que podemos explorar. De acuerdo.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { unidad: 50, viabilidad: 70 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Actuaste como un verdadero mediador. No te enfocaste en las posiciones (materiales caros vs. presupuesto bajo), sino en los intereses (calidad vs. rentabilidad) y guiaste al equipo a una solución creativa que satisfizo a ambos.',
+                        failure_feedback: 'MISIÓN A MEDIAS: La discusión se detuvo, pero no se llegó a una solución real. La tensión subyacente sigue ahí y probablemente volverá a surgir.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-14': {
+    title: 'El Muro Adolescente',
+    description: 'Tu hijo adolescente, Leo, ha estado posponiendo sus responsabilidades toda la semana. Tu objetivo es lograr que ordene su habitación sin provocar una discusión.',
+    characters: [ { id: 'hijo', name: 'Leo', mood: 'Apático' } ],
+    mission_state: { rapport: 40, resistencia: 60 },
+    phases: {
+        'phase_1_acercamiento': {
+            title: 'Fase 1: El Primer Contacto',
+            goal: 'Iniciar la conversación de una manera que no active su resistencia natural.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'hijo',
+                    line: '(Tumbado en el sofá, mirando el móvil). Hola.',
+                    options: [
+                        { text: 'Empezar con una orden directa: "Leo, tu habitación es un desastre. Ve a ordenarla ahora mismo".', skill: {module: 'Autoridad', name: 'Orden Directa'}, effects: {resistencia: '+30', rapport: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Acompasar y entrar en su mundo primero: "Hola, campeón. ¿Qué estás viendo? ¿Algo interesante?".', skill: {module: 'PNL', name: 'Acompasamiento'}, effects: {rapport: '+20', resistencia: '-10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'hijo', line: '"Ugh, ya voy..." (No se mueve y sigue mirando el móvil con más intensidad).', is_end_mission: true, evaluation: { failure_feedback: 'MISIÓN FALLIDA: El enfrentamiento directo activó su muro de resistencia. Ahora, ordenar la habitación se ha convertido en una lucha de poder.' } },
+                'p1_success': { speaker: 'hijo', line: 'No mucho, solo unos vídeos. ¿Qué pasa?', is_end_phase: true, next_phase: 'phase_2_propuesta' }
+            }
+        },
+        'phase_2_propuesta': {
+            title: 'Fase 2: Presentar la Tarea',
+            goal: 'Enmarcar la tarea de una forma que le dé control y un beneficio claro.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'hijo',
+                    line: '¿Necesitas algo?',
+                    options: [
+                        { text: 'Usar una pregunta cerrada: "¿Vas a ordenar tu cuarto hoy?".', skill: {module: 'Comunicación', name: 'Pregunta Cerrada'}, effects: {resistencia: '+10'}, target_node: 'p2_fail' },
+                        { text: 'Dar una elección y enmarcar el beneficio: "Oye, en un rato vamos a pedir pizza. ¿Prefieres ordenar tu cuarto ahora en 15 minutos y lo dejamos listo, o después de cenar?".', skill: {module: 'Hipnosis', name: 'Ilusión de Elección'}, effects: {resistencia: '-30'}, target_node: 'p2_success' }
+                    ]
+                },
+                'p2_fail': { speaker: 'hijo', line: '"No sé, quizás más tarde..." (La respuesta es vaga y sin compromiso).', is_end_mission: true, evaluation: { failure_feedback: 'MISIÓN FALLIDA: Una pregunta de sí/no a un adolescente sobre una tarea casi siempre resulta en un "no" o una evasiva. No creaste ninguna motivación.' } },
+                'p2_success': {
+                    speaker: 'hijo',
+                    line: '¿Pizza? Vale... Ummm... prefiero ahora y así ya me lo quito de encima. Pero solo 15 minutos, ¿eh?',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 50, resistencia: 30 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has navegado la situación con maestría. Primero creaste conexión en lugar de conflicto. Luego, en lugar de dar una orden, ofreciste una elección controlada y la asociaste con una recompensa (la pizza). Has motivado la acción sin generar una discusión.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Aceptó, pero su resistencia sigue alta. Lograste el objetivo a corto plazo, pero la dinámica de poder no ha mejorado.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-15': {
+    title: 'La Oferta Sobre la Mesa',
+    description: 'Has recibido una oferta para un trabajo que te encanta, pero el salario inicial es inferior a tus expectativas. Tu objetivo es negociar un aumento sin parecer desagradecido o poner en riesgo la oferta.',
+    characters: [ { id: 'manager', name: 'David', mood: 'Amable y profesional' } ],
+    mission_state: { rapport: 60, valorPercibido: 50, riesgoOferta: 10 },
+    phases: {
+        'phase_1_reaccion': {
+            title: 'Fase 1: La Reacción Inicial',
+            goal: 'Responder a la oferta de una manera que muestre gratitud pero abra la puerta a la negociación.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'manager',
+                    line: '¡Felicidades! Después de un largo proceso, estamos encantados de ofrecerte el puesto. La oferta salarial es de 60.000€ anuales.',
+                    options: [
+                        { text: 'Mostrar decepción: "Ah... la verdad es que esperaba un poco más".', skill: {module: 'Comunicación', name: 'Negativa'}, effects: {rapport: '-20', riesgoOferta: '+20'}, target_node: 'p1_fail' },
+                        { text: 'Agradecer y crear espacio: "¡Fantásticas noticias, David! Estoy muy emocionado por la oportunidad. Agradezco mucho la oferta. ¿Hay flexibilidad para discutir los detalles de la compensación?".', skill: {module: 'Ingeniería Social', name: 'Enmarcado Positivo'}, effects: {rapport: '+10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { speaker: 'manager', line: 'Ya veo. Bueno, esta es la cifra que el presupuesto nos permite para este puesto.', is_end_mission: true, evaluation: { failure_feedback: 'MISIÓN FALLIDA: Tu reacción inicial sonó negativa y desagradecida, lo que puso a la otra parte a la defensiva y cerró la puerta a una negociación flexible.' } },
+                'p1_success': { speaker: 'manager', line: 'Claro, siempre estamos abiertos a conversar para asegurarnos de que sea un buen acuerdo para ambos. ¿Qué tienes en mente?', is_end_phase: true, next_phase: 'phase_2_justificacion' }
+            }
+        },
+        'phase_2_justificacion': {
+            title: 'Fase 2: La Justificación de Valor',
+            goal: 'Argumentar tu contraoferta basándote en tu valor y datos del mercado, no en tus necesidades personales.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'manager',
+                    line: 'Te escucho.',
+                    options: [
+                        { text: 'Basarse en necesidades: "Es que con mi alquiler y gastos, necesito al menos 68.000€ para que me compense el cambio".', skill: {module: 'Argumento', name: 'Basado en Necesidad'}, effects: {valorPercibido: '-10'}, target_node: 'p2_final' },
+                        { text: 'Basarse en valor y mercado: "He investigado el rango de mercado para este rol, que se sitúa entre 68-75k€. Considerando mi experiencia específica en [habilidad clave para ellos], creo que una cifra de 70.000€ reflejaría de forma justa el valor que puedo aportar al equipo desde el primer día".', skill: {module: 'Ingeniería Social', name: 'Justificación de Valor'}, effects: {valorPercibido: '+30', rapport: '+10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'manager',
+                    line: 'Aprecio que hayas hecho tu investigación y lo presentes de esta manera. Tu punto sobre [habilidad clave] es muy válido. Déjame hablarlo internamente y te doy una respuesta mañana.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { valorPercibido: 70, riesgoOferta: 20 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has manejado la negociación con una profesionalidad impecable. Al agradecer, enmarcar positivamente la conversación y justificar tu valor con datos, has aumentado enormemente tus posibilidades de recibir una contraoferta favorable.',
+                        failure_feedback: 'MISIÓN INCIERTA: Aunque has abierto la negociación, tu argumento fue débil. Al centrarte en tus necesidades en lugar de en el valor que aportas, es menos probable que la empresa haga un esfuerzo por aumentar la oferta.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-16': {
+    title: 'El Cumplido Envenenado',
+    description: 'En una reunión, después de una presentación exitosa, un colega (Javier) te da un cumplido que en realidad es un ataque velado. Tu objetivo es neutralizar el ataque y mantener tu estatus frente al grupo.',
+    characters: [ { id: 'rival', name: 'Javier', mood: 'Competitivo' } ],
+    mission_state: { rapportGrupo: 60, estatus: 50, tension: 30 },
+    phases: {
+        'phase_1_reaccion': {
+            title: 'Fase 1: La Reacción Inmediata',
+            goal: 'Responder al ataque velado sin perder la calma ni ceder el control del marco.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'rival',
+                    line: '¡Felicidades! Fue una presentación sorprendentemente buena. Mucho mejor de lo que esperaba, honestamente.',
+                    options: [
+                        { text: 'Ponerte a la defensiva: "¿Qué quieres decir con ‘sorprendentemente buena’?".', skill: {module: 'Comunicación', name: 'Defensiva'}, effects: {estatus: '-20', tension: '+30'}, target_node: 'p1_fail' },
+                        { text: 'Aceptar el cumplido e ignorar el veneno: "Gracias, Javier. Me alegro de que te haya gustado".', skill: {module: 'Mentalismo', name: 'Ignorar y Redirigir'}, effects: {estatus: '+10', tension: '-10'}, target_node: 'p1_success' },
+                        { text: 'Reencuadrar con humor y confianza: "Jaja, gracias. A mí también me sorprendo a veces. Es el problema de poner el listón tan alto".', skill: {module: 'PNL', name: 'Reencuadre con Humor'}, effects: {estatus: '+20', rapportGrupo: '+10', tension: '-10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'rival', 
+                    line: 'Tranquilo, solo era un cumplido. No te pongas tan sensible.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Caíste en la trampa. Al reaccionar a la parte negativa, aceptaste su marco y quedaste como una persona sensible y fácil de provocar, perdiendo estatus frente al grupo.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'rival', 
+                    line: '(Ligeramente descolocado, no sabe cómo continuar el ataque). Ah... bueno, sí. Buen trabajo.', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { estatus: 60 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Manejaste la situación con maestría. Al ignorar la provocación o reencuadrarla con humor, demostraste un control total del marco. No solo neutralizaste el ataque, sino que aumentaste tu estatus como alguien imperturbable y seguro.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Sobreviviste al ataque, pero no saliste fortalecido. La próxima vez, intenta una respuesta que demuestre un control del marco aún mayor.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-17': {
+    title: 'El Silencio Incómodo',
+    description: 'Estás en una primera cita y, tras una buena conversación inicial, se produce un silencio repentino. Ambos miran a los lados. Tu objetivo es romper el silencio y reavivar la conexión.',
+    characters: [ { id: 'cita', name: 'Elena', mood: 'Algo nerviosa' } ],
+    mission_state: { rapport: 50, tension: 50 },
+    phases: {
+        'phase_1_ruptura': {
+            title: 'Fase 1: Romper el Hielo (de nuevo)',
+            goal: 'Elegir la estrategia correcta para disipar la tensión del silencio.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cita',
+                    line: '(Ambos os quedáis en silencio por unos 10 segundos. Ella remueve su bebida, evitando el contacto visual).',
+                    options: [
+                        { text: 'Hacer una pregunta lógica y aburrida: "Y... ¿tienes hermanos?".', skill: {module: 'Conversación', name: 'Pregunta Genérica'}, effects: {tension: '-5', rapport: '+5'}, target_node: 'p1_neutral' },
+                        { text: 'Entrar en pánico y hablar de ti: "Hablando de trabajo, el otro día en mi oficina pasó algo increíble...".', skill: {module: 'Comunicación', name: 'Monólogo'}, effects: {tension: '+10', rapport: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Romper el marco con humor: Sonreír y decir en voz baja, "Vale, creo que este es el silencio incómodo obligatorio de la primera cita. Ya podemos tacharlo de la lista. Ahora, cuéntame algo que te apasione de verdad".', skill: {module: 'Ingeniería Social', name: 'Control del Marco'}, effects: {tension: '-30', rapport: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'cita', 
+                    line: '(Asiente educadamente mientras hablas, pero notas que ha desconectado un poco).', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: El pánico te hizo hablar solo de ti. En lugar de conectar, creaste más distancia. La clave para romper un silencio es incluir a la otra persona, no excluirla con un monólogo.' 
+                    } 
+                },
+                 'p1_neutral': { 
+                    speaker: 'cita', 
+                    line: 'Sí, un hermano mayor. Y tú?', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN A MEDIAS: Has roto el silencio, pero con una pregunta genérica que no genera emoción ni conexión real. La conversación sigue en terreno superficial y la tensión podría volver.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'cita', 
+                    line: '(Se ríe, visiblemente aliviada y sorprendida). "¡Jaja, vale, me has pillado! Tienes razón. Pues, algo que me apasiona es..."', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 70, tension: 20 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Una jugada de maestro. Al reconocer el silencio con humor (Control del Marco), eliminaste toda la tensión y demostraste una gran confianza y habilidad social. No solo salvaste la situación, sino que la usaste para crear una conexión mucho más fuerte.',
+                        failure_feedback: '' // No hay fallo posible en esta ruta
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-18': {
+    title: 'El Eslabón Débil',
+    description: 'Estás en un proyecto grupal importante. Un miembro del equipo, Alex, no ha entregado su parte y sus excusas son constantes. Debes confrontarlo para salvar el proyecto.',
+    characters: [ { id: 'colega', name: 'Alex', mood: 'Evasivo' } ],
+    mission_state: { rapport: 40, tension: 50, responsabilidad: 20 },
+    phases: {
+        'phase_1_confrontacion': {
+            title: 'Fase 1: La Conversación',
+            goal: 'Abordar el problema de una manera que fomente la responsabilidad en lugar de la hostilidad.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'colega',
+                    line: 'Hola. Sí, sobre mi parte... he estado súper liado con otras cosas, pero ya casi lo tengo. No te preocupes.',
+                    options: [
+                        { text: 'Usar un marco acusatorio: "¿Otra vez la misma excusa? Nos estás perjudicando a todos. Tienes que hacerlo ya".', skill: {module: 'Confrontación', name: 'Ataque'}, effects: {tension: '+40', rapport: '-30'}, target_node: 'p1_fail' },
+                        { text: 'Usar un marco colaborativo y de equipo: "Entiendo que estés ocupado, todos lo estamos. El equipo cuenta con tu parte para poder avanzar. ¿Hay algún obstáculo con el que te podamos ayudar para tenerlo listo mañana?".', skill: {module: 'Ingeniería Social', name: 'Marco Colaborativo'}, effects: {tension: '-20', rapport: '+10', responsabilidad: '+30'}, target_node: 'p1_success' },
+                        { text: 'Hacer el trabajo tú mismo para evitar el conflicto.', skill: {module: 'Comunicación', name: 'Evasión'}, effects: {tension: '-30', responsabilidad: '-20'}, target_node: 'p1_evasion' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'colega', 
+                    line: '¡Vale, tranquilo! ¡No tienes que atacarme! Lo haré, pero no me hables así.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La confrontación directa solo generó hostilidad. Aunque quizás entregue el trabajo, la relación de equipo está dañada y has creado un ambiente de tensión.' 
+                    } 
+                },
+                'p1_evasion': { 
+                    speaker: 'colega', 
+                    line: '¿De verdad? ¡Eres el mejor! ¡Te debo una!', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Has evitado el conflicto, pero a un coste muy alto. Has resuelto el problema a corto plazo, pero has reforzado su comportamiento irresponsable y has asumido una carga que no te corresponde. El problema se repetirá.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'colega', 
+                    line: '(Suspira, un poco avergonzado). Tienes razón. No es justo para el equipo. El obstáculo principal soy yo procrastinando. Me comprometo a tenerlo para mañana al mediodía.', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { responsabilidad: 50, tension: 30 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has manejado la situación como un verdadero líder. No atacaste a la persona, sino al problema, y lo enmarcaste dentro del contexto del equipo. Al ofrecer ayuda, le quitaste las excusas y fomentaste que asumiera su responsabilidad de forma madura.',
+                        failure_feedback: '' 
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-19': {
+    title: 'El Guardián',
+    description: 'Necesitas urgentemente 5 minutos con un directivo importante (Sr. Valente), pero su asistente (Mónica) es conocida por ser extremadamente eficiente y protectora con el tiempo de su jefe.',
+    characters: [ { id: 'asistente', name: 'Mónica', mood: 'Profesional y Firme' } ],
+    mission_state: { rapport: 30, credibilidad: 40, urgenciaPercibida: 20 },
+    phases: {
+        'phase_1_contacto': {
+            title: 'Fase 1: El Contacto Inicial',
+            goal: 'Presentar tu petición de una manera que genere credibilidad y no sea fácil de descartar.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'asistente',
+                    line: 'Oficina del señor Valente, habla Mónica. ¿En qué puedo ayudarle?',
+                    options: [
+                        { text: 'Exagerar la urgencia: "Hola Mónica, es una emergencia, necesito hablar con el Sr. Valente ahora mismo".', skill: {module: 'Comunicación', name: 'Alarma'}, effects: {credibilidad: '-20', urgenciaPercibida: '+10'}, target_node: 'p1_fail' },
+                        { text: 'Validar su rol y ser específico: "Hola Mónica, sé que el tiempo del Sr. Valente es muy limitado. Mi nombre es [Tu Nombre] y necesito su opinión experta de 5 minutos sobre una anomalía en el informe del proyecto Atlas que él mismo solicitó".', skill: {module: 'Ingeniería Social', name: 'Validación y Especificidad'}, effects: {rapport: '+20', credibilidad: '+30'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'asistente', 
+                    line: 'Entiendo. ¿Podría decirme la naturaleza de la "emergencia"? El Sr. Valente está en una reunión.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La táctica de la "emergencia" es un cliché que los asistentes experimentados detectan al instante. Ha generado desconfianza y ahora te someterá a un interrogatorio.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'asistente', 
+                    line: 'El proyecto Atlas... entiendo. Permítame revisar su agenda. Veo que tiene una ventana de 10 minutos en una hora.', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_cierre' }
+            }
+        },
+        'phase_2_cierre': {
+            title: 'Fase 2: Asegurar el Compromiso',
+            goal: 'Convertir a la asistente en tu aliada para asegurar que la reunión ocurra.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'asistente',
+                    line: 'Puedo agendarlo entonces. ¿Le confirmo en una hora?',
+                    options: [
+                        { text: 'Aceptar de forma pasiva: "Sí, perfecto, gracias".', skill: {module: 'Comunicación', name: 'Pasiva'}, effects: {rapport: '+5'}, target_node: 'p2_final' },
+                        { text: 'Aceptar y empoderarla: "Eso sería fantástico, Mónica. Me salvas la vida. Lo prepararé todo para ser ultra eficiente y respetar su tiempo y el tuyo. Gracias por tu ayuda".', skill: {module: 'PNL', name: 'Elogio y Acompasamiento'}, effects: {rapport: '+20', credibilidad: '+10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'asistente',
+                    line: 'No hay problema. Me aseguraré de que el Sr. Valente tenga el contexto antes de la llamada. Confirmado.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 70, credibilidad: 60 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has ejecutado una estrategia perfecta. No trataste a la asistente como un obstáculo, sino como una profesional clave. Validaste su rol, fuiste específico, demostraste respeto por su tiempo y el de su jefe, y la convertiste en tu aliada. Has conseguido la reunión.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Conseguiste la reunión, pero de una forma puramente transaccional. No has construido una relación con una persona clave en la organización, perdiendo una oportunidad estratégica.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-20': {
+    title: 'El Cliente Furioso',
+    description: 'Un cliente importante (Lucía) llama, furiosa porque un envío crucial llegó tarde y defectuoso, poniendo en riesgo su propio negocio. Tu objetivo es calmarla y salvar la relación comercial.',
+    characters: [ { id: 'cliente', name: 'Lucía', mood: 'Furiosa' } ],
+    mission_state: { rapport: 10, estres: 90, confianza: 20 },
+    phases: {
+        'phase_1_deescalada': {
+            title: 'Fase 1: La De-escalada',
+            goal: 'Absorber el impacto inicial de su ira y hacer que se sienta escuchada.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cliente',
+                    line: '¡Estoy increíblemente decepcionada! ¡Confié en ustedes! Este error me va a costar una fortuna. ¡Es inaceptable!',
+                    options: [
+                        { text: 'Interrumpir para ofrecer una solución inmediata: "Entiendo, le enviaré un reemplazo ahora mismo".', skill: {module: 'Solución', name: 'Reactiva'}, effects: {estres: '-5'}, target_node: 'p1_fail' },
+                        { text: 'Pedirle que se calme: "Lucía, por favor, cálmese para que podamos entender el problema".', skill: {module: 'Comunicación', name: 'Invalidación'}, effects: {estres: '+10', rapport: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Dejar que hable, escuchar en silencio y luego validar: "Lucía, respire y cuéntemelo todo. Quiero entender exactamente qué ha pasado y cómo le ha afectado. Tiene toda la razón en estar así".', skill: {module: 'Lenguaje Corporal', name: 'Escucha Activa'}, effects: {estres: '-30', rapport: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'cliente', 
+                    line: '¡No, no entiende! ¡Y no me pida que me calme! ¡Esto es un desastre!', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Reaccionaste antes de escuchar. Al ofrecer una solución prematura o pedirle que se calme, invalidaste su emoción. La primera regla con una persona enfadada es dejar que vacíe su ira y demostrar que la escuchas.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'cliente', 
+                    line: '(Respira hondo, su tono baja un poco). De acuerdo. El problema es que el componente A llegó dañado y eso detuvo toda mi línea de producción...', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_solucion' }
+            }
+        },
+        'phase_2_solucion': {
+            title: 'Fase 2: La Solución y Compensación',
+            goal: 'No solo arreglar el problema, sino ir un paso más allá para reconstruir la confianza.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'cliente',
+                    line: 'Necesito una solución, y la necesito ya.',
+                    options: [
+                        { text: 'Ofrecer la solución estándar: "Le enviaremos un nuevo componente A con envío urgente. Debería llegar mañana".', skill: {module: 'Servicio', name: 'Estándar'}, effects: {confianza: '+20'}, target_node: 'p2_final' },
+                        { text: 'Ofrecer una solución superior (Reciprocidad): "Esto es lo que haremos: un mensajero personal le llevará un nuevo componente A en menos de 3 horas. Además, he añadido dos componentes B sin coste alguno para compensar el tiempo de producción que ha perdido por nuestra culpa".', skill: {module: 'Ingeniería Social', name: 'Reciprocidad'}, effects: {confianza: '+40', rapport: '+30'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'cliente',
+                    line: '(Hace una pausa, sorprendida). ¿Un mensajero personal... y componentes extra? ... Vaya. De acuerdo. Eso... eso ayuda. Mucho. Gracias.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 60, confianza: 50 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Actuación impecable. Primero, absorbiste su ira con una escucha activa magistral. Luego, no solo solucionaste el problema, sino que fuiste más allá, usando la reciprocidad para compensar su pérdida. Has convertido a una cliente furiosa en una defensora leal de tu marca.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Solucionaste el problema, pero solo cumpliste con lo mínimo. La cliente sigue teniendo una mala experiencia y es posible que busque alternativas en el futuro. Perdiste la oportunidad de impresionarla.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-21': {
+    title: 'La Pregunta Trampa',
+    description: 'Estás en la fase final de una entrevista para un puesto importante. La entrevistadora (Elena) quiere evaluar tu autoconciencia y capacidad de crecimiento.',
+    characters: [ { id: 'entrevistadora', name: 'Elena', mood: 'Analítica' } ],
+    mission_state: { rapport: 60, credibilidad: 50, estatus: 50 },
+    phases: {
+        'phase_1_respuesta': {
+            title: 'Fase 1: La Respuesta',
+            goal: 'Responder a la pregunta sobre tu debilidad de una forma que aumente tu credibilidad.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'entrevistadora',
+                    line: 'Tu trayectoria es muy interesante. Ahora, para conocerte un poco mejor, dime: ¿cuál dirías que es tu mayor debilidad profesional?',
+                    options: [
+                        { text: 'Usar el cliché: "Soy demasiado perfeccionista, a veces trabajo de más para que todo quede perfecto".', skill: {module: 'Comunicación', name: 'Cliché'}, effects: {credibilidad: '-20', estatus: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Ser honesto pero irrelevante: "No se me da muy bien la repostería creativa".', skill: {module: 'Comunicación', name: 'Evasión'}, effects: {rapport: '-10', credibilidad: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Usar el reencuadre honesto: "En el pasado, tendía a querer controlar todos los detalles de un proyecto. Me di cuenta de que esto limitaba a mi equipo, así que he trabajado activamente en aprender a delegar de forma eficaz, confiando en las fortalezas de los demás. Aún es un área en la que me mantengo consciente para seguir mejorando".', skill: {module: 'PNL', name: 'Reencuadre Honesto'}, effects: {credibilidad: '+30', estatus: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'entrevistadora', 
+                    line: 'Ya veo. Entiendo. Bueno, pasemos a la siguiente pregunta...', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Tu respuesta fue percibida como evasiva o poco original. No demostraste una autoconciencia genuina, que es el verdadero objetivo de la pregunta. Has perdido una oportunidad clave para generar credibilidad.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'entrevistadora', 
+                    line: 'Gracias por esa respuesta tan honesta y estructurada. Demuestra un alto nivel de autoconciencia y un enfoque proactivo hacia el crecimiento. Muy bien.', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { credibilidad: 70, estatus: 60 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has convertido una pregunta trampa en tu mayor fortaleza. Al admitir una debilidad real, demostrar que has tomado acciones para mejorarla y enmarcarla como un proceso de crecimiento, has proyectado madurez, honestidad y una gran capacidad de desarrollo profesional.',
+                        failure_feedback: '' 
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-22': {
+    title: 'El Círculo Cerrado',
+    description: 'Estás en un evento social y ves al grupo de personas con el que te interesa conectar. Están en una conversación cerrada y animada. Tu objetivo es unirte a su círculo de forma natural.',
+    characters: [ { id: 'grupo', name: 'Grupo', mood: 'Animado' } ],
+    mission_state: { rapport: 20, estatusSocial: 40, tension: 30 },
+    phases: {
+        'phase_1_acercamiento': {
+            title: 'Fase 1: El Acercamiento',
+            goal: 'Posicionarte físicamente y escuchar para encontrar un punto de entrada.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'grupo',
+                    line: '(El grupo está riendo y debatiendo apasionadamente sobre una serie de televisión. Forman un círculo cerrado).',
+                    options: [
+                        { text: 'Interrumpir directamente: "Disculpen, ¿de qué serie hablan? Quiero opinar".', skill: {module: 'Comunicación', name: 'Interrupción'}, effects: {tension: '+30', rapport: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Acercarte al grupo, permanecer en el borde exterior y escuchar activamente con una sonrisa, esperando una pausa.', skill: {module: 'Lenguaje Corporal', name: 'Calibración y Paciencia'}, effects: {tension: '-10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'grupo', 
+                    line: '(El grupo se detiene, te miran de forma extraña y responden cortésmente pero sin invitarte a continuar. Luego retoman su conversación, cerrando el círculo de nuevo).', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La interrupción directa es socialmente agresiva. Forzaste tu entrada en lugar de ser invitado, y el grupo instintivamente protegió su dinámica excluyéndote.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'grupo', 
+                    line: '(En una pausa natural, uno de los miembros nota tu presencia y te mira con curiosidad).', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_entrada' 
+                }
+            }
+        },
+        'phase_2_entrada': {
+            title: 'Fase 2: La Entrada',
+            goal: 'Aprovechar la oportunidad para integrarte con una aportación relevante.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'grupo',
+                    line: '(Uno de los miembros te da una apertura no verbal, mirándote).',
+                    options: [
+                        { text: 'Hacer una pregunta genérica: "¿Qué tal? Soy [Tu Nombre]".', skill: {module: 'Comunicación', name: 'Presentación Estándar'}, effects: {rapport: '+10'}, target_node: 'p2_final' },
+                        { text: 'Hacer una aportación relevante y abierta: "Disculpen, no pude evitar escuchar. La opinión sobre el personaje de Víctor es muy interesante. ¿Creen que su motivación era realmente la venganza o había algo más?".', skill: {module: 'Ingeniería Social', name: 'Aportación de Valor'}, effects: {rapport: '+30', estatusSocial: '+20'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'grupo',
+                    line: '¡Buena pregunta! Justo estábamos debatiendo eso. Yo creo que era por... (El grupo abre el círculo y te incluye en la conversación).',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 50, estatusSocial: 50 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Ejecución impecable. Fuiste paciente, calibraste la situación y esperaste tu oportunidad. Tu entrada fue relevante y aportó valor a la conversación existente, lo que hizo que el grupo te aceptara de forma natural. Has sido invitado al círculo.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Lograste entrar, pero de una forma poco memorable. Una presentación estándar es aceptable, pero no demuestra un alto calibre social. Te arriesgas a quedar como un miembro pasivo del grupo.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-23': {
+    title: 'El Marco del Vendedor',
+    description: 'Estás en una reunión con un cliente potencial (Ricardo) que se muestra cínico y te lanza un desafío para ponerte a prueba.',
+    characters: [ { id: 'cliente', name: 'Ricardo', mood: 'Desafiante' } ],
+    mission_state: { rapport: 40, estatus: 40, confianza: 30 },
+    phases: {
+        'phase_1_ruptura_de_marco': {
+            title: 'Fase 1: La Ruptura del Marco',
+            goal: 'Responder al desafío inicial sin aceptar el rol de inferioridad que te asigna.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'cliente',
+                    line: 'Mira, seamos directos. Ya he hablado con tres como tú esta semana. No me vendas la moto, sé que solo quieres tu comisión. Convénceme.',
+                    options: [
+                        { text: 'Aceptar su marco y defenderte: "No, no, mi intención es ayudarle de verdad. Nuestros productos son los mejores por...".', skill: {module: 'Comunicación', name: 'Defensiva'}, effects: {estatus: '-30', rapport: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Romper su marco y re-posicionarte (Power Frame): "Un momento, Ricardo. Creo que hay un malentendido. Yo no estoy aquí para ‘convencer’ a nadie. Mi trabajo es diagnosticar si los problemas que tienes encajan con las soluciones que ofrezco. Quizás no seamos un buen encaje el uno para el otro".', skill: {module: 'Ingeniería Social', name: 'Control del Marco'}, effects: {estatus: '+40'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'cliente', 
+                    line: 'Sí, sí, eso dicen todos. Venga, al grano, ¿qué tienes?', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Has aceptado su marco. Al ponerte a la defensiva, te has posicionado como un vendedor desesperado que necesita su aprobación. Has perdido todo el estatus y el control de la conversación.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'cliente', 
+                    line: '(Sorprendido por tu confianza, cambia su tono). ... Vaya. De acuerdo. Es un enfoque diferente. Muy bien, te escucho. ¿Cuáles son esos problemas que solucionas?', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { estatus: 70 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Ejecución magistral del Control del Marco. Rechazaste por completo su intento de ponerte en una caja inferior. Al estar dispuesto a abandonar la venta, te has posicionado como un experto de alto valor que elige a sus clientes. Ahora él es quien tiene que cualificar para ti.',
+                        failure_feedback: ''
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-24': {
+    title: 'El Colapso en la Crisis',
+    description: 'Acaba de surgir un problema crítico en un proyecto importante. Tu colega (Ana) entra en tu oficina en estado de pánico.',
+    characters: [ { id: 'colega', name: 'Ana', mood: 'En pánico' } ],
+    mission_state: { estres: 90, confianza: 20, enfoque: 10 },
+    phases: {
+        'phase_1_contencion': {
+            title: 'Fase 1: Contención del Pánico',
+            goal: 'Reducir el nivel de estrés de Ana para que pueda pensar racionalmente.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'colega',
+                    line: '¡Estamos acabados! ¡El servidor se cayó y hemos perdido toda la data del cliente! ¡Nos van a despedir!',
+                    options: [
+                        { text: 'Contagiarte del pánico: "¡¿Qué?! ¡No puede ser! ¡Es un desastre!".', skill: {module: 'Comunicación', name: 'Reacción Empática'}, effects: {estres: '+10'}, target_node: 'p1_fail' },
+                        { text: 'Ignorar su emoción y centrarte en la lógica: "¿Estás segura? ¿Has revisado los backups?".', skill: {module: 'Lógica', name: 'Enfoque en Datos'}, effects: {estres: '-10'}, target_node: 'p1_neutral' },
+                        { text: 'Tomar el control del marco y del estado: "Ana, respira. El pánico no es una estrategia. Mírame. Respira conmigo. Ahora, vamos a solucionar esto paso a paso. No estamos acabados, estamos trabajando".', skill: {module: 'Hipnosis', name: 'Liderazgo de Estado'}, effects: {estres: '-40', confianza: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'colega', 
+                    line: '¡Lo sabía! ¡Te lo dije! ¿¡Qué vamos a hacer!?', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Te dejaste arrastrar por su marco de pánico. Ahora hay dos personas asustadas en lugar de un líder buscando soluciones. El problema ha empeorado.' 
+                    } 
+                },
+                'p1_neutral': { 
+                    speaker: 'colega', 
+                    line: '¡No, no he revisado nada! ¡Estoy demasiado nerviosa para pensar!', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_accion' 
+                },
+                'p1_success': { 
+                    speaker: 'colega', 
+                    line: '(Respira hondo un par de veces, su lenguaje corporal cambia). Vale... vale. Tienes razón. ¿Por dónde empezamos?', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_accion' 
+                }
+            }
+        },
+        'phase_2_accion': {
+            title: 'Fase 2: El Plan de Acción',
+            goal: 'Dirigir la energía hacia una solución constructiva.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'colega',
+                    line: 'De acuerdo, ¿cuál es el primer paso?',
+                    options: [
+                        { text: 'Dar una orden directa: "Llama a soporte técnico inmediatamente".', skill: {module: 'Gestión', name: 'Delegación'}, effects: {enfoque: '+20'}, target_node: 'p2_final' },
+                        { text: 'Crear un plan colaborativo: "Perfecto. Yo revisaré los logs del servidor para identificar la causa. Tú, por favor, redacta un borrador de email para el cliente explicando que estamos investigando una incidencia técnica, sin dar detalles alarmistas. Nos juntamos en 15 minutos".', skill: {module: 'Ingeniería Social', name: 'Plan Colaborativo'}, effects: {enfoque: '+40', confianza: '+20'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'colega',
+                    line: 'Entendido. Me pongo a ello ahora mismo. Gracias.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { estres: 40, confianza: 40, enfoque: 50 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Actuaste como un verdadero pilar en la crisis. Primero gestionaste el estado emocional de tu colega y luego canalizaste la energía hacia un plan de acción claro y colaborativo. Has transformado el caos en control.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Lograste que se tomaran acciones, pero no gestionaste el estado emocional de tu colega. El problema podría resolverse, pero ella sigue sintiéndose ansiosa y poco apoyada, lo que afecta la moral del equipo.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-25': {
+    title: 'El Debate Amistoso',
+    description: 'Estás en un debate amistoso con un amigo (Miguel) sobre un tema en el que tenéis opiniones opuestas (ej. si es mejor trabajar desde casa o en la oficina). Tu objetivo es persuadirlo para que considere tu punto de vista, sin que se sienta atacado.',
+    characters: [ { id: 'amigo', name: 'Miguel', mood: 'Convicción' } ],
+    mission_state: { rapport: 70, conviccion: 80, defensividad: 20 },
+    phases: {
+        'phase_1_apertura': {
+            title: 'Fase 1: La Apertura',
+            goal: 'Responder a su argumento inicial sin crear una confrontación directa.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'amigo',
+                    line: 'No hay debate, trabajar desde la oficina es mucho mejor. La colaboración, la cultura de empresa... es simplemente superior.',
+                    options: [
+                        { text: 'Contradecir directamente: "Estás completamente equivocado. Trabajar desde casa es mucho más productivo".', skill: {module: 'Comunicación', name: 'Confrontación'}, effects: {defensividad: '+40', rapport: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Buscar un acuerdo parcial y validar: "Estoy totalmente de acuerdo en que la colaboración cara a cara tiene un valor inmenso. Es un punto muy importante".', skill: {module: 'PNL', name: 'Acuerdo Parcial'}, effects: {defensividad: '-10', rapport: '+10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'amigo', 
+                    line: '¿Equivocado? ¡Para nada! No estás viendo el panorama completo.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La contradicción directa convirtió un debate amistoso en una discusión. Al atacar su postura, hiciste que se aferrara a ella con más fuerza y se pusiera a la defensiva.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'amigo', 
+                    line: 'Exacto. Me alegro de que lo entiendas. Es crucial.', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_exploracion' 
+                }
+            }
+        },
+        'phase_2_exploracion': {
+            title: 'Fase 2: La Exploración Guiada',
+            goal: 'Usar preguntas para guiarlo a que él mismo descubra las ventajas de tu punto de vista.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'amigo',
+                    line: 'Sin esa interacción diaria, la empresa se desmorona.',
+                    options: [
+                        { text: 'Afirmar tu punto de vista: "Pero trabajar desde casa te da más flexibilidad y concentración".', skill: {module: 'Argumento', name: 'Afirmación'}, effects: {conviccion: '-5'}, target_node: 'p2_final' },
+                        { text: 'Usar una pregunta socrática: "Y estoy de acuerdo. Dado que esa colaboración es clave, ¿qué pasaría si pudiéramos mantener esa misma calidad de colaboración, pero añadiéndole además dos horas extra de productividad al día por eliminar los desplazamientos?".', skill: {module: 'Mentalismo', name: 'Pregunta Socrática'}, effects: {conviccion: '-30', defensividad: '-10'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'amigo',
+                    line: '... Bueno, si se pudiera tener ambas cosas, claro... eso sería el escenario ideal. Es un punto interesante, no lo había visto así.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { conviccion: 50, defensividad: 10 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Estrategia perfecta. Primero validaste su punto de vista para mantener el rapport. Luego, en lugar de imponer tu argumento, usaste una pregunta guiada que le llevó a él mismo a la conclusión que tú querías. No ganaste una discusión, facilitaste un descubrimiento.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Lograste presentar tu punto, pero no de la forma más persuasiva. Al simplemente afirmar tu opinión, la conversación se quedó en un "tú piensas A, yo pienso B", sin que él realmente considerara cambiar de idea.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-26': {
+    title: 'El Feedback Silencioso',
+    description: 'Necesitas feedback honesto sobre una propuesta, y sabes que tu colega más brillante (Clara) tiene grandes ideas, pero es muy introvertida y rara vez habla en las reuniones. Tu objetivo es conseguir que te dé su opinión sincera.',
+    characters: [ { id: 'colega', name: 'Clara', mood: 'Introvertida' } ],
+    mission_state: { rapport: 50, confianza: 40, honestidad: 20 },
+    phases: {
+        'phase_1_crear_seguridad': {
+            title: 'Fase 1: Crear un Espacio Seguro',
+            goal: 'Abordar a Clara de una forma que minimice la presión social y la haga sentir cómoda.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'colega',
+                    line: '(Clara está concentrada en su escritorio. Te acercas a ella). Hola.',
+                    options: [
+                        { text: 'Ponerla en el punto de mira: "Hola Clara, necesito tu feedback sobre esto ahora, ¿qué opinas?".', skill: {module: 'Comunicación', name: 'Presión Directa'}, effects: {confianza: '-20', rapport: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Minimizar la presión y dar control: "Hola Clara, sé que estás ocupada. Estoy trabajando en esta propuesta y valoro mucho tu perspectiva. ¿Te importaría si te la dejo y le echas un vistazo de 5 minutos cuando tengas un hueco? Cualquier idea, por pequeña que sea, me ayudaría un montón".', skill: {module: 'Ingeniería Social', name: 'Minimizar Presión'}, effects: {confianza: '+20', rapport: '+10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'colega', 
+                    line: 'Oh... ahora... no sé, parece que está todo bien, sí, se ve bien.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La presión directa hizo que se cerrara. Te dio una respuesta genérica para terminar la interacción lo antes posible. No conseguiste el feedback real.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'colega', 
+                    line: 'Claro, déjamela. Le echo un vistazo entre tareas.', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_extraer_feedback' 
+                }
+            }
+        },
+        'phase_2_extraer_feedback': {
+            title: 'Fase 2: Extraer el Feedback',
+            goal: 'Usar preguntas que inviten a la crítica constructiva en lugar de a la aprobación.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'colega',
+                    line: '(Más tarde, vuelves a su escritorio). Ya lo he revisado. Es un buen trabajo.',
+                    options: [
+                        { text: 'Preguntar por la aprobación: "¿Te ha gustado?".', skill: {module: 'Pregunta', name: 'Busca Aprobación'}, effects: {honestidad: '-10'}, target_node: 'p2_fail' },
+                        { text: 'Preguntar por las debilidades (Presuposición): "Gracias. Y sé que no es perfecta. Si tuvieras que señalar cuál crees que es la parte más débil o el mayor riesgo, ¿cuál sería?".', skill: {module: 'PNL', name: 'Presuposición'}, effects: {honestidad: '+40', confianza: '+10'}, target_node: 'p2_success' }
+                    ]
+                },
+                'p2_fail': { 
+                    speaker: 'colega', 
+                    line: 'Sí, sí, está muy bien. Buen trabajo.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Al preguntar si le gustó, la forzaste a dar una respuesta socialmente amable. No le diste permiso para criticar.' 
+                    } 
+                },
+                'p2_success': {
+                    speaker: 'colega',
+                    line: '... Bueno, ya que lo preguntas... creo que la proyección de costes del tercer trimestre es un poco optimista. Quizás no estamos teniendo en cuenta el factor X...',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { confianza: 70, honestidad: 50 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Estrategia perfecta. Primero, creaste un entorno de baja presión. Luego, en lugar de pedir aprobación, diste por hecho que había fallos y pediste ayuda para encontrarlos. Esto le dio el permiso y la seguridad que necesitaba para compartir su brillante análisis.',
+                        failure_feedback: ''
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-27': {
+    title: 'El PIN Secreto',
+    description: 'Simulas una rutina de mentalismo. Un sujeto (David) ha pensado en un PIN de 2 dígitos. Tu objetivo es "leer" sus micro-reacciones mientras nombras números en voz alta para adivinar el PIN correcto.',
+    characters: [ { id: 'sujeto', name: 'David', mood: 'Concentrado' } ],
+    mission_state: { credibilidad: 40, enfoque: 50 },
+    secret_pin: '37', // El PIN secreto que el usuario debe adivinar
+    phases: {
+        'phase_1_digito1': {
+            title: 'Fase 1: Descubrir el Primer Dígito',
+            goal: 'Nombrar números y detectar la reacción anómala que delata al primer dígito.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'sujeto',
+                    line: 'De acuerdo, ya tengo mi PIN de 2 dígitos en mente. Es imposible que lo sepas.',
+                    options: [
+                        { text: 'Empezar a decir números al azar: "Veo un... 5... no, un 8...".', skill: {module: 'Mentalismo', name: 'Adivinanza Pura'}, effects: {credibilidad: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Iniciar un sondeo sistemático: "Perfecto. No muevas ni un músculo. Voy a nombrar números. CERO... UNO... DOS... TRES... CUATRO... CINCO...".', skill: {module: 'Mentalismo', name: 'Sondeo y Calibración'}, effects: {enfoque: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'sujeto', 
+                    line: 'No, ninguno de esos. No parece que estés muy conectado conmigo.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: El mentalismo no es adivinar. Requiere un proceso. Al lanzar números al azar, perdiste toda tu credibilidad como lector de mentes.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'sujeto', 
+                    line: '(El sujeto permanece en silencio. Al pasar por el número TRES, notas que traga saliva de forma casi imperceptible y hay una micro-tensión en su ceja).', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_digito2' 
+                }
+            }
+        },
+        'phase_2_digito2': {
+            title: 'Fase 2: Descubrir el Segundo Dígito',
+            goal: 'Confirmar el primer dígito y usar el mismo proceso para encontrar el segundo.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'sujeto',
+                    line: '(El sujeto sigue concentrado, sin darte pistas verbales).',
+                    options: [
+                        { text: 'Confirmar el primer dígito y sondear el segundo: "Vale, el primer dígito es un tres. Ahora el segundo... SEIS... SIETE... OCHO...".', skill: {module: 'Lenguaje Corporal', name: 'Lectura de Micro-reacciones'}, effects: {enfoque: '+20', credibilidad: '+30'}, target_node: 'p2_revelacion' },
+                        { text: 'Preguntar directamente: "¿El segundo dígito es un siete?".', skill: {module: 'Comunicación', name: 'Pregunta Directa'}, effects: {credibilidad: '-10'}, target_node: 'p2_revelacion' }
+                    ]
+                },
+                'p2_revelacion': {
+                    speaker: 'sujeto',
+                    line: '(Al nombrar el número SIETE, sus pupilas se dilatan por un instante y contiene la respiración).',
+                    is_end_phase: true, 
+                    next_phase: 'phase_3_final'
+                }
+            }
+        },
+        'phase_3_final': {
+            title: 'Fase 3: La Revelación',
+            goal: 'Juntar las pistas y revelar el PIN completo de forma impactante.',
+            start_node: 'p3_start',
+            nodes: {
+                 'p3_start': {
+                    speaker: 'sujeto',
+                    line: '(Te mira, esperando tu respuesta final).',
+                    options: [
+                        { text: 'Declarar el PIN "37".', skill: {module: 'Mentalismo', name: 'La Revelación'}, effects: {credibilidad: '+50'}, target_node: 'p3_success' },
+                        { text: 'Declarar un PIN incorrecto, como "38".', skill: {module: 'Mentalismo', name: 'Error de Calibración'}, effects: {credibilidad: '-50'}, target_node: 'p3_fail_final' }
+                    ]
+                },
+                'p3_fail_final': {
+                    speaker: 'sujeto',
+                    line: 'No, era el 37. ¡Casi!',
+                    is_end_mission: true,
+                    evaluation: {
+                        failure_feedback: 'MISIÓN FALLIDA: Estabas tan cerca... Leíste correctamente el primer dígito pero te equivocaste en el segundo. La calibración requiere una atención al detalle absoluta.'
+                    }
+                },
+                'p3_success': {
+                    speaker: 'sujeto',
+                    line: '...Imposible. ¿Cómo lo has hecho? Es exactamente el 37.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { credibilidad: 90, enfoque: 70 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Una demostración impecable. Usaste un proceso sistemático, calibraste las micro-reacciones del sujeto (tensión, tragar saliva, dilatación de pupilas) y construiste la revelación final paso a paso. Has demostrado ser un agudo observador.',
+                        failure_feedback: ''
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-28': {
+    title: 'La Palabra de la Revista',
+    description: 'Simulas un "test de libro". Tu objetivo es que el sujeto elija mentalmente una palabra CORTA y COMÚN de una página imaginaria, y que esa palabra sea LUZ.',
+    characters: [ { id: 'sujeto', name: 'Sara', mood: 'Curiosa' } ],
+    mission_state: { rapport: 60, credibilidad: 50, enfoque: 50 },
+    phases: {
+        'phase_1_forzaje': {
+            title: 'Fase 1: El Forzaje Conceptual',
+            goal: 'Utilizar un guion que implante la idea de la palabra "LUZ" de forma sutil.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'sujeto',
+                    line: 'De acuerdo, tengo una página de una revista imaginaria en mi mente. ¿Qué hago ahora?',
+                    options: [
+                        { text: 'Dar instrucciones directas: "Concéntrate en la palabra LUZ. ¿La puedes ver?".', skill: {module: 'Comunicación', name: 'Orden Directa'}, effects: {credibilidad: '-30'}, target_node: 'p1_fail' },
+                        { text: 'Dar una lista de opciones: "Piensa en una palabra como CASA, AMOR, VIAJE o LUZ".', skill: {module: 'Mentalismo', name: 'Elección Limitada'}, effects: {credibilidad: '-10'}, target_node: 'p1_fail' },
+                        { text: 'Usar forzaje conceptual y espacial: "Perfecto. No te fijes en las palabras largas o de abajo. Enfoca tu atención en la parte superior de la página. Busca una palabra corta, simple. Una que represente la CLARIDAD, el CONOCIMIENTO, lo opuesto a la OSCURIDAD... Deja que esa palabra te llegue".', skill: {module: 'PNL', name: 'Primado Conceptual'}, effects: {credibilidad: '+30', enfoque: '+20'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'sujeto', 
+                    line: 'Ah, vale. Pero así no tiene gracia, me estás diciendo qué pensar.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Has roto la ilusión del mentalismo. Al ser demasiado directo, el sujeto se da cuenta del método y el efecto de "leer la mente" se pierde por completo.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'sujeto', 
+                    line: 'De acuerdo... ya tengo una palabra en mente.', 
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { credibilidad: 70, enfoque: 60 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has ejecutado un forzaje psicológico de libro. Dirigiste su atención a una zona (superior), definiste las características de la palabra (corta, simple) y primaste el concepto abstracto (claridad, conocimiento). Has hecho que la elección de "LUZ" sea casi inevitable, pero que se sienta como una elección personal y libre.',
+                        failure_feedback: ''
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-29': {
+    title: 'El Test de Asociación',
+    description: 'Tu amigo (Carlos) te dice que está "un poco estresado", pero no te da detalles. Tú decides usar un test de asociación de palabras para descubrir la verdadera fuente de su estrés. Él tiene en mente la palabra "PLAZO" (deadline).',
+    characters: [ { id: 'amigo', name: 'Carlos', mood: 'Estresado pero reservado' } ],
+    mission_state: { rapport: 60, credibilidad: 50, enfoque: 50 },
+    secret_word: 'PLAZO',
+    phases: {
+        'phase_1_test': {
+            title: 'Fase 1: El Sondeo',
+            goal: 'Nombrar una serie de palabras y calibrar la reacción de tu amigo a cada una para encontrar la que genera una respuesta de estrés.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'amigo',
+                    line: 'No sé... es solo... trabajo, lo de siempre. No es nada en concreto.',
+                    options: [
+                        { text: 'Presionarlo para que te diga qué pasa.', skill: {module: 'Comunicación', name: 'Presión'}, effects: {rapport: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Iniciar el test: "Ok, hagamos un juego rápido. Voy a decir unas palabras y solo quiero que te fijes en cómo te sientes. No tienes que decir nada. La primera palabra es: VACACIONES".', skill: {module: 'Mentalismo', name: 'Sondeo y Calibración'}, effects: {rapport: '+10', enfoque: '+10'}, target_node: 'p1_continue' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'amigo', 
+                    line: 'No quiero hablar de eso, de verdad. Déjalo estar.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: La presión directa provocó que se cerrara. Una persona estresada necesita sentirse segura, no interrogada. Perdiste su confianza.' 
+                    } 
+                },
+                'p1_continue': { 
+                    speaker: 'amigo', 
+                    line: '(Reacciona a tu lista de palabras. A "FAMILIA" sonríe. A "DINERO" su expresión es neutra. A "PLAZO", aprieta la mandíbula por un instante y su respiración se vuelve más superficial).', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_revelacion' 
+                }
+            }
+        },
+        'phase_2_revelacion': {
+            title: 'Fase 2: La Revelación Empática',
+            goal: 'Usar la información que has obtenido para demostrar que lo entiendes y ofrecer ayuda.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'amigo',
+                    line: 'Vale, ¿y bien? ¿Ha funcionado tu "juego"?',
+                    options: [
+                        { text: 'Hacer una revelación directa y fría: "Tu problema es un plazo de entrega".', skill: {module: 'Mentalismo', name: 'Revelación Directa'}, effects: {credibilidad: '+20'}, target_node: 'p2_final' },
+                        { text: 'Hacer una revelación empática: "No sé los detalles, pero he notado que la palabra ‘PLAZO’ te ha generado una reacción física. Parece que hay una fecha de entrega que te está presionando mucho. Si quieres hablar de ello, aquí estoy".', skill: {module: 'Inteligencia Emocional', name: 'Lectura y Apoyo'}, effects: {credibilidad: '+30', rapport: '+30'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'amigo',
+                    line: '(Sorprendido). Sí... ¿cómo lo supiste? Hay un plazo de entrega imposible la semana que viene y no sé cómo voy a llegar. Gracias por notarlo.',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { rapport: 80, credibilidad: 70 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Has demostrado una calibración y una empatía excepcionales. Calibraste la reacción fisiológica a la palabra clave y luego usaste esa información no para "adivinar", sino para mostrar comprensión y ofrecer apoyo. Has fortalecido la confianza y la amistad.',
+                        failure_feedback: 'MISIÓN A MEDIAS: Acertaste, lo cual demuestra tu habilidad de observación, pero tu revelación fue fría y distante. Pareció más un truco que un acto de empatía, y no fortaleció la conexión tanto como podría haberlo hecho.'
+                    }
+                }
+            }
+        }
+    }
+},
+  'im-30': {
+    title: 'El Contacto Psíquico',
+    description: 'Simulas una rutina de "contacto mental". Un sujeto (Elena) responderá "sí" o "no" a una pregunta solo en su mente. Tu objetivo es detectar la respuesta a través del contacto físico, sintiendo la respuesta ideomotora de su dedo.',
+    characters: [ { id: 'sujeto', name: 'Elena', mood: 'Escéptica pero curiosa' } ],
+    mission_state: { rapport: 60, credibilidad: 60, sincronizacion: 30 },
+    secret_answer: 'si', // La respuesta secreta es "SÍ"
+    phases: {
+        'phase_1_preparacion': {
+            title: 'Fase 1: La Preparación',
+            goal: 'Instruir al sujeto de una manera que facilite una respuesta inconsciente y no un movimiento controlado.',
+            start_node: 'p1_start',
+            nodes: {
+                'p1_start': {
+                    speaker: 'sujeto',
+                    line: 'De acuerdo. Pienso en una pregunta personal y la respuesta es "sí" o "no". Ya la tengo. ¿Ahora qué?',
+                    options: [
+                        { text: 'Dar instrucciones conscientes: "Perfecto. Apoya tu dedo en mi mano. Si la respuesta es SÍ, presiona hacia abajo. Si es NO, levántalo".', skill: {module: 'Comunicación', name: 'Instrucción Consciente'}, effects: {sincronizacion: '-30', credibilidad: '-20'}, target_node: 'p1_fail' },
+                        { text: 'Inducir un estado inconsciente: "Excelente. Ahora, apoya tu dedo índice suavemente sobre mi mano. No intentes moverlo. Solo relájate y concéntrate. Quiero que pienses intensamente en tu respuesta... si es SÍ, piensa SÍ, SÍ, SÍ... si es NO, piensa NO, NO, NO... solo piénsalo".', skill: {module: 'Hipnosis', name: 'Respuesta Ideomotora'}, effects: {sincronizacion: '+30', rapport: '+10'}, target_node: 'p1_success' }
+                    ]
+                },
+                'p1_fail': { 
+                    speaker: 'sujeto', 
+                    line: 'Vale, ya lo estoy moviendo yo. No siento nada especial.', 
+                    is_end_mission: true, 
+                    evaluation: { 
+                        failure_feedback: 'MISIÓN FALLIDA: Has convertido el ejercicio en un acto consciente. El sujeto está moviendo el dedo voluntariamente, rompiendo toda la ilusión de una conexión mental o lectura sutil. El efecto se ha perdido.' 
+                    } 
+                },
+                'p1_success': { 
+                    speaker: 'sujeto', 
+                    line: '(Cierra los ojos y se concentra. Su dedo permanece quieto, pero notas una tensión casi imperceptible).', 
+                    is_end_phase: true, 
+                    next_phase: 'phase_2_lectura' 
+                }
+            }
+        },
+        'phase_2_lectura': {
+            title: 'Fase 2: La Lectura',
+            goal: 'Interpretar correctamente el micro-movimiento inconsciente del sujeto.',
+            start_node: 'p2_start',
+            nodes: {
+                'p2_start': {
+                    speaker: 'sujeto',
+                    line: '(Mientras se concentra en su respuesta "SÍ", sientes que los tendones de su dedo ejercen una presión mínima y constante hacia abajo, como si quisiera asentir pero sin moverse).',
+                    options: [
+                        { text: 'Declarar la respuesta basándote en la presión hacia abajo.', skill: {module: 'Lenguaje Corporal', name: 'Lectura Kinestésica'}, effects: {credibilidad: '+40'}, target_node: 'p2_final' },
+                        { text: 'Dudar e interpretar la falta de movimiento grande como un "NO".', skill: {module: 'Análisis', name: 'Error de Interpretación'}, effects: {credibilidad: '-30'}, target_node: 'p2_final' }
+                    ]
+                },
+                'p2_final': {
+                    speaker: 'sujeto',
+                    line: '¿Y bien? ¿Lo has sentido?',
+                    is_end_mission: true,
+                    evaluation: {
+                        success_condition: { credibilidad: 80, sincronizacion: 60 },
+                        success_feedback: '¡MISIÓN CUMPLIDA! Una demostración de una sensibilidad extraordinaria. Has preparado al sujeto correctamente para una respuesta inconsciente y has sido capaz de sentir la micro-tensión muscular asociada con el pensamiento "SÍ" (un impulso de asentimiento). Es la cima de la calibración física.',
+                        failure_feedback: 'MISIÓN FALLIDA: Has sentido la ausencia de un movimiento grande y lo has malinterpretado. La respuesta ideomotora no es un movimiento obvio, sino una tensión casi imperceptible. Te ha faltado sensibilidad y confianza en tu percepción.'
+                    }
+                }
+            }
+        }
+    }
+}
+  
+};
+      
+      
         const microExpressionsData = [
             { emotion: 'Alegría', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Alegr%C3%ADa' },
             { emotion: 'Tristeza', img: 'https://placehold.co/400x400/E2E8F0/111827?text=Tristeza' },
@@ -3461,6 +5209,146 @@ function hideBreathingGuide() {
     const modal = document.getElementById('breathing-guide-modal');
     if (modal) {
         modal.classList.add('hidden');
+    }
+}
+      
+      
+// --- INICIO DEL MOTOR DE MISIONES DE INTEGRACIÓN ---
+
+let currentIntegrationMission = null;
+let missionState = {};
+
+function showIntegrationMissionLibrary() {
+    const libraryView = document.getElementById('integration-mission-library-view');
+    let content = `<header class="flex items-center mb-6"><button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button><h1 class="text-2xl font-bold">Misiones de Integración</h1></header><div class="space-y-4">`;
+    
+    for (const missionId in integration_missions) {
+        const mission = integration_missions[missionId];
+        content += `<div onclick="startIntegrationMission('${missionId}')" class="bg-gray-800 p-4 rounded-lg flex items-center cursor-pointer hover:bg-gray-700 transition-colors"><i data-lucide="swords" class="text-red-400 mr-4"></i><div class="flex-grow"><h3 class="font-bold">${mission.title}</h3></div><i data-lucide="chevron-right" class="text-gray-500"></i></div>`;
+    }
+    content += `</div>`;
+    libraryView.innerHTML = content;
+    navigateTo('integration-mission-library-view');
+}
+
+function startIntegrationMission(missionId) {
+    currentIntegrationMission = integration_missions[missionId];
+    if (!currentIntegrationMission) return;
+    
+    // Clonamos el estado inicial para esta partida
+    missionState = JSON.parse(JSON.stringify(currentIntegrationMission.mission_state));
+    
+    const firstPhaseId = Object.keys(currentIntegrationMission.phases)[0];
+    renderIntegrationPhase(firstPhaseId);
+}
+
+function renderIntegrationPhase(phaseId) {
+    const phase = currentIntegrationMission.phases[phaseId];
+    if (!phase) return;
+
+    const missionView = document.getElementById('integration-mission-view');
+    missionView.innerHTML = `
+        <header class="flex items-center mb-4">
+            <button onclick="navigateBack()" class="p-2 rounded-full hover:bg-gray-700 mr-4"><i data-lucide="arrow-left"></i></button>
+            <h1 class="text-2xl font-bold">${currentIntegrationMission.title}</h1>
+        </header>
+        <div class="bg-gray-800 p-3 rounded-lg mb-4 border border-gray-700">
+            <h2 class="text-lg font-bold text-yellow-400">${phase.title}</h2>
+            <p class="text-sm text-gray-300">${phase.goal}</p>
+        </div>
+        <div id="im-status-bar" class="flex justify-around bg-gray-900 p-2 rounded-lg mb-4 text-center text-xs"></div>
+        <div id="im-conversation-container" class="flex-grow flex flex-col justify-end space-y-4"></div>
+    `;
+    
+    navigateTo('integration-mission-view');
+    renderIntegrationNode(phaseId, phase.start_node);
+}
+
+function renderIntegrationNode(phaseId, nodeId) {
+    const phase = currentIntegrationMission.phases[phaseId];
+    const node = phase.nodes[nodeId];
+    if (!node) return;
+
+    // --- INICIO DE CÓDIGO MEJORADO ---
+    // 1. Renderizado dinámico de la barra de estado
+    const statusBar = document.getElementById('im-status-bar');
+    let statusHtml = '';
+    for (const key in missionState) {
+        const label = key.charAt(0).toUpperCase() + key.slice(1); // Pone la primera letra en mayúscula
+        const value = missionState[key];
+        const color = value >= 50 ? 'text-green-400' : 'text-red-400';
+        statusHtml += `<div><span class="text-gray-400">${label}:</span> <span class="font-bold ${color}">${value}</span></div>`;
+    }
+    statusBar.innerHTML = statusHtml;
+
+    const conversationContainer = document.getElementById('im-conversation-container');
+    const oldOptions = conversationContainer.querySelector('#im-user-options');
+    if(oldOptions) oldOptions.remove();
+
+    // 2. Lógica de evaluación para el final de la misión
+    if (node.is_end_mission) {
+        let success = true;
+        if (node.evaluation && node.evaluation.success_condition) {
+            for (const key in node.evaluation.success_condition) {
+                const conditionValue = node.evaluation.success_condition[key];
+                if (missionState[key] < conditionValue) { // Asumimos condición de "mayor o igual que"
+                    success = false;
+                    break;
+                }
+            }
+        }
+        
+        const feedback = success ? node.evaluation.success_feedback : node.evaluation.failure_feedback;
+        const feedbackColor = success ? 'border-green-500' : 'border-red-500';
+        
+        const feedbackBubble = document.createElement('div');
+        feedbackBubble.className = `p-4 rounded-lg mt-4 border-2 ${feedbackColor}`;
+        feedbackBubble.innerHTML = `<h3 class="font-bold text-lg mb-2">Resultado de la Misión:</h3><p>${feedback}</p>`;
+        conversationContainer.appendChild(feedbackBubble);
+        return;
+    }
+    // --- FIN DE CÓDIGO MEJORADO ---
+
+    const speaker = currentIntegrationMission.characters.find(c => c.id === node.speaker);
+    const npcBubble = document.createElement('div');
+    npcBubble.className = 'p-4 bg-gray-700 rounded-lg max-w-lg self-start';
+    npcBubble.innerHTML = `<p class="font-bold text-blue-400 mb-1">${speaker.name} (${speaker.mood})</p><p class="text-gray-200">${node.line}</p>`;
+    conversationContainer.appendChild(npcBubble);
+
+    const optionsContainer = document.createElement('div');
+    optionsContainer.id = 'im-user-options';
+    optionsContainer.className = 'w-full pt-4 space-y-3';
+    
+    node.options.forEach(opt => {
+        const optionButton = document.createElement('button');
+        optionButton.className = 'w-full text-left p-4 bg-blue-800 hover:bg-blue-700 rounded-lg transition-colors';
+        optionButton.innerHTML = `
+            <p class="font-semibold">${opt.text}</p>
+            <p class="text-xs text-blue-300 mt-1">Módulo: ${opt.skill.module} | Habilidad: ${opt.skill.name}</p>
+        `;
+        optionButton.onclick = () => selectIntegrationOption(phaseId, nodeId, opt);
+        optionsContainer.appendChild(optionButton);
+    });
+    conversationContainer.appendChild(optionsContainer);
+    lucide.createIcons();
+}
+
+function selectIntegrationOption(phaseId, nodeId, selectedOption) {
+    // Aplicar efectos al estado de la misión
+    for (const effect in selectedOption.effects) {
+        const value = parseInt(selectedOption.effects[effect]);
+        if (missionState.hasOwnProperty(effect)) {
+            missionState[effect] += value;
+        }
+    }
+
+    const currentNode = currentIntegrationMission.phases[phaseId].nodes[nodeId];
+    const nextNode = currentIntegrationMission.phases[phaseId].nodes[selectedOption.target_node];
+
+    if (nextNode.is_end_phase) {
+        renderIntegrationPhase(nextNode.next_phase);
+    } else {
+        renderIntegrationNode(phaseId, selectedOption.target_node);
     }
 }
       
